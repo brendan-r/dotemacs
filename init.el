@@ -7,11 +7,14 @@
 ;; This also looks good: https://github.com/edwinhu/emacs-starter-kit
 
 
+
 ;; Allow packages to be installed ----------------------------------------------
 
 (require 'package)
+
 (add-to-list 'package-archives
              '("melpa" . "https://melpa.org/packages/") t)
+
 (when (< emacs-major-version 24)
   ;; For important compatibility libraries like cl-lib
   (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")))
@@ -22,6 +25,7 @@
   (normal-top-level-add-subdirs-to-load-path))
 
 
+
 ;; Key bindings ----------------------------------------------------------------
 
 ;; Turn on easy mode (you have OS level keybindings!)
@@ -30,8 +34,42 @@
 (transient-mark-mode 1) ;; No region when it is not highlighted
 (setq cua-keep-region-after-copy t) ;; Standard Windows behaviour
 
-;; Fancy text editing
+;; Multiple cursors
 (require 'multiple-cursors)
+(global-set-key (kbd "C-S-l") 'mc/edit-lines)
+
+(global-set-key (kbd "C-/") 'comment-line)
+
+
+;; Mouse bindings
+;; Make right-click do something close to what people expect
+(global-set-key (kbd "<mouse-3>") 'mouse3-popup-menu)
+
+;; Free up C-RET for REPLs (by default used by cua-rectangle-mark-mode, move the
+;; latter to C-S-SPC)
+(define-key cua-global-keymap (kbd "C-RET") nil)
+(define-key cua-global-keymap (kbd "C-S-SPC") nil)
+(setq cua-rectangle-mark-key (kbd "C-S-SPC"))
+(define-key cua-global-keymap (kbd "C-S-SPC") 'cua-rectangle-mark-mode)
+
+
+
+;; Arbitrary Elisp Dir ---------------------------------------------------------
+
+;; add custom lisp directory to path
+(let ((default-directory (concat user-emacs-directory "lisp/")))
+  (setq load-path
+        (append
+         (let ((load-path (copy-sequence load-path))) ;; Shadow
+           (append
+            (copy-sequence (normal-top-level-add-to-load-path '(".")))
+            (normal-top-level-add-subdirs-to-load-path)))
+         load-path)))
+
+;; on OSX Emacs needs help setting up the system paths
+(when (memq window-system '(mac ns))
+(exec-path-from-shell-initialize))
+
 
 
 ;; GUI stuff -------------------------------------------------------------------
@@ -54,6 +92,10 @@
       scroll-conservatively 100000
       scroll-preserve-screen-position 1)
 
+;; Use a bar cursor instead of the block thing
+(setq-default cursor-type 'bar)
+
+
 
 ;; General text display --------------------------------------------------------
 
@@ -63,12 +105,12 @@
 (global-visual-line-mode t)
 
 
-;; Cursor ----------------------------------------------------------------------
-(setq-default cursor-type 'bar)
 
 ;; Fonts -----------------------------------------------------------------------
 ;; 11pt (in 1/10pt units)
 (set-face-attribute 'default nil :height 110)
+
+
 
 ;; Menu / minbuffer navigation -------------------------------------------------
 
@@ -105,29 +147,28 @@
 
 ;; Navigating buffers ----------------------------------------------------------
 
-;; tabbar
-;; (require 'tabbar)
-;; (setq tabbar-use-images nil)
-
-;; tabbar-ruler
-;; (require 'tabbar-ruler)
-
-;; (setq tabbar-ruler-global-tabbar t)    ; get tabbar
-;; ;; (setq tabbar-ruler-global-ruler t)     ; get global ruler
-;; ;; (setq tabbar-ruler-popup-menu t)       ; get popup menu.
-;; ;; (setq tabbar-ruler-popup-toolbar t)    ; get popup toolbar
-;; (setq tabbar-ruler-popup-scrollbar t)  ; show scroll-bar on mouse-move
 
 
 ;; Key mapping -----------------------------------------------------------------
+
+;; C-o for neotree
 (global-set-key (kbd "C-o") 'neotree-toggle)
+
+;; Stop C-RET doing something you don't understand
+
+(define-key cua-global-keymap (kbd "<C-S-SPC>") nil)
+(define-key cua-global-keymap (kbd "<C-return>") nil)
+(setq cua-rectangle-mark-key (kbd "<C-S-SPC>"))
+(define-key cua-global-keymap (kbd "<C-S-SPC>") 'cua-rectangle-mark-mode)
 
 
 
 ;; Encoding --------------------------------------------------------------------
+
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
+
 
 
 ;; ansi-term stuff -------------------------------------------------------------
@@ -193,6 +234,7 @@
 (add-hook 'term-exec-hook 'my-term-use-utf8)
 
 
+
 ;; Appearance ------------------------------------------------------------------
 
 ;; Make emacs transparent
@@ -216,7 +258,9 @@
 (setq system-uses-terminfo nil)
 
 
+
 ;; Smooth mouse scrolling ------------------------------------------------------
+
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
 
 (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
@@ -226,8 +270,39 @@
 (setq scroll-step 1) ;; keyboard scroll one line at a time
 
 
-;; Markdown --------------------------------------------------------------------
 
+;; Windows ---------------------------------------------------------------------
+
+(defun toggle-window-split ()
+  (interactive)
+  (if (= (count-windows) 2)
+      (let* ((this-win-buffer (window-buffer))
+         (next-win-buffer (window-buffer (next-window)))
+         (this-win-edges (window-edges (selected-window)))
+         (next-win-edges (window-edges (next-window)))
+         (this-win-2nd (not (and (<= (car this-win-edges)
+                     (car next-win-edges))
+                     (<= (cadr this-win-edges)
+                     (cadr next-win-edges)))))
+         (splitter
+          (if (= (car this-win-edges)
+             (car (window-edges (next-window))))
+          'split-window-horizontally
+        'split-window-vertically)))
+    (delete-other-windows)
+    (let ((first-win (selected-window)))
+      (funcall splitter)
+      (if this-win-2nd (other-window 1))
+      (set-window-buffer (selected-window) this-win-buffer)
+      (set-window-buffer (next-window) next-win-buffer)
+      (select-window first-win)
+      (if this-win-2nd (other-window 1))))))
+
+(global-set-key (kbd "C-x |") 'toggle-window-split)
+
+
+
+;; Markdown --------------------------------------------------------------------
 
 (autoload 'markdown-mode "markdown-mode"
    "Major mode for editing Markdown files" t)
@@ -239,7 +314,9 @@
 (setq markdown-use-pandoc-style-yaml-metadata t)
 
 
+
 ;; Start-up --------------------------------------------------------------------
+
 ;; Remove the splash-screen
 (setq inhibit-splash-screen t)
 (setq inhibit-startup-message t)
@@ -275,18 +352,41 @@
 (add-hook 'window-setup-hook 'delete-other-windows)
 
 
-;; R and ESS -----------------------------------------------------
+
+;; Bash scripts / terminal repl ------------------------------------------------
+
+(require 'essh) ; if not done elsewhere; essh is in the local lisp folder
+(require 'eval-in-repl-shell)
+(add-hook 'sh-mode-hook
+          (lambda()
+             (local-set-key "\C-c\C-c" 'eir-eval-in-shell)))
+
+
+
+;; R and ESS -------------------------------------------------------------------
+
 (require 'ess-site)
+
+;; Start R in the working directory by default
+(setq ess-ask-for-ess-directory nil)
 
 ;; Stop ess converting an underscore to <-
 (ess-toggle-underscore nil)
 
 ;; Possibly make it do Rstudio style things...?
-(custom-set-variables
-  '(ess-default-style (quote RStudio)))
+(setq ess-default-style (quote RStudio))
+
+;; Try to make the default 'send line to REPL' command C-RET
+(define-key ess-mode-map (kbd "C-RET")
+  'ess-eval-region-or-function-or-paragraph-and-step)
+
+;; Remove line-numbers in the R REPL
+(add-hook 'inferior-ess-mode-hook (lambda () (linum-mode -1)))
+
 
 
 ;; Polymode --------------------------------------------------------------------
+
 ;; Polymode allow you to see formatted code snippets in documents like markdown
 ;; and Rmarkdown
 
