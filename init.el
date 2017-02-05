@@ -41,6 +41,7 @@
 (dolist (package my-package-list)
   (if (featurep package)
       (unload-feature package t)))
+
 ;; Install packages in package-list if they are not already installed
 (unless (cl-every #'package-installed-p my-package-list)
   (package-refresh-contents)
@@ -452,3 +453,21 @@
 (add-to-list 'auto-mode-alist '("\\.Rnw" . poly-noweb+r-mode))
 (add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode))
 
+
+
+;; You do not understand what this does and it's pissing you off ---------------
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (perspective eval-in-repl xterm-color xkcd writeroom-mode term+ telephone-line tabbar-ruler stan-mode speed-type smooth-scrolling smooth-scroll smartparens rainbow-delimiters projectile polymode neotree multiple-cursors multi-term matrix-client markdown-mode magit helm eyebrowse ess emojify dracula-theme color-theme-solarized color-theme-sanityinc-tomorrow circe atom-dark-theme anaconda-mode))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(term ((t (:inherit default)))))
