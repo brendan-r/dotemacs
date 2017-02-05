@@ -48,10 +48,6 @@
     (when (not (package-installed-p package))
       (package-install package))))
 
-;; mode line theme
-(add-hook 'after-init-hook 'sml/setup)
-(setq sml/theme 'light)
-
 ;; add custom lisp directory to path
 (let ((default-directory (concat user-emacs-directory "lisp/")))
   (setq load-path
