@@ -411,10 +411,11 @@
 ;; Bash scripts / terminal repl ------------------------------------------------
 
 (require 'essh) ; if not done elsewhere; essh is in the local lisp folder
+(require 'eval-in-repl)
 (require 'eval-in-repl-shell)
 (add-hook 'sh-mode-hook
-          (lambda()
-             (local-set-key "\C-c\C-c" 'eir-eval-in-shell)))
+          '(lambda()
+             (local-set-key (kbd "C-<return>") 'eir-eval-in-shell)))
 
 
 
