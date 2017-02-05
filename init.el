@@ -6,6 +6,8 @@
 ;; This has the desired repl behaiour https://github.com/izahn/dotemacs
 ;; This also looks good: https://github.com/edwinhu/emacs-starter-kit
 
+(setq gutter-buffers-tab-enabled nil)
+
 
 
 ;; Allow packages to be installed ----------------------------------------------
@@ -24,6 +26,45 @@
 (let ((default-directory  "~/.emacs.d/"))
   (normal-top-level-add-subdirs-to-load-path))
 
+
+;; Make a list of the packages you want
+(setq my-package-list '(
+			magit
+			ess
+			))
+
+;; Activate package autoloads
+(package-initialize)
+(setq package-initialize nil)
+
+;; make sure stale packages don't get loaded
+(dolist (package my-package-list)
+  (if (featurep package)
+      (unload-feature package t)))
+;; Install packages in package-list if they are not already installed
+(unless (every #'package-installed-p my-package-list)
+  (package-refresh-contents)
+  (dolist (package my-package-list)
+    (when (not (package-installed-p package))
+      (package-install package))))
+
+;; mode line theme
+(add-hook 'after-init-hook 'sml/setup)
+(setq sml/theme 'light)
+
+;; add custom lisp directory to path
+(let ((default-directory (concat user-emacs-directory "lisp/")))
+  (setq load-path
+        (append
+         (let ((load-path (copy-sequence load-path))) ;; Shadow
+           (append 
+            (copy-sequence (normal-top-level-add-to-load-path '(".")))
+            (normal-top-level-add-subdirs-to-load-path)))
+         load-path)))
+
+;; on OSX Emacs needs help setting up the system paths
+(when (memq window-system '(mac ns))
+  (exec-path-from-shell-initialize))
 
 
 ;; Key bindings ----------------------------------------------------------------
@@ -208,10 +249,24 @@
 ;;  (set (make-local-variable 'transient-mark-mode) t))
 ;;(ad-activate 'term-char-mode)
 
-;; Make pasting meaningful (doesn't actually work)
-(defun my-term-mode-hook ()
-  (define-key term-raw-map (kbd "\C-v") 'term-paste))
-(add-hook 'term-mode-hook 'my-term-mode-hook)
+
+;; Tell multi-term to unbind C-v as a special terminal thing
+;;(require 'multi-term)
+;;(add-to-list 'term-unbind-key-list "C-v")
+
+(add-hook 'term-mode-hook (lambda ()
+  (define-key term-raw-map (kbd "C-v") 'term-paste)))
+
+
+;; Map it to term-paste
+;; (defun my-term-mode-hook ()
+;;   (define-key term-raw-map (kbd "C-v") 'term-paste))
+;; (add-hook 'term-mode-hook 'my-term-mode-hook)
+
+
+
+
+;; From https://www.reddit.com/r/emacs/comments/f0ypy/tmux_in_emacs_shell/?st=iym0z24b&sh=43afbdd8
 
 
 ;; Close dead term buffers
@@ -374,6 +429,7 @@
 (ess-toggle-underscore nil)
 
 ;; Possibly make it do Rstudio style things...?
+
 (setq ess-default-style (quote RStudio))
 
 ;; Try to make the default 'send line to REPL' command C-RET
