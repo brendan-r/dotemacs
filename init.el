@@ -42,7 +42,7 @@
   (if (featurep package)
       (unload-feature package t)))
 ;; Install packages in package-list if they are not already installed
-(unless (every #'package-installed-p my-package-list)
+(unless (cl-every #'package-installed-p my-package-list)
   (package-refresh-contents)
   (dolist (package my-package-list)
     (when (not (package-installed-p package))
