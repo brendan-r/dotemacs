@@ -31,6 +31,10 @@
 (setq my-package-list '(
 			magit
 			ess
+			projectile
+			perspective
+			powerline
+			eval-in-repl
 			))
 
 ;; Activate package autoloads
