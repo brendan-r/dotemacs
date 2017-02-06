@@ -115,10 +115,10 @@
 
 
 ;; Shortcuts for changing the size of the windows
-(global-set-key (kbd "<C-{>") 'shrink-window)               ;; Vertically
-(global-set-key (kbd "<C-}>") 'enlarge-window)              ;; Vertically
-(global-set-key (kbd "<C-[>") 'shrink-window-horizontally)  ;; Horizontally
-(global-set-key (kbd "<C-]>") 'enlarge-window-horizontally) ;; Horizontally
+(global-set-key (kbd "C-M-{") 'shrink-window)               ;; Vertically
+(global-set-key (kbd "C-M-}") 'enlarge-window)              ;; Vertically
+(global-set-key (kbd "C-{") 'shrink-window-horizontally)  ;; Horizontally
+(global-set-key (kbd "C-}") 'enlarge-window-horizontally) ;; Horizontally
 
 
 
