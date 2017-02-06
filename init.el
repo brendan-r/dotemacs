@@ -68,6 +68,25 @@
   (exec-path-from-shell-initialize))
 
 
+
+;; Arbitrary Elisp Dir ---------------------------------------------------------
+
+;; add custom lisp directory to path
+(let ((default-directory (concat user-emacs-directory "lisp/")))
+  (setq load-path
+        (append
+         (let ((load-path (copy-sequence load-path))) ;; Shadow
+           (append
+            (copy-sequence (normal-top-level-add-to-load-path '(".")))
+            (normal-top-level-add-subdirs-to-load-path)))
+         load-path)))
+
+;; on OSX Emacs needs help setting up the system paths
+(when (memq window-system '(mac ns))
+(exec-path-from-shell-initialize))
+
+
+
 ;; Key bindings ----------------------------------------------------------------
 
 ;; Turn on easy mode (you have OS level keybindings!)
@@ -101,21 +120,8 @@
 (global-set-key (kbd "<C-[>") 'shrink-window-horizontally)  ;; Horizontally
 (global-set-key (kbd "<C-]>") 'enlarge-window-horizontally) ;; Horizontally
 
-;; Arbitrary Elisp Dir ---------------------------------------------------------
 
-;; add custom lisp directory to path
-(let ((default-directory (concat user-emacs-directory "lisp/")))
-  (setq load-path
-        (append
-         (let ((load-path (copy-sequence load-path))) ;; Shadow
-           (append
-            (copy-sequence (normal-top-level-add-to-load-path '(".")))
-            (normal-top-level-add-subdirs-to-load-path)))
-         load-path)))
 
-;; on OSX Emacs needs help setting up the system paths
-(when (memq window-system '(mac ns))
-(exec-path-from-shell-initialize))
 ;; REPL / comint settings ------------------------------------------------------
 
 (require 'comint) 
