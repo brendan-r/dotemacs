@@ -95,6 +95,11 @@
 (define-key cua-global-keymap (kbd "C-S-SPC") 'cua-rectangle-mark-mode)
 
 
+;; Shortcuts for changing the size of the windows
+(global-set-key (kbd "<C-{>") 'shrink-window)               ;; Vertically
+(global-set-key (kbd "<C-}>") 'enlarge-window)              ;; Vertically
+(global-set-key (kbd "<C-[>") 'shrink-window-horizontally)  ;; Horizontally
+(global-set-key (kbd "<C-]>") 'enlarge-window-horizontally) ;; Horizontally
 
 ;; Arbitrary Elisp Dir ---------------------------------------------------------
 
