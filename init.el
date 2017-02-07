@@ -9,7 +9,6 @@
 (setq gutter-buffers-tab-enabled nil)
 
 
-
 ;; Allow packages to be installed ----------------------------------------------
 
 (require 'package)
@@ -70,57 +69,55 @@
   (exec-path-from-shell-initialize))
 
 
-
-;; Arbitrary Elisp Dir ---------------------------------------------------------
-
-;; add custom lisp directory to path
-(let ((default-directory (concat user-emacs-directory "lisp/")))
-  (setq load-path
-        (append
-         (let ((load-path (copy-sequence load-path))) ;; Shadow
-           (append
-            (copy-sequence (normal-top-level-add-to-load-path '(".")))
-            (normal-top-level-add-subdirs-to-load-path)))
-         load-path)))
-
-;; on OSX Emacs needs help setting up the system paths
-(when (memq window-system '(mac ns))
-(exec-path-from-shell-initialize))
-
-
-
 ;; Key bindings ----------------------------------------------------------------
 
 ;; Turn on easy mode (you have OS level keybindings!)
 (cua-mode t)
-(setq cua-auto-tabify-rectangles nil) ;; Don't tabify after rect' commands
-(transient-mark-mode 1) ;; No region when it is not highlighted
-(setq cua-keep-region-after-copy t) ;; Standard Windows behaviour
+;; Don't tabify after rect' commands
+(setq cua-auto-tabify-rectangles nil) 
+;; No region when it is not highlighted
+(transient-mark-mode 1)
+;; Standard Windows behaviour
+(setq cua-keep-region-after-copy t)
+;; C-a -> select all
+(global-set-key (kbd "<C-a>") 'mark-whole-buffer)
+
 
 ;; Multiple cursors
 (require 'multiple-cursors)
-(global-set-key (kbd "C-S-l") 'mc/edit-lines)
-
-(global-set-key (kbd "C-/") 'comment-line)
+(global-set-key (kbd "<C-S-l>") 'mc/edit-lines)
+(global-set-key (kbd "<C-/>") 'comment-line)
 
 
 ;; Mouse bindings
 ;; Make right-click do something close to what people expect
 (global-set-key (kbd "<mouse-3>") 'mouse3-popup-menu)
 
+
 ;; Free up C-RET for REPLs (by default used by cua-rectangle-mark-mode, move the
 ;; latter to C-S-SPC)
-(define-key cua-global-keymap (kbd "C-RET") nil)
-(define-key cua-global-keymap (kbd "C-S-SPC") nil)
-(setq cua-rectangle-mark-key (kbd "C-S-SPC"))
-(define-key cua-global-keymap (kbd "C-S-SPC") 'cua-rectangle-mark-mode)
+(define-key cua-global-keymap (kbd "<C-RET>") nil)
+(define-key cua-global-keymap (kbd "<C-S-SPC>") nil)
+(setq cua-rectangle-mark-key (kbd "<C-S-SPC>"))
+(define-key cua-global-keymap (kbd "<C-S-SPC>") 'cua-rectangle-mark-mode)
 
 
 ;; Shortcuts for changing the size of the windows
-(global-set-key (kbd "C-M-{") 'shrink-window)               ;; Vertically
-(global-set-key (kbd "C-M-}") 'enlarge-window)              ;; Vertically
-(global-set-key (kbd "C-{") 'shrink-window-horizontally)  ;; Horizontally
-(global-set-key (kbd "C-}") 'enlarge-window-horizontally) ;; Horizontally
+(global-set-key (kbd "<C-M-{>") 'shrink-window)               ;; Vertically
+(global-set-key (kbd "<C-M-}>") 'enlarge-window)              ;; Vertically
+(global-set-key (kbd "<C-{>") 'shrink-window-horizontally)  ;; Horizontally
+(global-set-key (kbd "<C-}>") 'enlarge-window-horizontally) ;; Horizontally
+
+
+;; C-o for neotree
+(global-set-key (kbd "C-o") 'neotree-toggle)
+
+;; Stop C-RET doing something you don't understand
+(define-key cua-global-keymap (kbd "<C-S-SPC>") nil)
+(define-key cua-global-keymap (kbd "<C-return>") nil)
+(setq cua-rectangle-mark-key (kbd "<C-S-SPC>"))
+(define-key cua-global-keymap (kbd "<C-S-SPC>") 'cua-rectangle-mark-mode)
+
 
 
 
@@ -204,27 +201,12 @@
 
 ;; Note: You can  use M-q and C-u M-q to flow text to 80 columns
 
+
+
 ;; Line numbers ----------------------------------------------------------------
 (require 'linum)
 (setq linum-format "%3d ")
 (global-linum-mode 1)
-
-
-;; Navigating buffers ----------------------------------------------------------
-
-
-
-;; Key mapping -----------------------------------------------------------------
-
-;; C-o for neotree
-(global-set-key (kbd "C-o") 'neotree-toggle)
-
-;; Stop C-RET doing something you don't understand
-
-(define-key cua-global-keymap (kbd "<C-S-SPC>") nil)
-(define-key cua-global-keymap (kbd "<C-return>") nil)
-(setq cua-rectangle-mark-key (kbd "<C-S-SPC>"))
-(define-key cua-global-keymap (kbd "<C-S-SPC>") 'cua-rectangle-mark-mode)
 
 
 
@@ -433,6 +415,10 @@
 
 
 
+;; Multi-term ------------------------------------------------------------------
+
+
+
 ;; Bash scripts / terminal repl ------------------------------------------------
 
 (require 'essh) ; if not done elsewhere; essh is in the local lisp folder
@@ -479,8 +465,8 @@
 ;; Get projectile to user .Rproj files to indicate projects
 (add-to-list 'projectile-project-root-files-bottom-up ".Rproj")
 
-;; (define-key projectile-mode-map (kbd "C-x x s")
-;;   'projectile-persp-switch-project)
+(define-key projectile-mode-map (kbd "C-x x s")
+  'projectile-persp-switch-project)
 
 
 ;; Polymode --------------------------------------------------------------------
@@ -506,12 +492,16 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (eval-in-repl))))
+ '(package-selected-packages (quote (telephone-line eval-in-repl))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(term ((t (:inherit default)))))
+ '(term ((t (:inherit default))) t))
+
+
+
+;; Server start ----------------------------------------------------------------
+(server-start)
+
