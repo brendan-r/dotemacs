@@ -33,9 +33,9 @@
 			projectile
 			perspective
 			persp-projectile
-			powerline
 			eval-in-repl
 			expand-region
+                        telephone-line
 			))
 
 ;; Activate package autoloads
@@ -306,8 +306,8 @@
 
 
 ;; Hipster powerline
-(require 'powerline)
-(powerline-default-theme)
+(require 'telephone-line)
+(telephone-line-mode 1)
 
 ;; Your theme
 (require 'sanityinc-tomorrow-eighties-theme)
