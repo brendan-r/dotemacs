@@ -338,13 +338,14 @@
 
 ;; Smooth mouse scrolling ------------------------------------------------------
 
-(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
-
-(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
-
-(setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
-
-(setq scroll-step 1) ;; keyboard scroll one line at a time
+;; one line at a time
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
+;; don't accelerate scrolling
+(setq mouse-wheel-progressive-speed nil)
+;; scroll window under mouse
+(setq mouse-wheel-follow-mouse 't)
+;; keyboard scroll one line at a time
+(setq scroll-step 1)
 
 
 
@@ -469,7 +470,7 @@
 ;; Polymode allow you to see formatted code snippets in documents like markdown
 ;; and Rmarkdown
 
-;;; MARKDOWN
+;;; Markdown
 (add-to-list 'auto-mode-alist '("\\.md"   . poly-markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.page" . poly-markdown-mode))
 
@@ -489,7 +490,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (perspective eval-in-repl xterm-color xkcd writeroom-mode term+ telephone-line tabbar-ruler stan-mode speed-type smooth-scrolling smooth-scroll smartparens rainbow-delimiters projectile polymode neotree multiple-cursors multi-term matrix-client markdown-mode magit helm eyebrowse ess emojify dracula-theme color-theme-solarized color-theme-sanityinc-tomorrow circe atom-dark-theme anaconda-mode))))
+    (eval-in-repl))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
