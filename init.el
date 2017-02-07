@@ -33,8 +33,10 @@
 			ess
 			projectile
 			perspective
+			persp-projectile
 			powerline
 			eval-in-repl
+			expand-region
 			))
 
 ;; Activate package autoloads
@@ -463,6 +465,22 @@
 ;; Remove line-numbers in the R REPL
 (add-hook 'inferior-ess-mode-hook (lambda () (linum-mode -1)))
 
+;; This should make things not freeze, I think
+(setq ess-eval-visibly-p 'nowait)
+
+
+;; Project management ----------------------------------------------------------
+
+(require 'projectile)
+(require 'perspective)
+(require 'persp-projectile)
+(persp-mode)
+
+;; Get projectile to user .Rproj files to indicate projects
+(add-to-list 'projectile-project-root-files-bottom-up ".Rproj")
+
+;; (define-key projectile-mode-map (kbd "C-x x s")
+;;   'projectile-persp-switch-project)
 
 
 ;; Polymode --------------------------------------------------------------------
