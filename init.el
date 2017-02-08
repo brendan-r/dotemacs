@@ -31,8 +31,7 @@
 			magit
 			ess
 			projectile
-			perspective
-			persp-projectile
+      eyebrowse
 			eval-in-repl
 			expand-region
 			))
@@ -429,18 +428,7 @@
 (setq ess-eval-visibly-p 'nowait)
 
 
-;; Project management ----------------------------------------------------------
 
-(require 'projectile)
-(require 'perspective)
-(require 'persp-projectile)
-(persp-mode)
-
-;; Get projectile to user .Rproj files to indicate projects
-(add-to-list 'projectile-project-root-files-bottom-up ".Rproj")
-
-(define-key projectile-mode-map (kbd "C-x x s")
-  'projectile-persp-switch-project)
 
 
 ;; Polymode --------------------------------------------------------------------
@@ -466,13 +454,12 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages (quote (telephone-line eval-in-repl))))
+ '(package-selected-packages (quote (eval-in-repl))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(term ((t (:inherit default))) t))
  )
 
 
@@ -503,3 +490,23 @@
 ;; Server start ----------------------------------------------------------------
 (server-start)
 
+
+
+;; Project management ----------------------------------------------------------
+
+;; (require 'projectile)
+;; (require 'perspective)
+;; (require 'persp-projectile)
+;; (persp-mode)
+
+;; ;; Get projectile to user .Rproj files to indicate projects
+;; (add-to-list 'projectile-project-root-files-bottom-up ".Rproj")
+
+;; (define-key projectile-mode-map (kbd "C-x x s")
+;;   'projectile-persp-switch-project)
+
+;; Trying out workgroups... I have suspicion I'll end up using eyebrowse
+
+(require 'eyebrowse)
+(global-set-key (kbd "C-c C-w") 'eyebrowse-keymap-prefix)
+(eyebrowse-mode 1)
