@@ -83,8 +83,8 @@
 
 ;; Multiple cursors
 (require 'multiple-cursors)
-(global-set-key (kbd "<C-S-l>") 'mc/edit-lines)
-(global-set-key (kbd "<C-/>") 'comment-line)
+(global-set-key (kbd "C-L") 'mc/edit-lines)
+(global-set-key (kbd "C-/") 'comment-line)
 
 
 ;; Mouse bindings
@@ -101,16 +101,17 @@
 
 
 ;; Shortcuts for changing the size of the windows
-(global-set-key (kbd "<C-M-{>") 'shrink-window)               ;; Vertically
-(global-set-key (kbd "<C-M-}>") 'enlarge-window)              ;; Vertically
-(global-set-key (kbd "<C-{>") 'shrink-window-horizontally)  ;; Horizontally
-(global-set-key (kbd "<C-}>") 'enlarge-window-horizontally) ;; Horizontally
+(global-set-key (kbd "C-M-{") 'shrink-window)             ;; Vertically
+(global-set-key (kbd "C-M-}") 'enlarge-window)            ;; Vertically
+(global-set-key (kbd "C-{") 'shrink-window-horizontally)  ;; Horizontally
+(global-set-key (kbd "C-}") 'enlarge-window-horizontally) ;; Horizontally
 
 
 ;; C-o for neotree
-(global-set-key (kbd "C-o") 'neotree-toggle)
+(global-set-key (kbd "<C-o>") 'neotree-toggle)
 
-;; Stop C-RET doing something you don't understand
+
+;; Stop C-RET doing something you don't understand (free it up for REPLs)
 (define-key cua-global-keymap (kbd "<C-S-SPC>") nil)
 (define-key cua-global-keymap (kbd "<C-return>") nil)
 (setq cua-rectangle-mark-key (kbd "<C-S-SPC>"))
