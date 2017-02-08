@@ -125,6 +125,12 @@
 (global-set-key (kbd "<M-right>") 'windmove-right)
 
 
+;; Control-Tab for buffer navigation within a window (Control-Shift-Tab to go in
+;; the other direction)
+(global-set-key (kbd "<C-tab>") 'next-buffer)
+(global-set-key (kbd "<C-S-iso-lefttab>") 'previous-buffer)
+
+
 
 
 ;; REPL / comint settings ------------------------------------------------------
