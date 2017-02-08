@@ -441,7 +441,15 @@
 ;; This should make things not freeze, I think
 (setq ess-eval-visibly-p 'nowait)
 
+(defun then_R_operator ()
+  "R - %>% operator pipe operator"
+  (interactive)
+  (just-one-space 1)
+  (insert "%>%")
+  (reindent-then-newline-and-indent))
 
+(define-key ess-mode-map (kbd "C-<") 'then_R_operator)
+(define-key inferior-ess-mode-map (kbd "C-<") 'then_R_operator)
 
 
 
