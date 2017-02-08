@@ -118,6 +118,13 @@
 (define-key cua-global-keymap (kbd "<C-S-SPC>") 'cua-rectangle-mark-mode)
 
 
+;; Alt-arrow for window navigation
+(global-set-key (kbd "<M-up>")    'windmove-up)
+(global-set-key (kbd "<M-down>")  'windmove-down)
+(global-set-key (kbd "<M-left>")  'windmove-left)
+(global-set-key (kbd "<M-right>") 'windmove-right)
+
+
 
 
 ;; REPL / comint settings ------------------------------------------------------
