@@ -35,7 +35,6 @@
 			persp-projectile
 			eval-in-repl
 			expand-region
-                        telephone-line
 			))
 
 ;; Activate package autoloads
@@ -133,7 +132,6 @@
 
 
 
-
 ;; GUI stuff -------------------------------------------------------------------
 
 ;; Remove the scroll bars
@@ -204,6 +202,7 @@
 
 
 ;; Line numbers ----------------------------------------------------------------
+
 (require 'linum)
 (setq linum-format "%3d ")
 (global-linum-mode 1)
@@ -293,30 +292,6 @@
 (defun my-term-use-utf8 ()
   (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))
 (add-hook 'term-exec-hook 'my-term-use-utf8)
-
-
-
-;; Appearance ------------------------------------------------------------------
-
-;; Make emacs transparent
-;;(set-frame-parameter (selected-frame) 'alpha '(<active> . <inactive>))
-;;(set-frame-parameter (selected-frame) 'alpha <both>)
-(set-frame-parameter (selected-frame) 'alpha '(99 . 98))
-(add-to-list 'default-frame-alist '(alpha . (99 . 98)))
-
-
-;; Hipster powerline
-(require 'telephone-line)
-(telephone-line-mode 1)
-
-;; Your theme
-(require 'sanityinc-tomorrow-eighties-theme)
-;;(require 'sanityinc-tomorrow-bright-theme)
-
-
-;; Use Emacs terminfo, not system terminfo
-;; http://stackoverflow.com/a/8920373
-(setq system-uses-terminfo nil)
 
 
 
@@ -441,7 +416,6 @@
 (ess-toggle-underscore nil)
 
 ;; Possibly make it do Rstudio style things...?
-
 (setq ess-default-style (quote RStudio))
 
 ;; Try to make the default 'send line to REPL' command C-RET
@@ -499,7 +473,31 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(term ((t (:inherit default))) t))
+ )
 
+
+
+;; Appearance ------------------------------------------------------------------
+
+;; Make emacs transparent
+;;(set-frame-parameter (selected-frame) 'alpha '(<active> . <inactive>))
+;;(set-frame-parameter (selected-frame) 'alpha <both>)
+(set-frame-parameter (selected-frame) 'alpha '(99 . 98))
+(add-to-list 'default-frame-alist '(alpha . (99 . 98)))
+
+
+;; Hipster powerline
+;;(require 'telephone-line)
+;;(telephone-line-mode 1)
+
+;; Your theme
+(require 'sanityinc-tomorrow-eighties-theme)
+;;(require 'sanityinc-tomorrow-bright-theme)
+
+
+;; Use Emacs terminfo, not system terminfo
+;; http://stackoverflow.com/a/8920373
+(setq system-uses-terminfo nil)
 
 
 ;; Server start ----------------------------------------------------------------
