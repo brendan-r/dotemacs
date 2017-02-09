@@ -1,0 +1,19 @@
+# -*- mode: snippet -*-
+# name: connect-to-spade 
+# key: spd
+# --
+
+# Connect to ace/spade
+spd_con <- dbConnect(
+  dbDriver("PostgreSQL"),
+  host     = Sys.getenv("SPADE_URL"),
+  port     = Sys.getenv("SPADE_PORT"),
+  dbname   = Sys.getenv("SPADE_DBNAME"),
+  user     = Sys.getenv("SPADE_USERNAME"),
+  password = Sys.getenv("SPADE_PASSWORD")
+)
+
+$0
+
+# Close connection to ace/spade
+dbDisconnect(spd_con)
