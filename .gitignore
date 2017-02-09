@@ -7,5 +7,7 @@
 !/init.elc
 !/lisp
 !/lisp/*
+!/snippets/
+!/snippets/*
 !/.gitignore
 

@@ -31,7 +31,8 @@
 			magit
 			ess
 			projectile
-      eyebrowse
+                        eyebrowse
+			yasnippet
 			eval-in-repl
 			expand-region
 			))
@@ -130,6 +131,15 @@
 (global-set-key (kbd "<C-tab>") 'next-buffer)
 (global-set-key (kbd "<C-S-iso-lefttab>") 'previous-buffer)
 
+
+
+;; Yasnippets ------------------------------------------------------------------
+
+(require 'yasnippet)
+(setq yas-snippet-dirs
+      '("~/.emacs.d/snippets"))
+
+(yas-global-mode 1)
 
 
 
@@ -364,6 +374,14 @@
 (setq markdown-use-pandoc-style-yaml-metadata t)
 
 
+;; Unbind tab so it's possible to use yasnippets
+;; from http://wiki.dreamrunner.org/public_html/Emacs/markdown.html
+(add-hook 'markdown-mode-hook
+          '(lambda ()
+             (auto-complete-mode t)
+             (local-unset-key [tab])
+             (setq-local yas-fallback-behavior '(apply auto-complete))))
+
 
 ;; Start-up --------------------------------------------------------------------
 
@@ -476,7 +494,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages (quote (eval-in-repl))))
+ '(package-selected-packages (quote (yasnippet eval-in-repl))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
