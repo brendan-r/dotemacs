@@ -9,6 +9,7 @@
 (setq gutter-buffers-tab-enabled nil)
 
 
+
 ;; Allow packages to be installed ----------------------------------------------
 
 (require 'package)
@@ -24,7 +25,6 @@
 ;; Add the emacs package dirs to the loadpath
 (let ((default-directory  "~/.emacs.d/"))
   (normal-top-level-add-subdirs-to-load-path))
-
 
 ;; Make a list of the packages you want
 (setq my-package-list '(
@@ -68,18 +68,29 @@
   (exec-path-from-shell-initialize))
 
 
+
 ;; Key bindings ----------------------------------------------------------------
 
 ;; Turn on easy mode (you have OS level keybindings!)
 (cua-mode t)
+
 ;; Don't tabify after rect' commands
 (setq cua-auto-tabify-rectangles nil) 
+
 ;; No region when it is not highlighted
 (transient-mark-mode 1)
+
 ;; Standard Windows behaviour
 (setq cua-keep-region-after-copy t)
+
 ;; C-a -> select all
-(global-set-key (kbd "<C-a>") 'mark-whole-buffer)
+(define-key cua-global-keymap (kbd "C-a") 'mark-whole-buffer)
+
+;; C-s -> save
+(define-key cua-global-keymap (kbd "C-s") 'save-buffer)
+
+;; C-f -> find
+(define-key cua-global-keymap (kbd "C-f") 'isearch-forward)
 
 
 ;; Multiple cursors
@@ -152,7 +163,6 @@
 
 (define-key comint-mode-map (kbd "<down>")
   'comint-next-input)
-
 
 
 ;; GUI stuff -------------------------------------------------------------------
@@ -525,6 +535,7 @@
 ;; Use Emacs terminfo, not system terminfo
 ;; http://stackoverflow.com/a/8920373
 (setq system-uses-terminfo nil)
+
 
 
 ;; Server start ----------------------------------------------------------------
