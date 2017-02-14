@@ -446,6 +446,26 @@
 
 
 
+;; Python ----------------------------------------------------------------------
+
+(with-eval-after-load "python"
+  ;; try to get indent/completion working nicely
+  (setq python-indent-trigger-commands '(my-company-indent-or-complete-common
+					 indent-for-tab-command
+					 yas-expand
+					 yas/expand
+					 ))
+  ;; readline support is wonky at the moment
+  (setq python-shell-completion-native-enable nil)
+  ;; simple evaluation with C-ret
+  (require 'eval-in-repl-python)
+  (define-key python-mode-map "\C-c\C-c" 'eir-eval-in-python)
+  (define-key python-mode-map (kbd "<C-return>") 'eir-eval-in-python))
+
+(add-hook 'inferior-python-mode-hook (lambda () (linum-mode -1)))
+
+
+
 ;; R and ESS -------------------------------------------------------------------
 
 (require 'ess-site)
