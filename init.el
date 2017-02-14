@@ -386,6 +386,12 @@
              (local-unset-key [tab])
              (setq-local yas-fallback-behavior '(apply auto-complete))))
 
+;; Unbind Alt-arrow so that you can use it to navigate windows
+(add-hook 'markdown-mode-hook
+          '(lambda ()
+             (auto-complete-mode t)
+             (local-unset-key [tab])))
+
 
 ;; Start-up --------------------------------------------------------------------
 
