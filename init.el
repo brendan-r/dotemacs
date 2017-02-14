@@ -35,6 +35,7 @@
 			yasnippet
 			eval-in-repl
 			expand-region
+			eval-in-repl
 			))
 
 ;; Activate package autoloads
@@ -106,7 +107,7 @@
 
 ;; Free up C-RET for REPLs (by default used by cua-rectangle-mark-mode, move the
 ;; latter to C-S-SPC)
-(define-key cua-global-keymap (kbd "<C-RET>") nil)
+(define-key cua-global-keymap (kbd "<C-return>") nil)
 (define-key cua-global-keymap (kbd "<C-S-SPC>") nil)
 (setq cua-rectangle-mark-key (kbd "<C-S-SPC>"))
 (define-key cua-global-keymap (kbd "<C-S-SPC>") 'cua-rectangle-mark-mode)
@@ -121,13 +122,6 @@
 
 ;; C-o for neotree
 (global-set-key (kbd "<C-o>") 'neotree-toggle)
-
-
-;; Stop C-RET doing something you don't understand (free it up for REPLs)
-(define-key cua-global-keymap (kbd "<C-S-SPC>") nil)
-(define-key cua-global-keymap (kbd "<C-return>") nil)
-(setq cua-rectangle-mark-key (kbd "<C-S-SPC>"))
-(define-key cua-global-keymap (kbd "<C-S-SPC>") 'cua-rectangle-mark-mode)
 
 
 ;; Alt-arrow for window navigation
