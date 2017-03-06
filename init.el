@@ -3,7 +3,6 @@
 ;; Get a decent markdown mode
 ;; A repl, for R and Python, ideally JS and Ruby, too
 ;; Map 'select all' to C-a
-;; This has the desired repl behaiour https://github.com/izahn/dotemacs
 ;; This also looks good: https://github.com/edwinhu/emacs-starter-kit
 
 (setq gutter-buffers-tab-enabled nil)
@@ -174,11 +173,6 @@
 ;; No need for bells to ring
 (setq ring-bell-function 'ignore)
 
-;; nice scrolling
-(setq scroll-margin 0
-      scroll-conservatively 100000
-      scroll-preserve-screen-position 1)
-
 ;; Use a bar cursor instead of the block thing
 (setq-default cursor-type 'bar)
 
@@ -322,7 +316,12 @@
 
 
 
-;; Smooth mouse scrolling ------------------------------------------------------
+;; Scrolling -------------------------------------------------------------------
+
+;; nice scrolling
+(setq scroll-margin 0
+      scroll-conservatively 100000
+      scroll-preserve-screen-position 1)
 
 ;; one line at a time
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
@@ -500,6 +499,9 @@
 (define-key inferior-ess-mode-map (kbd "C-<") 'then_R_operator)
 
 
+;; Check this out for knitr chunk evaluation:
+;; http://stackoverflow.com/a/40966640/7237812
+
 
 ;; Polymode --------------------------------------------------------------------
 
@@ -524,7 +526,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages (quote (yasnippet eval-in-repl))))
+ '(package-selected-packages
+   (quote
+    (smooth-scrolling smooth-scroll yasnippet eval-in-repl))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
