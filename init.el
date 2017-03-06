@@ -544,8 +544,12 @@
 
 
 ;; Hipster powerline
-;;(require 'telephone-line)
-;;(telephone-line-mode 1)
+;; (require 'telephone-line)
+;; (telephone-line-mode 1)
+
+(require 'powerline)
+(powerline-default-theme)
+
 
 ;; Your theme
 (require 'sanityinc-tomorrow-eighties-theme)
