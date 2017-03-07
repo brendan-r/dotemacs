@@ -478,7 +478,7 @@
 ;; Possibly make it do Rstudio style things...?
 (setq ess-default-style (quote RStudio))
 
-;; Try to make the default 'send line to REPL' command C-RET
+;; Try to make the default 'send to REPL' command C-RET
 (define-key ess-mode-map (kbd "C-RET")
   'ess-eval-region-or-function-or-paragraph-and-step)
 
@@ -488,6 +488,7 @@
 ;; This should make things not freeze, I think
 (setq ess-eval-visibly-p 'nowait)
 
+;; Shortcut for the %>% operator
 (defun then_R_operator ()
   "R - %>% operator pipe operator"
   (interactive)
@@ -501,6 +502,28 @@
 
 ;; Check this out for knitr chunk evaluation:
 ;; http://stackoverflow.com/a/40966640/7237812
+(defun rmd-send-chunk ()
+  "Send current R chunk to ess process."
+  (interactive)
+  (and (eq (oref pm/chunkmode :mode) 'r-mode)
+       (pm-with-narrowed-to-span nil
+         (goto-char (point-min))
+         (forward-line)
+         (ess-eval-region (point) (point-max) nil nil 'R))))
+
+;; E.g. to send a prefix, use C-u M-x rmd-send-buffer
+(defun rmd-send-buffer (arg)
+  "Send all R code blocks in buffer to ess process. With prefix
+send regions above point."
+  ;; Interactive, with a prefix argument
+  (interactive "P")
+  (save-restriction
+    (widen)
+    (save-excursion
+      (pm-map-over-spans
+       'rmd-send-chunk (point-min)
+       ;; adjust this point to send prior regions
+       (if arg (point) (point-max))))))
 
 
 ;; Polymode --------------------------------------------------------------------
