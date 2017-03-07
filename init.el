@@ -548,8 +548,6 @@
 
 
 
-;; Server start ----------------------------------------------------------------
-(server-start)
 ;; Mail ------------------------------------------------------------------------
 
 ;; Note: This is not in the list of required packages above, as it's
@@ -578,6 +576,12 @@
 (require 'eyebrowse)
 (global-set-key (kbd "C-c C-w") 'eyebrowse-keymap-prefix)
 (eyebrowse-mode 1)
+
+
+
+;; Server start ----------------------------------------------------------------
+(server-start)
+
 
 
 ;; You do not understand what this does and it's pissing you off ---------------
