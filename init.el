@@ -36,6 +36,7 @@
 			eval-in-repl
 			expand-region
 			eval-in-repl
+			virtualenvwrapper
 			))
 
 ;; Activate package autoloads
@@ -464,6 +465,12 @@
 
 (add-hook 'inferior-python-mode-hook (lambda () (linum-mode -1)))
 
+;; Use Python 3 via Anaconda -- this doesn't work
+;; (setq python-python-command "/home/br/anaconda3/bin/python")
+
+;; This should make the virtual env stuff work in a repl
+(require 'virtualenvwrapper)
+(venv-initialize-interactive-shells)
 
 
 ;; R and ESS -------------------------------------------------------------------
