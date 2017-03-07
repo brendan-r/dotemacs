@@ -517,23 +517,6 @@
 
 
 
-;; You do not understand what this does and it's pissing you off ---------------
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages (quote (yasnippet eval-in-repl))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-
-
-
 ;; Appearance ------------------------------------------------------------------
 
 ;; Make emacs transparent
@@ -581,3 +564,22 @@
 (require 'eyebrowse)
 (global-set-key (kbd "C-c C-w") 'eyebrowse-keymap-prefix)
 (eyebrowse-mode 1)
+
+
+;; You do not understand what this does and it's pissing you off ---------------
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages (quote (hackernews yasnippet eval-in-repl)))
+ '(send-mail-function (quote smtpmail-send-it)
+ '(smtpmail-smtp-server "smtp.kolabnow.com")
+ '(smtpmail-smtp-service 587)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+) 
