@@ -61,7 +61,7 @@
   (setq load-path
         (append
          (let ((load-path (copy-sequence load-path))) ;; Shadow
-           (append 
+           (append
             (copy-sequence (normal-top-level-add-to-load-path '(".")))
             (normal-top-level-add-subdirs-to-load-path)))
          load-path)))
@@ -78,7 +78,7 @@
 (cua-mode t)
 
 ;; Don't tabify after rect' commands
-(setq cua-auto-tabify-rectangles nil) 
+(setq cua-auto-tabify-rectangles nil)
 
 ;; No region when it is not highlighted
 (transient-mark-mode 1)
@@ -152,7 +152,7 @@
 
 ;; REPL / comint settings ------------------------------------------------------
 
-(require 'comint) 
+(require 'comint)
 
 (define-key comint-mode-map (kbd "<up>")
   'comint-previous-input)
@@ -342,6 +342,7 @@
 
 ;; Windows ---------------------------------------------------------------------
 
+;; If you have two windows, swap between a horizontal and vertical split
 (defun toggle-window-split ()
   (interactive)
   (if (= (count-windows) 2)
@@ -608,9 +609,13 @@ send regions above point."
 
 
 
-;; Server start ----------------------------------------------------------------
+;; Misc ------------------------------------------------------------------------
+
+;; Run emacs as a server with clients
 (server-start)
 
+;; Strip trailing whitespace from files on save
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 
 ;; Project management ----------------------------------------------------------
