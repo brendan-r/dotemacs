@@ -35,6 +35,7 @@
 			eval-in-repl
 			expand-region
 			eval-in-repl
+			fill-column-indicator
 			stan-mode
 			stan-snippets
 			))
@@ -204,9 +205,7 @@
 
 ;; Text wrapping ---------------------------------------------------------------
 
-;; (setq fill-column 80)
-
-;; Note, it doesn't look
+(setq fill-column 80)
 
 ;; When writing prose -- wrap
 ;; (add-hook 'text-mode-hook '(lambda ()
@@ -334,6 +333,11 @@
 ;; keyboard scroll one line at a time
 (setq scroll-step 1)
 
+
+;; 80 col rule -----------------------------------------------------------------
+
+(require 'fill-column-indicator)
+(setq fci-rule-column 80)
 
 
 ;; Windows ---------------------------------------------------------------------
