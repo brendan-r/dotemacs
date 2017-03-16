@@ -593,8 +593,8 @@ send regions above point."
 ;; (require 'telephone-line)
 ;; (telephone-line-mode 1)
 
-(require 'powerline)
-(powerline-default-theme)
+;; (require 'powerline)
+;; (powerline-default-theme)
 
 
 ;; Your theme
