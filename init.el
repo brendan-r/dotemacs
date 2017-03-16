@@ -42,20 +42,20 @@
 			magit
 			ess
 			projectile
-                        eyebrowse
+			eyebrowse
 			yasnippet
 			eval-in-repl
 			expand-region
 			eval-in-repl
 			fill-column-indicator
 			stan-mode
-			stan-snippets
+			spaceline
+			;;stan-snippets ;; For some reason this is causing problems
 			virtualenvwrapper
 			))
 
 ;; Activate package autoloads
-(package-initialize)
-(setq package-initialize nil)
+(package-initialize) (setq package-initialize nil)
 
 ;; make sure stale packages don't get loaded
 (dolist (package my-package-list)
