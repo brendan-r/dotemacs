@@ -188,8 +188,8 @@
 
 
 ;; Fonts -----------------------------------------------------------------------
-;; 11pt (in 1/10pt units)
-(set-face-attribute 'default nil :height 110)
+;; 10pt (in 1/10pt units)
+(set-face-attribute 'default nil :height 105)
 
 
 
