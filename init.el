@@ -525,6 +525,14 @@ send regions above point."
        ;; adjust this point to send prior regions
        (if arg (point) (point-max))))))
 
+;; When the R/ESS shell resizes, let have access to that information for printing
+;; http://stackoverflow.com/a/20015336/7237812
+(defun comint-fix-window-size ()
+  "Change process window size."
+  (when (derived-mode-p 'comint-mode)
+    (let ((process (get-buffer-process (current-buffer))))
+      (unless (eq nil process)
+        (set-process-window-size process (window-height) (window-width))))))
 
 ;; Polymode --------------------------------------------------------------------
 
