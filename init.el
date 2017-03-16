@@ -35,6 +35,8 @@
 			eval-in-repl
 			expand-region
 			eval-in-repl
+			stan-mode
+			stan-snippets
 			))
 
 ;; Activate package autoloads
@@ -534,6 +536,11 @@ send regions above point."
       (unless (eq nil process)
         (set-process-window-size process (window-height) (window-width))))))
 
+;; Stan ------------------------------------------------------------------------
+
+(require 'stan-mode)
+(require 'stan-snippets)
+
 ;; Polymode --------------------------------------------------------------------
 
 ;; Polymode allow you to see formatted code snippets in documents like markdown
@@ -559,7 +566,7 @@ send regions above point."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (smooth-scrolling smooth-scroll yasnippet eval-in-repl))))
+    (stan-snippets))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
