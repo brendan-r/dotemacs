@@ -5,10 +5,6 @@
 ;; Map 'select all' to C-a
 ;; This also looks good: https://github.com/edwinhu/emacs-starter-kit
 
-(setq gutter-buffers-tab-enabled nil)
-
-
-
 ;; Allow packages to be installed ----------------------------------------------
 
 (require 'package)
