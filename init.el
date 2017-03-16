@@ -38,6 +38,7 @@
 			fill-column-indicator
 			stan-mode
 			stan-snippets
+			virtualenvwrapper
 			))
 
 ;; Activate package autoloads
@@ -470,6 +471,12 @@
 
 (add-hook 'inferior-python-mode-hook (lambda () (linum-mode -1)))
 
+;; Use Python 3 via Anaconda -- this doesn't work
+;; (setq python-python-command "/home/br/anaconda3/bin/python")
+
+;; This should make the virtual env stuff work in a repl
+(require 'virtualenvwrapper)
+(venv-initialize-interactive-shells)
 
 
 ;; R and ESS -------------------------------------------------------------------
@@ -562,25 +569,6 @@ send regions above point."
 
 
 
-;; You do not understand what this does and it's pissing you off ---------------
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (stan-snippets))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-
-
-
 ;; Appearance ------------------------------------------------------------------
 
 ;; Make emacs transparent
@@ -618,6 +606,18 @@ send regions above point."
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 
+
+;; Mail ------------------------------------------------------------------------
+
+;; Note: This is not in the list of required packages above, as it's
+;; recommended that you use the emacs-client bundled with the primary notmuch
+;; installation itself (as there are API changes)
+;; (require 'notmuch)
+
+
+;; Put mail stuff in another config, load it in if you actually use it!
+(load "mail.el" 'missing-ok nil)
+
 ;; Project management ----------------------------------------------------------
 
 ;; (require 'projectile)
@@ -636,3 +636,6 @@ send regions above point."
 (require 'eyebrowse)
 (global-set-key (kbd "C-c C-w") 'eyebrowse-keymap-prefix)
 (eyebrowse-mode 1)
+
+
+;; You do not understand what this does and it's pissing you off ---------------
