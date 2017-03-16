@@ -4,6 +4,22 @@
 ;; A repl, for R and Python, ideally JS and Ruby, too
 ;; Map 'select all' to C-a
 ;; This also looks good: https://github.com/edwinhu/emacs-starter-kit
+;;
+;; TODO
+;;
+;; - Get a shortcut to pop multi-term
+;;
+;; Comint mode all shells:
+;;
+;; - If you enter the buffer while it's hung and hit enter, you feed the prompt
+;;   character(s) back into the shell, which is very annoying
+;;
+;; iESS buffer:
+;;
+;; - Here, pressing up only shows you commands which have been entered into the
+;;   REPL, not ones sent from the editor
+;;
+;;
 
 ;; Allow packages to be installed ----------------------------------------------
 
