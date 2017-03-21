@@ -113,7 +113,7 @@
 (define-key cua-global-keymap (kbd "C-w") 'delete-window)
 
 ;; Kill the current buffer
-(define-key cua-global-keymap (kbd "C-k") 'kill-buffer)
+(define-key cua-global-keymap (kbd "C-k") 'kill-this-buffer)
 
 ;; Multiple cursors
 (require 'multiple-cursors)
