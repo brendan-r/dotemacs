@@ -598,12 +598,9 @@ send regions above point."
 (add-to-list 'default-frame-alist '(alpha . (99 . 98)))
 
 
-;; Hipster powerline
-;; (require 'telephone-line)
-;; (telephone-line-mode 1)
-
-;; (require 'powerline)
-;; (powerline-default-theme)
+;; Hipster modeline
+(require 'spaceline-config)
+(spaceline-spacemacs-theme)
 
 
 ;; Your theme
