@@ -153,7 +153,7 @@
 
 
 ;; C-o for neotree
-(global-set-key (kbd "<C-o>") 'neotree-toggle)
+(global-set-key (kbd "C-o") 'neotree-toggle)
 
 
 ;; Alt-arrow for window navigation
