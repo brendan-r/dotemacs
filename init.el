@@ -106,7 +106,8 @@
 (define-key cua-global-keymap (kbd "C-s") 'save-buffer)
 
 ;; C-f -> find
-(define-key cua-global-keymap (kbd "C-f") 'isearch-forward)
+(global-set-key (kbd "C-f") 'isearch-forward)
+(define-key isearch-mode-map "\C-f" 'isearch-repeat-forward)
 
 
 ;; Multiple cursors
