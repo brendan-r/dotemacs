@@ -446,6 +446,46 @@
 (setq-default tab-width 2)
 (setq indent-line-function 'insert-tab)
 
+;; SQL -------------------------------------------------------------------------
+
+;; Try to make sql just use regular old spaces for indentation
+;;
+;; From: http://emacs.stackexchange.com/a/16513/15016
+;; Notes: Very weird, everything is constantly indented a lot
+;;
+;; (defun my-indent ()
+;;   (let ((last-indent (if (> (line-number-at-pos) 1)
+;;                          (save-excursion
+;;                            (previous-line)
+;;                            (back-to-indentation)
+;;                            (current-column))
+;;                        0)))
+;;     (save-excursion
+;;       (back-to-indentation)
+;;       (if (and (eq last-command this-command)
+;;                (> (point) (line-beginning-position)))
+;;           (delete-region (max (line-beginning-position) (- (point) 4)) (point))
+;;         (while (< (current-column) (+ 4 last-indent))
+;;           (insert " "))))
+;;     (if (< (point) (save-excursion (back-to-indentation) (point)))
+;;         (back-to-indentation))))
+
+
+;; (defun my-sql-mode-hook ()
+;;   (setq indent-line-function 'my-indent))
+
+;; (add-hook 'sql-mode-hook 'my-sql-mode-hook)
+
+
+;; From http://emacs.stackexchange.com/a/13921/15016
+;; Use the regular major mode hook to add a buffer-local hack-local-variables-hook
+;; (add-hook 'sql-mode-hook 'my-sql-mode-hook)
+;; (defun my-sql-mode-hook ()
+;;   (add-hook 'hack-local-variables-hook
+;;             (lambda () (setq indent-tabs-mode nil) (setq tab-width 4) )))
+;;             nil t))
+
+
 ;; Bash scripts / terminal repl ------------------------------------------------
 
 (require 'essh) ; if not done elsewhere; essh is in the local lisp folder
