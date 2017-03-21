@@ -34,7 +34,7 @@
 (package-initialize)
 
 ;; Add the emacs package dirs to the loadpath
-(let ((default-directory  "~/.emacs.d/"))
+(let ((default-directory "~/.emacs.d/"))
   (normal-top-level-add-subdirs-to-load-path))
 
 ;; Make a list of the packages you want
@@ -66,8 +66,7 @@
 
 ;; Install packages in package-list if they are not already installed
 (unless (cl-every #'package-installed-p my-package-list)
-  (package-refresh-contents)
-  (dolist (package my-package-list)
+  (package-refresh-contents) (dolist (package my-package-list)
     (when (not (package-installed-p package))
       (package-install package))))
 
@@ -119,6 +118,8 @@
 
 ;; Multiple cursors
 (require 'multiple-cursors)
+
+;; Where you have a selection, put a cursor on each line
 (global-set-key (kbd "C-L") 'mc/edit-lines)
 (global-set-key (kbd "C-/") 'comment-line)
 
@@ -171,6 +172,8 @@
 
 
 
+
+
 ;; REPL / comint settings ------------------------------------------------------
 
 (require 'comint)
@@ -204,9 +207,9 @@
 
 ;; General text display --------------------------------------------------------
 
-;; Make wrapping at the end of a line use whole words
-;; Note, you want to exclude neo tree from this, it makes it very ugly
-;; Probably html files too (they tend to drift over 80 chars)
+;; Make wrapping at the end of a line use whole words Note, you want
+;; to exclude neo tree from this, it makes it very ugly Probably html
+;; files too (they tend to drift over 80 chars)
 (global-visual-line-mode t)
 
 
@@ -299,19 +302,15 @@
 
 
 ;; Tell multi-term to unbind C-v as a special terminal thing
-;;(require 'multi-term)
-;;(add-to-list 'term-unbind-key-list "C-v")
-
-(add-hook 'term-mode-hook (lambda ()
-  (define-key term-raw-map (kbd "C-v") 'term-paste)))
-
+(require 'multi-term)
+(add-to-list 'term-unbind-key-list "C-v")
+;; (add-hook 'term-mode-hook (lambda ()
+;;  (define-key term-raw-map (kbd "C-v") 'term-paste)))
 
 ;; Map it to term-paste
-;; (defun my-term-mode-hook ()
-;;   (define-key term-raw-map (kbd "C-v") 'term-paste))
-;; (add-hook 'term-mode-hook 'my-term-mode-hook)
-
-
+(defun my-term-mode-hook ()
+  (define-key term-raw-map (kbd "C-v") 'term-paste))
+(add-hook 'term-mode-hook 'my-term-mode-hook)
 
 
 ;; From https://www.reddit.com/r/emacs/comments/f0ypy/tmux_in_emacs_shell/?st=iym0z24b&sh=43afbdd8
@@ -405,8 +404,8 @@
 (setq markdown-use-pandoc-style-yaml-metadata t)
 
 
-;; Unbind tab so it's possible to use yasnippets
-;; from http://wiki.dreamrunner.org/public_html/Emacs/markdown.html
+;; Unbind tab so it's possible to use yasnippets from
+;; http://wiki.dreamrunner.org/public_html/Emacs/markdown.html
 (add-hook 'markdown-mode-hook
           '(lambda ()
              (auto-complete-mode t)
@@ -571,7 +570,7 @@ send regions above point."
 ;; Stan ------------------------------------------------------------------------
 
 (require 'stan-mode)
-(require 'stan-snippets)
+;; (require 'stan-snippets)
 
 ;; Polymode --------------------------------------------------------------------
 
