@@ -122,6 +122,10 @@
 
 ;; Where you have a selection, put a cursor on each line
 (global-set-key (kbd "C-L") 'mc/edit-lines)
+
+;; Use the current point as an anchor to create multiple cursors
+(global-set-key (kbd "C-K") 'set-rectangular-region-anchor)
+
 (global-set-key (kbd "C-/") 'comment-line)
 
 
