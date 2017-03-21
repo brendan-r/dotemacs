@@ -128,6 +128,9 @@
 
 (global-set-key (kbd "C-/") 'comment-line)
 
+;; Fill/re-flow comments etc.
+(setq-default fill-column 80)
+(global-set-key (kbd "C-?") 'fill-individual-paragraphs)
 
 ;; Mouse bindings
 ;; Make right-click do something close to what people expect
