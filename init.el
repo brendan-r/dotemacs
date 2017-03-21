@@ -50,6 +50,7 @@
 			fill-column-indicator
 			stan-mode
 			spaceline
+			mouse3
 			neotree
 			multi-term
 			;;stan-snippets ;; For some reason this is causing problems
