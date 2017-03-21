@@ -308,19 +308,6 @@
 ;;  (set (make-local-variable 'transient-mark-mode) t))
 ;;(ad-activate 'term-char-mode)
 
-
-;; Tell multi-term to unbind C-v as a special terminal thing
-(require 'multi-term)
-(add-to-list 'term-unbind-key-list "C-v")
-;; (add-hook 'term-mode-hook (lambda ()
-;;  (define-key term-raw-map (kbd "C-v") 'term-paste)))
-
-;; Map it to term-paste
-(defun my-term-mode-hook ()
-  (define-key term-raw-map (kbd "C-v") 'term-paste))
-(add-hook 'term-mode-hook 'my-term-mode-hook)
-
-
 ;; From https://www.reddit.com/r/emacs/comments/f0ypy/tmux_in_emacs_shell/?st=iym0z24b&sh=43afbdd8
 
 
