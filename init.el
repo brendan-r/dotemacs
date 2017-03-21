@@ -109,6 +109,11 @@
 (global-set-key (kbd "C-f") 'isearch-forward)
 (define-key isearch-mode-map "\C-f" 'isearch-repeat-forward)
 
+;; Close the current window
+(define-key cua-global-keymap (kbd "C-w") 'delete-window)
+
+;; Kill the current buffer
+(define-key cua-global-keymap (kbd "C-k") 'kill-buffer)
 
 ;; Multiple cursors
 (require 'multiple-cursors)
