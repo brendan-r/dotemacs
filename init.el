@@ -4,10 +4,22 @@
 ;; A repl, for R and Python, ideally JS and Ruby, too
 ;; Map 'select all' to C-a
 ;; This also looks good: https://github.com/edwinhu/emacs-starter-kit
-
-(setq gutter-buffers-tab-enabled nil)
-
-
+;;
+;; TODO
+;;
+;; - Get a shortcut to pop multi-term
+;;
+;; Comint mode all shells:
+;;
+;; - If you enter the buffer while it's hung and hit enter, you feed the prompt
+;;   character(s) back into the shell, which is very annoying
+;;
+;; iESS buffer:
+;;
+;; - Here, pressing up only shows you commands which have been entered into the
+;;   REPL, not ones sent from the editor
+;;
+;;
 
 ;; Allow packages to be installed ----------------------------------------------
 
@@ -22,7 +34,7 @@
 (package-initialize)
 
 ;; Add the emacs package dirs to the loadpath
-(let ((default-directory  "~/.emacs.d/"))
+(let ((default-directory "~/.emacs.d/"))
   (normal-top-level-add-subdirs-to-load-path))
 
 ;; Make a list of the packages you want
@@ -30,20 +42,23 @@
 			magit
 			ess
 			projectile
-                        eyebrowse
+			eyebrowse
 			yasnippet
 			eval-in-repl
 			expand-region
 			eval-in-repl
 			fill-column-indicator
 			stan-mode
-			stan-snippets
+			spaceline
+			mouse3
+			neotree
+			multi-term
+			;;stan-snippets ;; For some reason this is causing problems
 			virtualenvwrapper
 			))
 
 ;; Activate package autoloads
-(package-initialize)
-(setq package-initialize nil)
+(package-initialize) (setq package-initialize nil)
 
 ;; make sure stale packages don't get loaded
 (dolist (package my-package-list)
@@ -52,8 +67,7 @@
 
 ;; Install packages in package-list if they are not already installed
 (unless (cl-every #'package-installed-p my-package-list)
-  (package-refresh-contents)
-  (dolist (package my-package-list)
+  (package-refresh-contents) (dolist (package my-package-list)
     (when (not (package-installed-p package))
       (package-install package))))
 
@@ -94,14 +108,29 @@
 (define-key cua-global-keymap (kbd "C-s") 'save-buffer)
 
 ;; C-f -> find
-(define-key cua-global-keymap (kbd "C-f") 'isearch-forward)
+(global-set-key (kbd "C-f") 'isearch-forward)
+(define-key isearch-mode-map "\C-f" 'isearch-repeat-forward)
 
+;; Close the current window
+(define-key cua-global-keymap (kbd "C-w") 'delete-window)
+
+;; Kill the current buffer
+(define-key cua-global-keymap (kbd "C-k") 'kill-this-buffer)
 
 ;; Multiple cursors
 (require 'multiple-cursors)
+
+;; Where you have a selection, put a cursor on each line
 (global-set-key (kbd "C-L") 'mc/edit-lines)
+
+;; Use the current point as an anchor to create multiple cursors
+(global-set-key (kbd "C-K") 'set-rectangular-region-anchor)
+
 (global-set-key (kbd "C-/") 'comment-line)
 
+;; Fill/re-flow comments etc.
+(setq-default fill-column 80)
+(global-set-key (kbd "C-?") 'fill-individual-paragraphs)
 
 ;; Mouse bindings
 ;; Make right-click do something close to what people expect
@@ -124,7 +153,7 @@
 
 
 ;; C-o for neotree
-(global-set-key (kbd "<C-o>") 'neotree-toggle)
+(global-set-key (kbd "C-o") 'neotree-toggle)
 
 
 ;; Alt-arrow for window navigation
@@ -148,6 +177,8 @@
       '("~/.emacs.d/snippets"))
 
 (yas-global-mode 1)
+
+
 
 
 
@@ -184,9 +215,9 @@
 
 ;; General text display --------------------------------------------------------
 
-;; Make wrapping at the end of a line use whole words
-;; Note, you want to exclude neo tree from this, it makes it very ugly
-;; Probably html files too (they tend to drift over 80 chars)
+;; Make wrapping at the end of a line use whole words Note, you want
+;; to exclude neo tree from this, it makes it very ugly Probably html
+;; files too (they tend to drift over 80 chars)
 (global-visual-line-mode t)
 
 
@@ -276,23 +307,6 @@
 ;;  (set (make-local-variable 'cua-mode) t)
 ;;  (set (make-local-variable 'transient-mark-mode) t))
 ;;(ad-activate 'term-char-mode)
-
-
-;; Tell multi-term to unbind C-v as a special terminal thing
-;;(require 'multi-term)
-;;(add-to-list 'term-unbind-key-list "C-v")
-
-(add-hook 'term-mode-hook (lambda ()
-  (define-key term-raw-map (kbd "C-v") 'term-paste)))
-
-
-;; Map it to term-paste
-;; (defun my-term-mode-hook ()
-;;   (define-key term-raw-map (kbd "C-v") 'term-paste))
-;; (add-hook 'term-mode-hook 'my-term-mode-hook)
-
-
-
 
 ;; From https://www.reddit.com/r/emacs/comments/f0ypy/tmux_in_emacs_shell/?st=iym0z24b&sh=43afbdd8
 
@@ -385,8 +399,8 @@
 (setq markdown-use-pandoc-style-yaml-metadata t)
 
 
-;; Unbind tab so it's possible to use yasnippets
-;; from http://wiki.dreamrunner.org/public_html/Emacs/markdown.html
+;; Unbind tab so it's possible to use yasnippets from
+;; http://wiki.dreamrunner.org/public_html/Emacs/markdown.html
 (add-hook 'markdown-mode-hook
           '(lambda ()
              (auto-complete-mode t)
@@ -595,7 +609,7 @@ send regions above point."
 ;; Stan ------------------------------------------------------------------------
 
 (require 'stan-mode)
-(require 'stan-snippets)
+;; (require 'stan-snippets)
 
 ;; Polymode --------------------------------------------------------------------
 
@@ -622,12 +636,9 @@ send regions above point."
 (add-to-list 'default-frame-alist '(alpha . (99 . 98)))
 
 
-;; Hipster powerline
-;; (require 'telephone-line)
-;; (telephone-line-mode 1)
-
-;; (require 'powerline)
-;; (powerline-default-theme)
+;; Hipster modeline
+(require 'spaceline-config)
+(spaceline-spacemacs-theme)
 
 
 ;; Your theme
