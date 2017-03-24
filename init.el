@@ -177,6 +177,10 @@
 ;; Do spell checking in your comments!
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
 
+;; Control-arrow over a whole word, e.g. from |long_word to long_word|, not
+;; long|_word
+(superword-mode 1)
+
 ;; Yasnippets ------------------------------------------------------------------
 
 (require 'yasnippet)
