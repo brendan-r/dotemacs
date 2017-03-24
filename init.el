@@ -56,6 +56,7 @@
 			multi-term
 			;;stan-snippets ;; For some reason this is causing problems
 			virtualenvwrapper
+      flyspell
 			))
 
 ;; Activate package autoloads
@@ -170,6 +171,11 @@
 (global-set-key (kbd "<C-S-iso-lefttab>") 'previous-buffer)
 
 
+
+;; General behavior ------------------------------------------------------------
+
+;; Do spell checking in your comments!
+(add-hook 'prog-mode-hook 'flyspell-prog-mode)
 
 ;; Yasnippets ------------------------------------------------------------------
 
