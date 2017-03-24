@@ -616,6 +616,14 @@
 (define-key ess-mode-map (kbd "C-<") 'then_R_operator)
 (define-key inferior-ess-mode-map (kbd "C-<") 'then_R_operator)
 
+;; For some reason flyspell needs to be enabled for ESS specifically
+(add-hook 'ess-mode-hook
+          (lambda ()
+            (flyspell-prog-mode)
+            (run-hooks 'prog-mode-hook)
+            ))
+
+;; Knitr / Rmarkdown -----------------------------------------------------------
 
 ;; Check this out for knitr chunk evaluation:
 ;; http://stackoverflow.com/a/40966640/7237812
