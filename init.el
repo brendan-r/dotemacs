@@ -56,6 +56,7 @@
 			multi-term
 			;;stan-snippets ;; For some reason this is causing problems
 			virtualenvwrapper
+      flycheck
       flyspell
       whitespace-cleanup-mode
 			))
