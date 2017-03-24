@@ -185,9 +185,15 @@
 ;; Do spell checking in your comments!
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
 
+;; Do spell checking in normal text!
+(add-hook 'text-mode-hook 'flyspell-mode)
+
+;; Spell checking in ESSmode
+(add-hook 'ess-mode-hook 'flyspell-prog-mode)
+
 ;; Control-arrow over a whole word, e.g. from |long_word to long_word|, not
 ;; long|_word
-(superword-mode 1)
+(setq superword-mode 1)
 
 ;; Yasnippets ------------------------------------------------------------------
 
