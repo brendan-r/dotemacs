@@ -57,6 +57,7 @@
 			;;stan-snippets ;; For some reason this is causing problems
 			virtualenvwrapper
       flyspell
+      whitespace-cleanup-mode
 			))
 
 ;; Activate package autoloads
@@ -693,7 +694,9 @@ send regions above point."
 (server-start)
 
 ;; Strip trailing whitespace from files on save
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+(require 'whitespace-cleanup-mode)
+(setq global-whitespace-cleanup-mode)
+;; (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 
 
