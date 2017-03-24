@@ -592,6 +592,9 @@
 ;; Possibly make it do Rstudio style things...?
 (setq ess-default-style (quote RStudio))
 
+;; Allow autocompletion in script files (not just the shell)
+(setq ess-tab-complete-in-script t)
+
 ;; Try to make the default 'send to REPL' command C-RET
 (define-key ess-mode-map (kbd "C-RET")
   'ess-eval-region-or-function-or-paragraph-and-step)
