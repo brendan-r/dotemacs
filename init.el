@@ -60,7 +60,8 @@
 			))
 
 ;; Activate package autoloads
-(package-initialize) (setq package-initialize nil)
+(package-initialize)
+(setq package-initialize nil)
 
 ;; make sure stale packages don't get loaded
 (dolist (package my-package-list)
@@ -191,12 +192,11 @@
 
 
 
-
-
 ;; REPL / comint settings ------------------------------------------------------
 
 (require 'comint)
 
+;; Use up and down to scroll through command history
 (define-key comint-mode-map (kbd "<up>")
   'comint-previous-input)
 
@@ -729,3 +729,17 @@ send regions above point."
 
 
 ;; You do not understand what this does and it's pissing you off ---------------
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (whitespace-cleanup-mode flycheck neotree mouse3 spaceline workgroups2 virtualenvwrapper telephone-line sublimity stan-snippets smooth-scrolling smooth-scroll sane-term powerline polymode persp-projectile multiple-cursors multi-term markdown-preview-mode markdown-mode+ magit fill-column-indicator eyebrowse expand-region eval-in-repl ess color-theme-sanityinc-tomorrow))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
