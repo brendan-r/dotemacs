@@ -122,6 +122,9 @@
 ;; Kill the current buffer
 (define-key cua-global-keymap (kbd "C-k") 'kill-this-buffer)
 
+;; Kill the buffer and close the window
+(define-key cua-global-keymap (kbd "C-W") 'kill-buffer-and-window)
+
 ;; Multiple cursors
 (require 'multiple-cursors)
 
