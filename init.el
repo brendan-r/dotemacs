@@ -139,7 +139,7 @@
 
 (global-set-key (kbd "C-/") 'comment-line)
 
-(setq-default mc/max-cursors 20)
+;; (setq-default mc/max-cursors 20)
 
 ;; Fill/re-flow comments etc.
 (setq-default fill-column 80)
