@@ -473,6 +473,10 @@
 ;; Makes *scratch* empty.
 (setq initial-scratch-message "")
 
+;; Change the scratch buffer to markdown-mode
+(setq initial-major-mode 'markdown-mode)
+
+
 ;; Removes *scratch* from buffer after the mode has been set.
 ;; (defun remove-scratch-buffer ()
 ;;   (if (get-buffer "*scratch*")
