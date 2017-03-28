@@ -693,8 +693,8 @@ send regions above point."
 ;; Make emacs transparent
 ;;(set-frame-parameter (selected-frame) 'alpha '(<active> . <inactive>))
 ;;(set-frame-parameter (selected-frame) 'alpha <both>)
-(set-frame-parameter (selected-frame) 'alpha '(99 . 98))
-(add-to-list 'default-frame-alist '(alpha . (99 . 98)))
+;;(set-frame-parameter (selected-frame) 'alpha '(99 . 98))
+;; (add-to-list 'default-frame-alist '(alpha . (99 . 98)))
 
 
 ;; Hipster modeline
