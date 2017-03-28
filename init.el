@@ -132,18 +132,18 @@
 (require 'multiple-cursors)
 
 ;; Where you have a selection, put a cursor on each line
-(global-set-key (kbd "C-L") 'mc/edit-lines)
+(define-key cua-global-keymap (kbd "C-S-l") 'mc/edit-lines)
 
 ;; Use the current point as an anchor to create multiple cursors
-(global-set-key (kbd "C-K") 'set-rectangular-region-anchor)
+(define-key cua-global-keymap (kbd "C-S-k") 'set-rectangular-region-anchor)
 
-(global-set-key (kbd "C-/") 'comment-line)
+(define-key cua-global-keymap (kbd "C-/") 'comment-line)
 
 (setq-default mc/max-cursors 20)
 
 ;; Fill/re-flow comments etc.
 (setq-default fill-column 80)
-(global-set-key (kbd "C-?") 'fill-individual-paragraphs)
+(define-key cua-global-keymap (kbd "C-?") 'fill-individual-paragraphs)
 
 ;; Mouse bindings
 ;; Make right-click do something close to what people expect
