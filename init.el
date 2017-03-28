@@ -54,7 +54,8 @@
 			mouse3
 			neotree
 			multi-term
-			;;stan-snippets ;; For some reason this is causing problems
+      ;; Note: If Stan is not installed, this seems to break everything
+			stan-snippets
 			virtualenvwrapper
       flycheck
       flyspell
@@ -668,7 +669,8 @@ send regions above point."
 ;; Stan ------------------------------------------------------------------------
 
 (require 'stan-mode)
-;; (require 'stan-snippets)
+;; Note: If Stan isn't installed, this seems to break everything
+(require 'stan-snippets)
 
 ;; Polymode --------------------------------------------------------------------
 
