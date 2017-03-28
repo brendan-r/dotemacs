@@ -59,6 +59,8 @@
 			virtualenvwrapper
       flycheck
       flyspell
+      rainbow-delimiters
+      smartparens
       whitespace-cleanup-mode
 			))
 
@@ -195,6 +197,15 @@
 ;; Control-arrow over a whole word, e.g. from |long_word to long_word|, not
 ;; long|_word
 (setq superword-mode 1)
+
+;; Use smartparens
+(add-hook 'prog-mode-hook #'smartparens-mode)
+;; (add-hook 'ess-mode-hook #'rainbow-delimiters-mode)
+
+;; Use rainbow delimiters when programming
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+;; (add-hook 'ess-mode-hook #'rainbow-delimiters-mode)
+
 
 ;; Yasnippets ------------------------------------------------------------------
 
