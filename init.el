@@ -742,6 +742,13 @@ send regions above point."
 (add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode))
 
 
+;; Git -------------------------------------------------------------------------
+
+;; magit is great, and let's try magithub
+(require 'magit)
+(require 'magithub)
+(magithub-feature-autoinject t)
+
 
 ;; Appearance ------------------------------------------------------------------
 
