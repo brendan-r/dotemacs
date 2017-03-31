@@ -63,6 +63,7 @@
       smartparens
       whitespace-cleanup-mode
       web-mode
+      magithub
 			))
 
 ;; Activate package autoloads
