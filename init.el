@@ -64,6 +64,7 @@
       whitespace-cleanup-mode
       web-mode
       magithub
+      company
 			))
 
 ;; Activate package autoloads
