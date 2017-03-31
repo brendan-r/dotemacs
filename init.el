@@ -62,6 +62,7 @@
       rainbow-delimiters
       smartparens
       whitespace-cleanup-mode
+      web-mode
 			))
 
 ;; Activate package autoloads
@@ -563,6 +564,13 @@
 ;;             (lambda () (setq indent-tabs-mode nil) (setq tab-width 4) )))
 ;;             nil t))
 
+
+;; Web stuff -------------------------------------------------------------------
+
+(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.js?\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.css?\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.sass?\\'" . web-mode))
 
 ;; Bash scripts / terminal repl ------------------------------------------------
 
