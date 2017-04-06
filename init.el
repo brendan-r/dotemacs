@@ -470,10 +470,12 @@
 
 ;; Unbind Alt-arrow so that you can use it to navigate windows
 (add-hook 'markdown-mode-hook
-          '(lambda ()
-             (auto-complete-mode t)
-             (local-unset-key [tab])))
-
+      (lambda ()
+        (local-unset-key (kbd "<M-up>"))
+        (local-unset-key (kbd "<M-left>"))
+        (local-unset-key (kbd "<M-right>"))
+        (local-unset-key (kbd "<M-down>"))
+        ))
 
 ;; Start-up --------------------------------------------------------------------
 
