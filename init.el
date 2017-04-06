@@ -820,3 +820,17 @@ send regions above point."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+
+;; save settings made using the customize interface to a sparate file
+(setq custom-file (concat user-emacs-directory "custom.el"))
+(unless (file-exists-p custom-file)
+  (write-region ";; Put user configuration here" nil custom-file))
+(load custom-file 'noerror)
+
+;; Stop littering weird backup files everywhere
+(setq backup-directory-alist
+      '(("." . "~/.emacs.d/auto-save-list/")))
+
+(setq auto-save-file-name-transforms
+      '((".*" . "~/.emacs.d/auto-save-list/" t)))
