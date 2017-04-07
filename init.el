@@ -1,9 +1,4 @@
 ;; TODO
-;; Show matching parens (underlining is ideal)
-;; Get a decent markdown mode
-;; A repl, for R and Python, ideally JS and Ruby, too
-;; Map 'select all' to C-a
-;; This also looks good: https://github.com/edwinhu/emacs-starter-kit
 ;;
 ;; TODO
 ;;
@@ -461,6 +456,7 @@
 
 (setq markdown-use-pandoc-style-yaml-metadata t)
 
+;; You should also unbind Alt-arrows here
 
 ;; Unbind tab so it's possible to use yasnippets from
 ;; http://wiki.dreamrunner.org/public_html/Emacs/markdown.html
@@ -476,6 +472,8 @@
              (auto-complete-mode t)
              (local-unset-key [tab])))
 
+;; Allow math mode for stuff in-between $..$ or $$..$$
+(setq markdown-enable-math t)
 
 ;; Start-up --------------------------------------------------------------------
 
@@ -725,7 +723,7 @@ send regions above point."
 ;; Stan ------------------------------------------------------------------------
 
 (require 'stan-mode)
-;; Note: If Stan isn't installed, this seems to break everything
+;; Note: If Stan isn't installed, this seems to break verything
 (require 'stan-snippets)
 
 ;; Polymode --------------------------------------------------------------------
