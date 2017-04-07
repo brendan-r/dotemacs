@@ -456,8 +456,6 @@
 
 (setq markdown-use-pandoc-style-yaml-metadata t)
 
-;; You should also unbind Alt-arrows here
-
 ;; Unbind tab so it's possible to use yasnippets from
 ;; http://wiki.dreamrunner.org/public_html/Emacs/markdown.html
 (add-hook 'markdown-mode-hook
@@ -468,12 +466,16 @@
 
 ;; Unbind Alt-arrow so that you can use it to navigate windows
 (add-hook 'markdown-mode-hook
-          '(lambda ()
-             (auto-complete-mode t)
-             (local-unset-key [tab])))
+      (lambda ()
+        (local-unset-key (kbd "<M-up>"))
+        (local-unset-key (kbd "<M-left>"))
+        (local-unset-key (kbd "<M-right>"))
+        (local-unset-key (kbd "<M-down>"))
+        ))
 
 ;; Allow math mode for stuff in-between $..$ or $$..$$
 (setq markdown-enable-math t)
+
 
 ;; Start-up --------------------------------------------------------------------
 
@@ -741,12 +743,42 @@ send regions above point."
 (add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode))
 
 
+
 ;; Git -------------------------------------------------------------------------
 
 ;; magit is great, and let's try magithub
 (require 'magit)
 (require 'magithub)
 (magithub-feature-autoinject t)
+
+
+
+;; Elisp -----------------------------------------------------------------------
+
+(with-eval-after-load "elisp-mode"
+  (require 'company-elisp)
+  ;; ielm
+  (require 'eval-in-repl-ielm)
+  ;; For .el files
+  (define-key emacs-lisp-mode-map (kbd "C-c C-c") 'eir-eval-in-ielm)
+  (define-key emacs-lisp-mode-map (kbd "<C-return>") 'eir-eval-in-ielm)
+  (define-key emacs-lisp-mode-map (kbd "C-c C-b") 'eval-buffer)
+  (define-key emacs-lisp-mode-map (kbd "<C-S-return>") 'eval-buffer)
+  ;; For *scratch*
+  (define-key lisp-interaction-mode-map "\C-c\C-c" 'eir-eval-in-ielm)
+  (define-key lisp-interaction-mode-map (kbd "<C-return>") 'eir-eval-in-ielm)
+  (define-key lisp-interaction-mode-map (kbd "C-c C-b") 'eval-buffer)
+  (define-key lisp-interaction-mode-map (kbd "<C-S-return>") 'eval-buffer)
+  ;; For M-x info
+  (define-key Info-mode-map (kbd "C-c C-c") 'eir-eval-in-ielm)
+  ;; Set up completions
+  (add-hook 'emacs-lisp-mode-hook
+            (lambda()
+              ;; make sure completion calls company-elisp first
+              (require 'company-elisp)
+              (setq-local company-backends
+                          (delete-dups (cons 'company-elisp (cons 'company-files company-backends)))))))
+
 
 
 ;; Appearance ------------------------------------------------------------------
@@ -836,3 +868,17 @@ send regions above point."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+
+;; save settings made using the customize interface to a sparate file
+(setq custom-file (concat user-emacs-directory "custom.el"))
+(unless (file-exists-p custom-file)
+  (write-region ";; Put user configuration here" nil custom-file))
+(load custom-file 'noerror)
+
+;; Stop littering weird backup files everywhere
+(setq backup-directory-alist
+      '(("." . "~/.emacs.d/auto-save-list/")))
+
+(setq auto-save-file-name-transforms
+      '((".*" . "~/.emacs.d/auto-save-list/" t)))
