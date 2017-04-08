@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: ggplot scatter
+# key: ggscat
+# --
+
+ggplot($1, aes($2, $3)) +
+  geom_point() +
+  geom_smooth() +
+  theme_bw()
