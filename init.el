@@ -1,9 +1,4 @@
 ;; TODO
-;; Show matching parens (underlining is ideal)
-;; Get a decent markdown mode
-;; A repl, for R and Python, ideally JS and Ruby, too
-;; Map 'select all' to C-a
-;; This also looks good: https://github.com/edwinhu/emacs-starter-kit
 ;;
 ;; TODO
 ;;
@@ -62,6 +57,8 @@
       rainbow-delimiters
       smartparens
       whitespace-cleanup-mode
+      web-mode
+      magithub
       company
 			))
 
@@ -461,7 +458,6 @@
 
 (setq markdown-use-pandoc-style-yaml-metadata t)
 
-
 ;; Unbind tab so it's possible to use yasnippets from
 ;; http://wiki.dreamrunner.org/public_html/Emacs/markdown.html
 (add-hook 'markdown-mode-hook
@@ -478,6 +474,10 @@
         (local-unset-key (kbd "<M-right>"))
         (local-unset-key (kbd "<M-down>"))
         ))
+
+;; Allow math mode for stuff in-between $..$ or $$..$$
+(setq markdown-enable-math t)
+
 
 ;; Start-up --------------------------------------------------------------------
 
@@ -569,6 +569,13 @@
 ;;             nil t))
 
 
+;; Web stuff -------------------------------------------------------------------
+
+(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.js?\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.css?\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.sass?\\'" . web-mode))
+
 ;; Bash scripts / terminal repl ------------------------------------------------
 
 (require 'essh) ; if not done elsewhere; essh is in the local lisp folder
@@ -604,6 +611,37 @@
 ;; This should make the virtual env stuff work in a repl
 (require 'virtualenvwrapper)
 (venv-initialize-interactive-shells)
+
+
+
+;; Elisp -----------------------------------------------------------------------
+;; Note: This is straight-up stolen from izahn's dotfiles at
+;; https://github.com/izahn/dotemacs/blob/496c502aad691deaed1076318e92035d229cfa40/init.el#L486
+
+(with-eval-after-load "elisp-mode"
+  (require 'company-elisp)
+  ;; ielm
+  (require 'eval-in-repl-ielm)
+  ;; For .el files
+  (define-key emacs-lisp-mode-map (kbd "C-c C-c") 'eir-eval-in-ielm)
+  (define-key emacs-lisp-mode-map (kbd "<C-return>") 'eir-eval-in-ielm)
+  (define-key emacs-lisp-mode-map (kbd "C-c C-b") 'eval-buffer)
+  (define-key emacs-lisp-mode-map (kbd "<C-S-return>") 'eval-buffer)
+  ;; For *scratch*
+  (define-key lisp-interaction-mode-map "\C-c\C-c" 'eir-eval-in-ielm)
+  (define-key lisp-interaction-mode-map (kbd "<C-return>") 'eir-eval-in-ielm)
+  (define-key lisp-interaction-mode-map (kbd "C-c C-b") 'eval-buffer)
+  (define-key lisp-interaction-mode-map (kbd "<C-S-return>") 'eval-buffer)
+  ;; For M-x info
+  (define-key Info-mode-map (kbd "C-c C-c") 'eir-eval-in-ielm)
+  ;; Set up completions
+  (add-hook 'emacs-lisp-mode-hook
+            (lambda()
+              ;; make sure completion calls company-elisp first
+              (require 'company-elisp)
+              (setq-local company-backends
+                          (delete-dups (cons 'company-elisp (cons 'company-files company-backends)))))))
+
 
 
 ;; R and ESS -------------------------------------------------------------------
@@ -689,7 +727,7 @@ send regions above point."
 ;; Stan ------------------------------------------------------------------------
 
 (require 'stan-mode)
-;; Note: If Stan isn't installed, this seems to break everything
+;; Note: If Stan isn't installed, this seems to break verything
 (require 'stan-snippets)
 
 ;; Polymode --------------------------------------------------------------------
@@ -705,6 +743,16 @@ send regions above point."
 (add-to-list 'auto-mode-alist '("\\.Snw" . poly-noweb+r-mode))
 (add-to-list 'auto-mode-alist '("\\.Rnw" . poly-noweb+r-mode))
 (add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode))
+
+
+
+;; Git -------------------------------------------------------------------------
+
+;; magit is great, and let's try magithub
+(require 'magit)
+(require 'magithub)
+(magithub-feature-autoinject t)
+
 
 
 ;; Elisp -----------------------------------------------------------------------
