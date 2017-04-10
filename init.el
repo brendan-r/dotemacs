@@ -202,7 +202,9 @@
 
 ;; Use rainbow delimiters when programming
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
-;; (add-hook 'ess-mode-hook #'rainbow-delimiters-mode)
+
+;; Load the new version of a file when it changes
+(global-auto-revert-mode t)
 
 
 ;; Yasnippets ------------------------------------------------------------------
