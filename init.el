@@ -686,6 +686,8 @@
             (run-hooks 'prog-mode-hook)
             ))
 
+
+
 ;; Knitr / Rmarkdown -----------------------------------------------------------
 
 ;; Check this out for knitr chunk evaluation:
@@ -722,11 +724,15 @@ send regions above point."
       (unless (eq nil process)
         (set-process-window-size process (window-height) (window-width))))))
 
+
+
 ;; Stan ------------------------------------------------------------------------
 
 (require 'stan-mode)
 ;; Note: If Stan isn't installed, this seems to break verything
 (require 'stan-snippets)
+
+
 
 ;; Polymode --------------------------------------------------------------------
 
