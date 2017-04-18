@@ -56,7 +56,6 @@
       flyspell
       rainbow-delimiters
       smartparens
-      whitespace-cleanup-mode
       web-mode
       magithub
       company
@@ -820,9 +819,7 @@ send regions above point."
 (server-start)
 
 ;; Strip trailing whitespace from files on save
-(require 'whitespace-cleanup-mode)
-(setq global-whitespace-cleanup-mode)
-;; (add-hook 'before-save-hook 'delete-trailing-whitespace)
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 
 
