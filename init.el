@@ -59,6 +59,7 @@
       web-mode
       magithub
       company
+      ;; persp-mode
 			))
 
 ;; Activate package autoloads
@@ -849,10 +850,12 @@ send regions above point."
 
 ;; Trying out workgroups... I have suspicion I'll end up using eyebrowse
 
-(require 'eyebrowse)
-(global-set-key (kbd "C-c C-w") 'eyebrowse-keymap-prefix)
-(eyebrowse-mode 1)
+;; (require 'eyebrowse)
+;; (global-set-key (kbd "C-c C-w") 'eyebrowse-keymap-prefix)
+;; (eyebrowse-mode 1)
 
+;; (require 'persp-mode)
+;; (persp-mode 1)
 
 ;; You do not understand what this does and it's pissing you off ---------------
 (custom-set-variables
