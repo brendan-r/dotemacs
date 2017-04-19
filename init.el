@@ -56,10 +56,10 @@
       flyspell
       rainbow-delimiters
       smartparens
-      whitespace-cleanup-mode
       web-mode
       magithub
       company
+      ;; persp-mode
 			))
 
 ;; Activate package autoloads
@@ -688,6 +688,8 @@
             (run-hooks 'prog-mode-hook)
             ))
 
+
+
 ;; Knitr / Rmarkdown -----------------------------------------------------------
 
 ;; Check this out for knitr chunk evaluation:
@@ -724,11 +726,15 @@ send regions above point."
       (unless (eq nil process)
         (set-process-window-size process (window-height) (window-width))))))
 
+
+
 ;; Stan ------------------------------------------------------------------------
 
 (require 'stan-mode)
 ;; Note: If Stan isn't installed, this seems to break verything
 (require 'stan-snippets)
+
+
 
 ;; Polymode --------------------------------------------------------------------
 
@@ -814,9 +820,7 @@ send regions above point."
 (server-start)
 
 ;; Strip trailing whitespace from files on save
-(require 'whitespace-cleanup-mode)
-(setq global-whitespace-cleanup-mode)
-;; (add-hook 'before-save-hook 'delete-trailing-whitespace)
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 
 
@@ -846,10 +850,12 @@ send regions above point."
 
 ;; Trying out workgroups... I have suspicion I'll end up using eyebrowse
 
-(require 'eyebrowse)
-(global-set-key (kbd "C-c C-w") 'eyebrowse-keymap-prefix)
-(eyebrowse-mode 1)
+;; (require 'eyebrowse)
+;; (global-set-key (kbd "C-c C-w") 'eyebrowse-keymap-prefix)
+;; (eyebrowse-mode 1)
 
+;; (require 'persp-mode)
+;; (persp-mode 1)
 
 ;; You do not understand what this does and it's pissing you off ---------------
 (custom-set-variables
@@ -859,11 +865,7 @@ send regions above point."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (whitespace-cleanup-mode flycheck neotree mouse3 spaceline workgroups2
-    virtualenvwrapper telephone-line sublimity stan-snippets smooth-scrolling
-    smooth-scroll sane-term powerline polymode persp-projectile multiple-cursors
-    multi-term markdown-preview-mode markdown-mode+ magit fill-column-indicator
-    eyebrowse expand-region eval-in-repl ess color-theme-sanityinc-tomorrow))))
+    (ess))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
