@@ -751,6 +751,10 @@ send regions above point."
 (add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode))
 
 
+;; Big Rmarkdown buffers get slow af. See if this helps.
+(add-hook 'poly-markdown+r-mode-hook (lambda() (linum-mode -1)))
+
+
 
 ;; Git -------------------------------------------------------------------------
 
