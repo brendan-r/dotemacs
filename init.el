@@ -1,7 +1,5 @@
 ;; TODO
 ;;
-;; TODO
-;;
 ;; - Get a shortcut to pop multi-term
 ;;
 ;; Comint mode all shells:
@@ -140,7 +138,6 @@
 ;; (setq-default mc/max-cursors 20)
 
 ;; Fill/re-flow comments etc.
-(setq-default fill-column 80)
 (define-key cua-global-keymap (kbd "C-?") 'fill-individual-paragraphs)
 
 ;; Mouse bindings
@@ -275,9 +272,9 @@
 
 ;; General text display --------------------------------------------------------
 
-;; Make wrapping at the end of a line use whole words Note, you want
-;; to exclude neo tree from this, it makes it very ugly Probably html
-;; files too (they tend to drift over 80 chars)
+;; Make wrapping at the end of a line use whole words Note, you want to exclude
+;; neo tree from this, it makes it very ugly Probably html files too (they tend
+;; to drift over 80 chars)
 (global-visual-line-mode t)
 
 
