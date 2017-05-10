@@ -295,7 +295,18 @@
 
 ;; Text wrapping ---------------------------------------------------------------
 
-(setq fill-column 80)
+;; Emacs' default is to wrap at 70 columns. This works really well for git
+;; commit messages (and potentially emails), but not so well when programming,
+;; where you tend to use 80 cols
+
+;; When programming, wrap at 80
+(add-hook 'prog-mode-hook
+          (lambda ()
+            (set-fill-column 80)))
+
+(add-hook 'markdown-mode-hook
+          (lambda ()
+            (set-fill-column 80)))
 
 ;; When writing prose -- wrap
 ;; (add-hook 'text-mode-hook '(lambda ()
