@@ -829,7 +829,7 @@ send regions above point."
 ;; Note: This is not in the list of required packages above, as it's
 ;; recommended that you use the emacs-client bundled with the primary notmuch
 ;; installation itself (as there are API changes)
-;; (require 'notmuch)
+(autoload 'notmuch "notmuch" "notmuch mail" t)
 
 
 ;; Put mail stuff in another config, load it in if you actually use it!
