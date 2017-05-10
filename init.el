@@ -57,6 +57,7 @@
       web-mode
       magithub
       company
+      olivetti
       ;; persp-mode
 			))
 
@@ -475,6 +476,10 @@
 ;; Allow math mode for stuff in-between $..$ or $$..$$
 (setq markdown-enable-math t)
 
+;; Use Olivetti mode whenever the mode loads (and disable linum-mode)
+(add-hook 'markdown-mode-hook (lambda() (linum-mode -1)))
+(add-hook 'markdown-mode-hook (lambda() (olivetti-mode t)))
+
 
 ;; Start-up --------------------------------------------------------------------
 
@@ -750,7 +755,7 @@ send regions above point."
 
 ;; Big Rmarkdown buffers get slow af. See if this helps.
 (add-hook 'poly-markdown+r-mode-hook (lambda() (linum-mode -1)))
-
+(add-hook 'poly-markdown+r-mode-hook (lambda() (olivetti-mode t)))
 
 
 ;; Git -------------------------------------------------------------------------
