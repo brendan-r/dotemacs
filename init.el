@@ -1,6 +1,20 @@
 ;; TODO
 ;;
+;; - Figure out how to make the iESS R buffer show the last command run
+;;   (even if it was via ess-eval-region, or similar)
+;;
+;; - Figure out where the hell 'customize-group' and multiple-cursors
+;;   options live, and get them into this file
+;;
+;; - Find a good way to do auto-completion (with visible suggestions)
+;;
+;; - See if you can find a reasonable way to work with SQL interactively
+;;
+;; - Get different colored headings (h1, h2, etc.) for markdown-mode
+;;
 ;; - Get a shortcut to pop multi-term
+;;
+;; - Figure out a good shortcut to do reverse search in a terminal
 ;;
 ;; Comint mode all shells:
 ;;
@@ -12,7 +26,8 @@
 ;; - Here, pressing up only shows you commands which have been entered into the
 ;;   REPL, not ones sent from the editor
 ;;
-;;
+
+
 
 ;; Allow packages to be installed ----------------------------------------------
 
@@ -848,7 +863,7 @@ send regions above point."
 ;; Note: This is not in the list of required packages above, as it's
 ;; recommended that you use the emacs-client bundled with the primary notmuch
 ;; installation itself (as there are API changes)
-;; (require 'notmuch)
+(autoload 'notmuch "notmuch" "notmuch mail" t)
 
 
 ;; Put mail stuff in another config, load it in if you actually use it!
