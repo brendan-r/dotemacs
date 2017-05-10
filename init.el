@@ -447,6 +447,7 @@
 
 ;; Markdown --------------------------------------------------------------------
 
+;; Use markdown mode for the following file types
 (autoload 'markdown-mode "markdown-mode"
    "Major mode for editing Markdown files" t)
 (add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
@@ -454,6 +455,7 @@
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.page\\'" . markdown-mode))
 
+;; Allow pandoc yaml metadata
 (setq markdown-use-pandoc-style-yaml-metadata t)
 
 ;; Unbind tab so it's possible to use yasnippets from
