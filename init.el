@@ -55,7 +55,6 @@
 			yasnippet
 			eval-in-repl
 			expand-region
-			eval-in-repl
 			fill-column-indicator
 			stan-mode
 			spaceline
