@@ -72,6 +72,11 @@
       magithub
       company
       olivetti
+      exec-path-from-shell
+      multiple-cursors
+      markdown-mode
+      auto-complete
+      color-theme-sanityinc-tomorrow
       ;; persp-mode
 			))
 
