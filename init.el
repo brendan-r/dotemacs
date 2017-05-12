@@ -512,6 +512,11 @@
 (add-hook 'markdown-mode-hook (lambda() (linum-mode -1)))
 (add-hook 'markdown-mode-hook (lambda() (olivetti-mode t)))
 
+;; A width of 80 seems to wrap at 78 for you (in GUI Emacs). Using 82
+;; works great.
+;;
+;; https://github.com/rnkn/olivetti/issues/13
+(setq olivetti-body-width 82)
 
 ;; Start-up --------------------------------------------------------------------
 
