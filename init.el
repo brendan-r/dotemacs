@@ -77,6 +77,7 @@
       markdown-mode
       auto-complete
       color-theme-sanityinc-tomorrow
+      let-alist ;; Terminal version seems ask for this periodically
       ;; persp-mode
 			))
 
@@ -518,6 +519,8 @@
 ;; https://github.com/rnkn/olivetti/issues/13
 (setq olivetti-body-width 82)
 
+
+
 ;; Start-up --------------------------------------------------------------------
 
 ;; Remove the splash-screen
@@ -564,6 +567,7 @@
 
 
 ;; General code editing --------------------------------------------------------
+
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 2)
 (setq indent-line-function 'insert-tab)
