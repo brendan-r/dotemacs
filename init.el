@@ -852,6 +852,8 @@ send regions above point."
 (require 'magithub)
 (magithub-feature-autoinject t)
 
+;; Set key for magit-status
+(global-set-key (kbd "C-x C-g") 'magit-status)
 
 
 ;; Elisp -----------------------------------------------------------------------
