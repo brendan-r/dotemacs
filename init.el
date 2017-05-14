@@ -507,6 +507,7 @@
 (setq markdown-enable-math t)
 
 ;; Use Olivetti mode whenever the mode loads (and disable linum-mode)
+(require 'olivetti)
 (add-hook 'markdown-mode-hook (lambda() (linum-mode -1)))
 (add-hook 'markdown-mode-hook (lambda() (olivetti-mode t)))
 
