@@ -4,10 +4,10 @@
 !/README.org
 !/README.md
 !/init.el
+!/custom.el
 !/init.elc
 !/lisp
 !/lisp/*
 !/snippets/
 !/snippets/*
 !/.gitignore
-
