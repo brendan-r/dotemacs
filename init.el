@@ -3,9 +3,6 @@
 ;; - Figure out how to make the iESS R buffer show the last command run
 ;;   (even if it was via ess-eval-region, or similar)
 ;;
-;; - Figure out where the hell 'customize-group' and multiple-cursors
-;;   options live, and get them into this file
-;;
 ;; - Find a good way to do auto-completion (with visible suggestions)
 ;;
 ;; - See if you can find a reasonable way to work with SQL interactively
