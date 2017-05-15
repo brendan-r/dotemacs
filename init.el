@@ -963,9 +963,12 @@ send regions above point."
   (write-region ";; Put user configuration here" nil custom-file))
 (load custom-file 'noerror)
 
-;; Stop littering weird backup files everywhere
-(setq backup-directory-alist
-      '(("." . "~/.emacs.d/auto-save-list/")))
 
+
+;; Extra files -----------------------------------------------------------------
+
+;; Store all backup and autosave files in the tmp dir
+(setq backup-directory-alist
+      `((".*" . ,"~/.emacs.d/auto-save-list/")))
 (setq auto-save-file-name-transforms
-      '((".*" . "~/.emacs.d/auto-save-list/" t)))
+      `((".*" ,"~/.emacs.d/auto-save-list/" t)))
