@@ -952,7 +952,12 @@ send regions above point."
 ;; (require 'persp-mode)
 ;; (persp-mode 1)
 
-;; save settings made using the customize interface to a sparate file
+
+
+;; Customization ---------------------------------------------------------------
+
+;; When making changes via M-x customize-group, save the settings to a separate
+;; file
 (setq custom-file (concat user-emacs-directory "custom.el"))
 (unless (file-exists-p custom-file)
   (write-region ";; Put user configuration here" nil custom-file))
