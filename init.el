@@ -967,6 +967,12 @@ send regions above point."
 
 ;; Extra files -----------------------------------------------------------------
 
+;; You don't have a particular use for the file-lock files (your current
+;; understanding is that they only work if another Unix user on the same system
+;; modifies the same file at the same time, also using Emacs, which does not
+;; seem like a problem that you'll run into often)
+(setq create-lockfiles nil)
+
 ;; Store all backup and autosave files in the tmp dir
 (setq backup-directory-alist
       `((".*" . ,"~/.emacs.d/auto-save-list/")))
