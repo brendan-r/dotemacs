@@ -238,10 +238,10 @@
 
 ;; Use up and down to scroll through command history
 (define-key comint-mode-map (kbd "<up>")
-  'comint-previous-input)
+  'comint-previous-matching-input-from-input)
 
 (define-key comint-mode-map (kbd "<down>")
-  'comint-next-input)
+  'comint-next-matching-input-from-input)
 
 ;; Possibly make comint buffers more well-behaved when throwing text around
 (setq comint-scroll-to-bottom-on-input t)
