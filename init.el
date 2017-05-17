@@ -683,6 +683,9 @@
 
 (require 'ess-site)
 
+;; Don't write everything out to a history file
+(setq ess-history-file nil)
+
 ;; Start R in the working directory by default
 (setq ess-ask-for-ess-directory nil)
 
