@@ -719,6 +719,11 @@
 (define-key ess-mode-map (kbd "C-<") 'then_R_operator)
 (define-key inferior-ess-mode-map (kbd "C-<") 'then_R_operator)
 
+;; Make C-l clear the iESS comit buffer
+(define-key ess-mode-map (kbd "C-l") 'comint-clear-buffer)
+(define-key inferior-ess-mode-map (kbd "C-l") 'comint-clear-buffer)
+
+
 ;; For some reason flyspell needs to be enabled for ESS specifically
 (add-hook 'ess-mode-hook
           (lambda ()
