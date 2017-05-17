@@ -7,8 +7,6 @@
 ;;
 ;; - See if you can find a reasonable way to work with SQL interactively
 ;;
-;; - Get different colored headings (h1, h2, etc.) for markdown-mode
-;;
 ;; - Get a shortcut to pop multi-term
 ;;
 ;; - Figure out a good shortcut to do reverse search in a terminal
@@ -17,11 +15,6 @@
 ;;
 ;; - If you enter the buffer while it's hung and hit enter, you feed the prompt
 ;;   character(s) back into the shell, which is very annoying
-;;
-;; iESS buffer:
-;;
-;; - Here, pressing up only shows you commands which have been entered into the
-;;   REPL, not ones sent from the editor
 ;;
 
 
