@@ -5,7 +5,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(create-lockfiles nil)
- '(package-selected-packages (quote (let-alist ess))))
+ '(package-selected-packages (quote (polymode let-alist ess))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -22,5 +22,5 @@
  '(markdown-header-face-6 ((t (:inherit markdown-header-face-3 :weight normal))))
  '(markdown-italic-face ((t (:inherit font-lock-string-face :slant italic :weight normal))))
  '(markdown-strike-through-face ((t (:inherit font-lock-string-face :strike-through t))))
- '(rainbow-delimiters-depth-1-face ((t (:foreground "#66cccc"))))
- '(rainbow-delimiters-depth-2-face ((t (:foreground "#cccccc")))))
+ '(rainbow-delimiters-depth-1-face ((t (:foreground "#66cccc"))) t)
+ '(rainbow-delimiters-depth-2-face ((t (:foreground "#cccccc"))) t))
