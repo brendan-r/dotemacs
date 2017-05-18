@@ -6,6 +6,7 @@
  ;; If there is more than one, they won't work right.
  '(create-lockfiles nil)
  '(package-selected-packages (quote (polymode let-alist ess))))
+ '(olivetti-body-width 82)
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

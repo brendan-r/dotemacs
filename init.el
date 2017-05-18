@@ -7,8 +7,6 @@
 ;;
 ;; - See if you can find a reasonable way to work with SQL interactively
 ;;
-;; - Get different colored headings (h1, h2, etc.) for markdown-mode
-;;
 ;; - Get a shortcut to pop multi-term
 ;;
 ;; - Figure out a good shortcut to do reverse search in a terminal
@@ -17,11 +15,6 @@
 ;;
 ;; - If you enter the buffer while it's hung and hit enter, you feed the prompt
 ;;   character(s) back into the shell, which is very annoying
-;;
-;; iESS buffer:
-;;
-;; - Here, pressing up only shows you commands which have been entered into the
-;;   REPL, not ones sent from the editor
 ;;
 
 
@@ -239,10 +232,10 @@
 
 ;; Use up and down to scroll through command history
 (define-key comint-mode-map (kbd "<up>")
-  'comint-previous-input)
+  'comint-previous-matching-input-from-input)
 
 (define-key comint-mode-map (kbd "<down>")
-  'comint-next-input)
+  'comint-next-matching-input-from-input)
 
 ;; Possibly make comint buffers more well-behaved when throwing text around
 (setq comint-scroll-to-bottom-on-input t)
@@ -512,12 +505,6 @@
 (add-hook 'markdown-mode-hook (lambda() (linum-mode -1)))
 (add-hook 'markdown-mode-hook (lambda() (olivetti-mode t)))
 
-;; A width of 80 seems to wrap at 78 for you (in GUI Emacs). Using 82
-;; works great.
-;;
-;; https://github.com/rnkn/olivetti/issues/13
-(setq olivetti-body-width 82)
-
 
 
 ;; Start-up --------------------------------------------------------------------
@@ -690,6 +677,9 @@
 
 (require 'ess-site)
 
+;; Don't write everything out to a history file
+(setq ess-history-file nil)
+
 ;; Start R in the working directory by default
 (setq ess-ask-for-ess-directory nil)
 
@@ -722,6 +712,11 @@
 
 (define-key ess-mode-map (kbd "C-<") 'then_R_operator)
 (define-key inferior-ess-mode-map (kbd "C-<") 'then_R_operator)
+
+;; Make C-l clear the iESS comit buffer
+(define-key ess-mode-map (kbd "C-l") 'comint-clear-buffer)
+(define-key inferior-ess-mode-map (kbd "C-l") 'comint-clear-buffer)
+
 
 ;; For some reason flyspell needs to be enabled for ESS specifically
 (add-hook 'ess-mode-hook
