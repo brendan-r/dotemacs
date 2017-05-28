@@ -859,33 +859,6 @@ send regions above point."
 (global-set-key (kbd "C-x C-g") 'magit-status)
 
 
-;; Elisp -----------------------------------------------------------------------
-
-(with-eval-after-load "elisp-mode"
-  (require 'company-elisp)
-  ;; ielm
-  (require 'eval-in-repl-ielm)
-  ;; For .el files
-  (define-key emacs-lisp-mode-map (kbd "C-c C-c") 'eir-eval-in-ielm)
-  (define-key emacs-lisp-mode-map (kbd "<C-return>") 'eir-eval-in-ielm)
-  (define-key emacs-lisp-mode-map (kbd "C-c C-b") 'eval-buffer)
-  (define-key emacs-lisp-mode-map (kbd "<C-S-return>") 'eval-buffer)
-  ;; For *scratch*
-  (define-key lisp-interaction-mode-map "\C-c\C-c" 'eir-eval-in-ielm)
-  (define-key lisp-interaction-mode-map (kbd "<C-return>") 'eir-eval-in-ielm)
-  (define-key lisp-interaction-mode-map (kbd "C-c C-b") 'eval-buffer)
-  (define-key lisp-interaction-mode-map (kbd "<C-S-return>") 'eval-buffer)
-  ;; For M-x info
-  (define-key Info-mode-map (kbd "C-c C-c") 'eir-eval-in-ielm)
-  ;; Set up completions
-  (add-hook 'emacs-lisp-mode-hook
-            (lambda()
-              ;; make sure completion calls company-elisp first
-              (require 'company-elisp)
-              (setq-local company-backends
-                          (delete-dups (cons 'company-elisp (cons 'company-files company-backends)))))))
-
-
 
 ;; Appearance ------------------------------------------------------------------
 
