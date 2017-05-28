@@ -521,6 +521,13 @@
 (setq initial-major-mode 'markdown-mode)
 
 
+;; Forces the messages to 0, and kills the *Messages* buffer - thus disabling it
+;; on startup.
+;;
+;; https://stackoverflow.com/a/23365580
+(setq-default message-log-max nil)
+(kill-buffer "*Messages*")
+
 ;; Removes *scratch* from buffer after the mode has been set.
 ;; (defun remove-scratch-buffer ()
 ;;   (if (get-buffer "*scratch*")
