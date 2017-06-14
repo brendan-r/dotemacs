@@ -23,5 +23,5 @@
  '(markdown-header-face-6 ((t (:inherit markdown-header-face-3 :weight normal))))
  '(markdown-italic-face ((t (:inherit font-lock-string-face :slant italic :weight normal))))
  '(markdown-strike-through-face ((t (:inherit font-lock-string-face :strike-through t))))
- '(rainbow-delimiters-depth-1-face ((t (:foreground "#66cccc"))) t)
- '(rainbow-delimiters-depth-2-face ((t (:foreground "#cccccc"))) t))
+ '(rainbow-delimiters-depth-1-face ((t (:foreground "#66cccc"))))
+ '(rainbow-delimiters-depth-2-face ((t (:foreground "#cccccc")))))
