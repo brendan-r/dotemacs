@@ -5,8 +5,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(create-lockfiles nil)
- '(package-selected-packages (quote (polymode let-alist ess))))
- '(olivetti-body-width 82)
+ '(olivetti-body-width 83)
+ '(package-selected-packages (quote (edbi ivy polymode let-alist ess))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
