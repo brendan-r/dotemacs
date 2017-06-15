@@ -812,6 +812,10 @@ send regions above point."
         (set-process-window-size process (window-height) (window-width))))))
 
 
+;; Tried to make R code foldable in polymode, no such luck so far
+;; The below works for
+(add-to-list 'hs-special-modes-alist
+           '(markdown-mode "```" "```" nil nil nil))
 
 ;; Stan ------------------------------------------------------------------------
 
@@ -820,8 +824,6 @@ send regions above point."
 (require 'stan-snippets)
 
 
-
-;; Polymode --------------------------------------------------------------------
 
 ;; Polymode allow you to see formatted code snippets in documents like markdown
 ;; and Rmarkdown
