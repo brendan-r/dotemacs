@@ -188,6 +188,9 @@
 (global-set-key (kbd "<C-tab>") 'next-buffer)
 (global-set-key (kbd "<C-S-iso-lefttab>") 'previous-buffer)
 
+;; Stuff if you're using a Mac
+(setq mac-command-modifier 'control)
+(setq mac-control-modifier 'meta)
 
 
 ;; General behavior ------------------------------------------------------------
