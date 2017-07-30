@@ -337,9 +337,11 @@
 
 ;; Line numbers ----------------------------------------------------------------
 
-(require 'linum)
-(setq linum-format "%3d ")
-(global-linum-mode 1)
+;; It's mad how much of a pain they are! For the time being, going without them
+;;
+;; (require 'linum)
+;; (setq linum-format "%3d ")
+;;(global-linum-mode 1)
 
 
 
