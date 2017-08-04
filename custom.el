@@ -6,6 +6,7 @@
  ;; If there is more than one, they won't work right.
  '(create-lockfiles nil)
  '(olivetti-body-width 83)
+ '(org-support-shift-select (quote always))
  '(package-selected-packages (quote (edbi ivy polymode let-alist ess))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
