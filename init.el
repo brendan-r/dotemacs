@@ -870,8 +870,8 @@ send regions above point."
 
 ;; magit is great, and let's try magithub
 (require 'magit)
-(require 'magithub)
-(magithub-feature-autoinject t)
+;; (require 'magithub)
+;; (magithub-feature-autoinject t)
 
 ;; Set key for magit-status
 (global-set-key (kbd "C-x C-g") 'magit-status)
