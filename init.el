@@ -69,7 +69,7 @@
       color-theme-sanityinc-tomorrow
       polymode
       let-alist ;; Terminal version seems ask for this periodically
-      ;; persp-mode
+      persp-mode
       which-key
 			))
 
