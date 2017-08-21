@@ -288,7 +288,7 @@
 (setq ring-bell-function 'ignore)
 
 ;; Use a bar cursor instead of the block thing
-(setq-default cursor-type 'bar)
+;; (setq-default cursor-type 'bar)
 
 
 
