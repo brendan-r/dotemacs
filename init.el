@@ -71,6 +71,7 @@
       let-alist ;; Terminal version seems ask for this periodically
       persp-mode
       which-key
+      ivy
 			))
 
 ;; Activate package autoloads
@@ -203,6 +204,11 @@
 (global-set-key (kbd "<C-tab>") 'next-buffer)
 (global-set-key (kbd "<C-S-iso-lefttab>") 'previous-buffer)
 
+
+
+;; Ivy -------------------------------------------------------------------------
+;; Use it
+(ivy-mode t)
 
 
 ;; General behavior ------------------------------------------------------------
