@@ -70,6 +70,7 @@
       polymode
       let-alist ;; Terminal version seems ask for this periodically
       ;; persp-mode
+      which-key
 			))
 
 ;; Activate package autoloads
