@@ -104,6 +104,12 @@
 
 
 
+;; which-key -------------------------------------------------------------------
+;; Which key provides a little menu for if you get a brain-freeze in the middle
+;; of typing out command
+(which-key-mode t)
+
+
 ;; Key bindings ----------------------------------------------------------------
 
 ;; Turn on easy mode (you have OS level keybindings!)
