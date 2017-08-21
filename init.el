@@ -181,6 +181,11 @@
 (global-set-key (kbd "C-{") 'shrink-window-horizontally)  ;; Horizontally
 (global-set-key (kbd "C-}") 'enlarge-window-horizontally) ;; Horizontally
 
+;; Markdown mode now has it's own block movement commands, but they break CUA
+;; mode. Will this overwrite them?
+;;(global-set-key (kbd "C-down") 'forward-paragraph)
+;;(global-set-key (kbd "C-up") 'backward-paragraph)
+
 
 ;; C-o for neotree
 (global-set-key (kbd "C-o") 'neotree-toggle)
