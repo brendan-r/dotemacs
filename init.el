@@ -835,8 +835,10 @@ send regions above point."
 
 ;; Tried to make R code foldable in polymode, no such luck so far
 ;; The below works for
+
 (add-to-list 'hs-special-modes-alist
-           '(markdown-mode "```" "```" nil nil nil))
+           '(markdown-mode "^```{.*}$" "^```$" nil nil nil))
+
 
 ;; Stan ------------------------------------------------------------------------
 
