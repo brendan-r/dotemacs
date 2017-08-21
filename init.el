@@ -924,6 +924,13 @@ send regions above point."
 ;; Put mail stuff in another config, load it in if you actually use it!
 (load "mail.el" 'missing-ok nil)
 
+
+;; Databases -------------------------------------------------------------------
+
+;; Put mail stuff in another config, load it in if you actually use it!
+(load "databases.el" 'missing-ok nil)
+
+
 ;; Project management ----------------------------------------------------------
 
 ;; (require 'projectile)
