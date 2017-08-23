@@ -952,33 +952,6 @@ send regions above point."
 
 ;; (require 'persp-mode)
 
-(with-eval-after-load "olivetti"
-  (with-eval-after-load "persp-mode"
-    (defvar persp-olivetti-buffers-backup nil)
-    (add-hook 'persp-before-deactivate-functions
-              #'(lambda (fow)
-                  (dolist (b (mapcar #'window-buffer
-                                     (window-list (current-frame)
-                                                  'no-minibuf)))
-                    (with-current-buffer b
-                      (when (eq 'olivetti-split-window-sensibly
-                                split-window-preferred-function)
-                        (push b persp-olivetti-buffers-backup)
-                        (remove-hook 'window-configuration-change-hook
-                                     #'olivetti-set-environment t)
-                        (setq-local split-window-preferred-function nil)
-                        (olivetti-reset-all-windows))))))
-    (add-hook 'persp-activated-functions
-              #'(lambda (fow)
-                  (dolist (b persp-olivetti-buffers-backup)
-                    (with-current-buffer b
-                      (setq-local split-window-preferred-function
-                                  'olivetti-split-window-sensibly)
-                      (add-hook 'window-configuration-change-hook
-                                #'olivetti-set-environment nil t)))
-                  (setq persp-olivetti-buffers-backup nil)))))
-
-
 ;; ;; Get projectile to user .Rproj files to indicate projects
 ;; (add-to-list 'projectile-project-root-files-bottom-up ".Rproj")
 
