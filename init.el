@@ -72,6 +72,7 @@
       persp-mode
       which-key
       ivy
+      mwim
 			))
 
 ;; Activate package autoloads
@@ -115,6 +116,11 @@
 
 ;; Turn on easy mode (you have OS level keybindings!)
 (cua-mode t)
+
+;; Use move-where-i-mean to arrive at the beginning/end of indented lines
+(define-key cua-global-keymap (kbd "<home>") 'mwim-beginning)
+(define-key cua-global-keymap (kbd "<end>") 'mwim-end)
+
 
 ;; Don't tabify after rect' commands
 (setq cua-auto-tabify-rectangles nil)
