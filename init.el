@@ -967,8 +967,8 @@ send regions above point."
 ;; (require 'persp-mode)
 ;; (persp-mode 1)
 
-(require 'persp-mode)
-(persp-mode 1)
+;; (require 'persp-mode)
+;; (persp-mode 1)
 
 
 (with-eval-after-load "olivetti"
