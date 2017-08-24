@@ -38,42 +38,42 @@
 
 ;; Make a list of the packages you want
 (setq my-package-list '(
-			magit
-			ess
-			projectile
-			eyebrowse
-			yasnippet
-			eval-in-repl
-			expand-region
-			fill-column-indicator
-			stan-mode
-			spaceline
-			mouse3
-			neotree
-			multi-term
-      ;; Note: If Stan is not installed, this seems to break everything
-			stan-snippets
-			virtualenvwrapper
-      flycheck
-      flyspell
-      rainbow-delimiters
-      smartparens
-      web-mode
-      magithub
-      company
-      olivetti
-      exec-path-from-shell
-      multiple-cursors
-      markdown-mode
-      auto-complete
-      color-theme-sanityinc-tomorrow
-      polymode
-      let-alist ;; Terminal version seems ask for this periodically
-      persp-mode
-      which-key
-      ivy
-      mwim
-      fold-this
+                        magit
+                        ess
+                        projectile
+                        eyebrowse
+                        yasnippet
+                        eval-in-repl
+                        expand-region
+                        fill-column-indicator
+                        stan-mode
+                        spaceline
+                        mouse3
+                        neotree
+                        multi-term
+                        ;; Note: If Stan is not installed, this seems to break everything
+                        stan-snippets
+                        virtualenvwrapper
+                        flycheck
+                        flyspell
+                        rainbow-delimiters
+                        smartparens
+                        web-mode
+                        magithub
+                        company
+                        olivetti
+                        exec-path-from-shell
+                        multiple-cursors
+                        markdown-mode
+                        auto-complete
+                        color-theme-sanityinc-tomorrow
+                        polymode
+                        let-alist ;; Terminal version seems ask for this periodically
+                        persp-mode
+                        which-key
+                        ivy
+                        mwim
+                        fold-this
 			))
 
 ;; Activate package autoloads
