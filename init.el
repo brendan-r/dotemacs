@@ -73,6 +73,7 @@
       which-key
       ivy
       mwim
+      fold-this
 			))
 
 ;; Activate package autoloads
@@ -817,6 +818,31 @@
 
 ;; Knitr / Rmarkdown -----------------------------------------------------------
 
+(defun rmd-fold-block ()
+  "Fold the contents of the current R block, in an Rmarkdown file (can be undone
+   with fold-this-unfold-at-point)"
+  (interactive)
+  (and (eq (oref pm/chunkmode :mode) 'r-mode)
+       (pm-with-narrowed-to-span nil
+         (goto-char (point-min))
+         (forward-line)
+         (fold-this (point) (point-max)))))
+
+;; E.g. to send a prefix, use C-u M-x rmd-send-buffer
+(defun rmd-fold-all-blocks (arg)
+  "Fold all R blocks in an Rmarkdown file (can be undone with
+   fold-this-unfold-all)"
+  ;; Interactive, with a prefix argument
+  (interactive "P")
+  (save-restriction
+    (widen)
+    (save-excursion
+      (pm-map-over-spans
+       'rmd-fold-block (point-min)
+       ;; adjust this point to fold prior regions
+       (if arg (point) (point-max))))))
+
+
 ;; Check this out for knitr chunk evaluation:
 ;; http://stackoverflow.com/a/40966640/7237812
 (defun rmd-send-chunk ()
@@ -851,12 +877,6 @@ send regions above point."
       (unless (eq nil process)
         (set-process-window-size process (window-height) (window-width))))))
 
-
-;; Tried to make R code foldable in polymode, no such luck so far
-;; The below works for
-
-(add-to-list 'hs-special-modes-alist
-           '(markdown-mode "^```{.*}$" "^```$" nil nil nil))
 
 
 ;; Stan ------------------------------------------------------------------------
