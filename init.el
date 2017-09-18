@@ -38,38 +38,42 @@
 
 ;; Make a list of the packages you want
 (setq my-package-list '(
-			magit
-			ess
-			projectile
-			eyebrowse
-			yasnippet
-			eval-in-repl
-			expand-region
-			fill-column-indicator
-			stan-mode
-			spaceline
-			mouse3
-			neotree
-			multi-term
-      ;; Note: If Stan is not installed, this seems to break everything
-			stan-snippets
-			virtualenvwrapper
-      flycheck
-      flyspell
-      rainbow-delimiters
-      smartparens
-      web-mode
-      magithub
-      company
-      olivetti
-      exec-path-from-shell
-      multiple-cursors
-      markdown-mode
-      auto-complete
-      color-theme-sanityinc-tomorrow
-      polymode
-      let-alist ;; Terminal version seems ask for this periodically
-      ;; persp-mode
+                        magit
+                        ess
+                        projectile
+                        eyebrowse
+                        yasnippet
+                        eval-in-repl
+                        expand-region
+                        fill-column-indicator
+                        stan-mode
+                        spaceline
+                        mouse3
+                        neotree
+                        multi-term
+                        ;; Note: If Stan is not installed, this seems to break everything
+                        stan-snippets
+                        virtualenvwrapper
+                        flycheck
+                        flyspell
+                        rainbow-delimiters
+                        smartparens
+                        web-mode
+                        magithub
+                        company
+                        olivetti
+                        exec-path-from-shell
+                        multiple-cursors
+                        markdown-mode
+                        auto-complete
+                        color-theme-sanityinc-tomorrow
+                        polymode
+                        let-alist ;; Terminal version seems ask for this periodically
+                        persp-mode
+                        which-key
+                        ivy
+                        mwim
+                        fold-this
 			))
 
 ;; Activate package autoloads
@@ -103,10 +107,21 @@
 
 
 
+;; which-key -------------------------------------------------------------------
+;; Which key provides a little menu for if you get a brain-freeze in the middle
+;; of typing out command
+(which-key-mode t)
+
+
 ;; Key bindings ----------------------------------------------------------------
 
 ;; Turn on easy mode (you have OS level keybindings!)
 (cua-mode t)
+
+;; Use move-where-i-mean to arrive at the beginning/end of indented lines
+(define-key cua-global-keymap (kbd "<home>") 'mwim-beginning)
+(define-key cua-global-keymap (kbd "<end>") 'mwim-end)
+
 
 ;; Don't tabify after rect' commands
 (setq cua-auto-tabify-rectangles nil)
@@ -132,6 +147,9 @@
 
 ;; Close the current window
 (define-key cua-global-keymap (kbd "C-w") 'delete-window)
+
+;; Switch buffer
+(define-key cua-global-keymap (kbd "C-b") 'ivy-switch-buffer)
 
 ;; Kill the current buffer
 (define-key cua-global-keymap (kbd "C-k") 'kill-this-buffer)
@@ -171,6 +189,11 @@
 (global-set-key (kbd "C-{") 'shrink-window-horizontally)  ;; Horizontally
 (global-set-key (kbd "C-}") 'enlarge-window-horizontally) ;; Horizontally
 
+;; Markdown mode now has it's own block movement commands, but they break CUA
+;; mode. Will this overwrite them?
+;;(global-set-key (kbd "C-down") 'forward-paragraph)
+;;(global-set-key (kbd "C-up") 'backward-paragraph)
+
 
 ;; C-o for neotree
 (global-set-key (kbd "C-o") 'neotree-toggle)
@@ -191,6 +214,11 @@
 ;; Stuff if you're using a Mac
 (setq mac-command-modifier 'control)
 (setq mac-control-modifier 'meta)
+
+
+;; Ivy -------------------------------------------------------------------------
+;; Use it
+(ivy-mode t)
 
 
 ;; General behavior ------------------------------------------------------------
@@ -281,7 +309,7 @@
 (setq ring-bell-function 'ignore)
 
 ;; Use a bar cursor instead of the block thing
-(setq-default cursor-type 'bar)
+;; (setq-default cursor-type 'bar)
 
 
 
@@ -793,6 +821,31 @@
 
 ;; Knitr / Rmarkdown -----------------------------------------------------------
 
+(defun rmd-fold-block ()
+  "Fold the contents of the current R block, in an Rmarkdown file (can be undone
+   with fold-this-unfold-at-point)"
+  (interactive)
+  (and (eq (oref pm/chunkmode :mode) 'r-mode)
+       (pm-with-narrowed-to-span nil
+         (goto-char (point-min))
+         (forward-line)
+         (fold-this (point) (point-max)))))
+
+;; E.g. to send a prefix, use C-u M-x rmd-send-buffer
+(defun rmd-fold-all-blocks (arg)
+  "Fold all R blocks in an Rmarkdown file (can be undone with
+   fold-this-unfold-all)"
+  ;; Interactive, with a prefix argument
+  (interactive "P")
+  (save-restriction
+    (widen)
+    (save-excursion
+      (pm-map-over-spans
+       'rmd-fold-block (point-min)
+       ;; adjust this point to fold prior regions
+       (if arg (point) (point-max))))))
+
+
 ;; Check this out for knitr chunk evaluation:
 ;; http://stackoverflow.com/a/40966640/7237812
 (defun rmd-send-chunk ()
@@ -828,10 +881,6 @@ send regions above point."
         (set-process-window-size process (window-height) (window-width))))))
 
 
-;; Tried to make R code foldable in polymode, no such luck so far
-;; The below works for
-(add-to-list 'hs-special-modes-alist
-           '(markdown-mode "```" "```" nil nil nil))
 
 ;; Stan ------------------------------------------------------------------------
 
@@ -863,8 +912,8 @@ send regions above point."
 
 ;; magit is great, and let's try magithub
 (require 'magit)
-(require 'magithub)
-(magithub-feature-autoinject t)
+;; (require 'magithub)
+;; (magithub-feature-autoinject t)
 
 ;; Set key for magit-status
 (global-set-key (kbd "C-x C-g") 'magit-status)
@@ -917,6 +966,13 @@ send regions above point."
 ;; Put mail stuff in another config, load it in if you actually use it!
 (load "mail.el" 'missing-ok nil)
 
+
+;; Databases -------------------------------------------------------------------
+
+;; Put mail stuff in another config, load it in if you actually use it!
+(load "databases.el" 'missing-ok nil)
+
+
 ;; Project management ----------------------------------------------------------
 
 ;; (require 'projectile)
@@ -925,13 +981,32 @@ send regions above point."
 
 ;; (require 'persp-mode)
 
+;; ;; Get projectile to user .Rproj files to indicate projects
+;; (add-to-list 'projectile-project-root-files-bottom-up ".Rproj")
+
+;; (define-key projectile-mode-map (kbd "C-x x s")
+;;   'projectile-persp-switch-project)
+
+;; Trying out workgroups... I have suspicion I'll end up using eyebrowse
+
+;; (require 'eyebrowse)
+;; (global-set-key (kbd "C-c C-w") 'eyebrowse-keymap-prefix)
+;; (eyebrowse-mode 1)
+
+;; (require 'persp-mode)
+;; (persp-mode 1)
+
+;; (require 'persp-mode)
+;; (persp-mode 1)
+
+
 (with-eval-after-load "olivetti"
   (with-eval-after-load "persp-mode"
     (defvar persp-olivetti-buffers-backup nil)
     (add-hook 'persp-before-deactivate-functions
               #'(lambda (fow)
                   (dolist (b (mapcar #'window-buffer
-                                     (window-list (current-frame)
+                                     (window-list (selected-frame)
                                                   'no-minibuf)))
                     (with-current-buffer b
                       (when (eq 'olivetti-split-window-sensibly
@@ -950,23 +1025,6 @@ send regions above point."
                       (add-hook 'window-configuration-change-hook
                                 #'olivetti-set-environment nil t)))
                   (setq persp-olivetti-buffers-backup nil)))))
-
-
-;; ;; Get projectile to user .Rproj files to indicate projects
-;; (add-to-list 'projectile-project-root-files-bottom-up ".Rproj")
-
-;; (define-key projectile-mode-map (kbd "C-x x s")
-;;   'projectile-persp-switch-project)
-
-;; Trying out workgroups... I have suspicion I'll end up using eyebrowse
-
-;; (require 'eyebrowse)
-;; (global-set-key (kbd "C-c C-w") 'eyebrowse-keymap-prefix)
-;; (eyebrowse-mode 1)
-
-;; (require 'persp-mode)
-;; (persp-mode 1)
-
 
 
 ;; Customization ---------------------------------------------------------------
