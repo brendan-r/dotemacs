@@ -119,6 +119,9 @@
 (cua-mode t)
 
 ;; Use move-where-i-mean to arrive at the beginning/end of indented lines
+(setq mwim-beginning-of-line-function 'beginning-of-visual-line
+      mwim-end-of-line-function 'end-of-visual-line)
+
 (define-key cua-global-keymap (kbd "<home>") 'mwim-beginning)
 (define-key cua-global-keymap (kbd "<end>") 'mwim-end)
 
