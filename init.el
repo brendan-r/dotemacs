@@ -128,6 +128,9 @@
 (cua-mode t)
 
 ;; Use move-where-i-mean to arrive at the beginning/end of indented lines
+(setq mwim-beginning-of-line-function 'beginning-of-visual-line
+      mwim-end-of-line-function 'end-of-visual-line)
+
 (define-key cua-global-keymap (kbd "<home>") 'mwim-beginning)
 (define-key cua-global-keymap (kbd "<end>") 'mwim-end)
 
@@ -220,6 +223,9 @@
 (global-set-key (kbd "<C-tab>") 'next-buffer)
 (global-set-key (kbd "<C-S-iso-lefttab>") 'previous-buffer)
 
+;; Stuff if you're using a Mac
+(setq mac-command-modifier 'control)
+(setq mac-control-modifier 'meta)
 
 
 ;; Ivy -------------------------------------------------------------------------
