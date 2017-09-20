@@ -597,9 +597,6 @@
 
 ;; SQL -------------------------------------------------------------------------
 
-;; If it's there, load some information on database connections (keep this out
-;; of version control for security reasons)
-(load "databases.el" 'missing-ok nil)
 
 ;; Try to make sql just use regular old spaces for indentation
 ;;
