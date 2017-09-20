@@ -74,7 +74,7 @@
                         ivy
                         mwim
                         fold-this
-			))
+                        ))
 
 ;; Activate package autoloads
 (package-initialize)
@@ -88,8 +88,8 @@
 ;; Install packages in package-list if they are not already installed
 (unless (cl-every #'package-installed-p my-package-list)
   (package-refresh-contents) (dolist (package my-package-list)
-    (when (not (package-installed-p package))
-      (package-install package))))
+                               (when (not (package-installed-p package))
+                                 (package-install package))))
 
 ;; add custom lisp directory to path
 (let ((default-directory (concat user-emacs-directory "lisp/")))
@@ -286,8 +286,8 @@
 
 (add-hook 'shell-mode-hook
           (lambda()
-             ;; add this hook as buffer local, so it runs once per window.
-             (add-hook 'window-configuration-change-hook 'comint-fix-window-size nil t)))
+            ;; add this hook as buffer local, so it runs once per window.
+            (add-hook 'window-configuration-change-hook 'comint-fix-window-size nil t)))
 
 
 ;; GUI stuff -------------------------------------------------------------------
@@ -501,7 +501,7 @@
 
 ;; Use markdown mode for the following file types
 (autoload 'markdown-mode "markdown-mode"
-   "Major mode for editing Markdown files" t)
+  "Major mode for editing Markdown files" t)
 (add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
@@ -520,12 +520,12 @@
 
 ;; Unbind Alt-arrow so that you can use it to navigate windows
 (add-hook 'markdown-mode-hook
-      (lambda ()
-        (local-unset-key (kbd "<M-up>"))
-        (local-unset-key (kbd "<M-left>"))
-        (local-unset-key (kbd "<M-right>"))
-        (local-unset-key (kbd "<M-down>"))
-        ))
+          (lambda ()
+            (local-unset-key (kbd "<M-up>"))
+            (local-unset-key (kbd "<M-left>"))
+            (local-unset-key (kbd "<M-right>"))
+            (local-unset-key (kbd "<M-down>"))
+            ))
 
 ;; Allow math mode for stuff in-between $..$ or $$..$$
 (setq markdown-enable-math t)
@@ -573,10 +573,10 @@
 
 ;; Removes *Completions* from buffer after you've opened a file.
 (add-hook 'minibuffer-exit-hook
-      '(lambda ()
-         (let ((buffer "*Completions*"))
-           (and (get-buffer buffer)
-                (kill-buffer buffer)))))
+          '(lambda ()
+             (let ((buffer "*Completions*"))
+               (and (get-buffer buffer)
+                    (kill-buffer buffer)))))
 
 ;; Don't show *Buffer list* when opening multiple files at the same time.
 (setq inhibit-startup-buffer-menu t)
@@ -662,10 +662,11 @@
 (with-eval-after-load "python"
   ;; try to get indent/completion working nicely
   (setq python-indent-trigger-commands '(my-company-indent-or-complete-common
-					 indent-for-tab-command
-					 yas-expand
-					 yas/expand
-					 ))
+                                         indent-for-tab-command
+                                         yas-expand
+                                         yas/expand
+                                         ))
+
   ;; readline support is wonky at the moment
   (setq python-shell-completion-native-enable nil)
   ;; simple evaluation with C-ret
@@ -824,9 +825,9 @@
   (interactive)
   (and (eq (oref pm/chunkmode :mode) 'r-mode)
        (pm-with-narrowed-to-span nil
-         (goto-char (point-min))
-         (forward-line)
-         (fold-this (point) (point-max)))))
+                                 (goto-char (point-min))
+                                 (forward-line)
+                                 (fold-this (point) (point-max)))))
 
 ;; E.g. to send a prefix, use C-u M-x rmd-send-buffer
 (defun rmd-fold-all-blocks (arg)
@@ -850,9 +851,9 @@
   (interactive)
   (and (eq (oref pm/chunkmode :mode) 'r-mode)
        (pm-with-narrowed-to-span nil
-         (goto-char (point-min))
-         (forward-line)
-         (ess-eval-region (point) (point-max) nil nil 'R))))
+                                 (goto-char (point-min))
+                                 (forward-line)
+                                 (ess-eval-region (point) (point-max) nil nil 'R))))
 
 ;; E.g. to send a prefix, use C-u M-x rmd-send-buffer
 (defun rmd-send-buffer (arg)

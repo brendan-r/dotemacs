@@ -1,0 +1,3 @@
+[submodule "lisp/emacs-sql-indent"]
+	path = lisp/emacs-sql-indent
+	url = git@github.com:alex-hhh/emacs-sql-indent.git
