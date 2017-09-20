@@ -597,6 +597,47 @@
 
 ;; SQL -------------------------------------------------------------------------
 
+;; (require 'sql-indent)
+
+;; (defun sqlind-lineup-close-paren-to-open-indentation (syntax base-indentation)
+;;   "Align a closing paren with the indentation of the line containing the open paren.
+;; If line starts with a closing paren ')', the corresponding
+;; 'nested-statement-continuation syntax is found in SYNTAX and the
+;; column of the anchor point is returned.  BASE-INDENTATION is
+;; ignored in that case.
+;; If line does not start with a closing paren, the function return
+;; BASE-INDENTATION, acting as a no-op.
+;; NOTE: this indentation helper should be added a the end of the
+;; item list for a syntax symbol.  This way, a normal indentation
+;; calculation is done and only discarded if the line starts with a
+;; close paren."
+;;   (save-excursion
+;;     (back-to-indentation)
+;;     (if (looking-at ")")
+;;         (let ((stx (sqlind-find-context 'nested-statement-continuation syntax)))
+;;           (if stx
+;;               (progn
+;;                 (goto-char (sqlind-anchor-point stx))
+;;                 (back-to-indentation)
+;;                 (back-to-indentation)
+;;                 (current-column))
+;;             base-indentation))
+;;       base-indentation)))
+
+
+;; (defvar p43-sql-indentation-offsets-alist
+;;   `((select-clause 0)
+;;     (insert-clause 0)
+;;     (delete-clause 0)
+;;     (update-clause 0)
+;;     (in-select-clause + sqlind-lineup-close-paren-to-open-indentation)
+;;     (select-table-continuation + sqlind-lineup-close-paren-to-open-indentation)
+;;     ,@sqlind-default-indentation-offsets-alist))
+
+;; (add-hook 'sqlind-minor-mode-hook
+;;           (lambda ()
+;;             (setq sqlind-indentation-offsets-alist
+;;                   p43-sql-indentation-offsets-alist)))
 
 
 
