@@ -117,8 +117,8 @@
 ;; Flycheck --------------------------------------------------------------------
 
 ;; Provide some settings to chill flycheck out a little
-(flycheck-check-syntax-automatically (quote (save idle-change mode-enabled)))
-(flycheck-idle-change-delay 3)
+(setq flycheck-check-syntax-automatically (quote (save idle-change mode-enabled)))
+(setq flycheck-idle-change-delay 3)
 
 
 
