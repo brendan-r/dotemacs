@@ -972,14 +972,31 @@ send regions above point."
 
 ;; Mail ------------------------------------------------------------------------
 
-;; Note: This is not in the list of required packages above, as it's
-;; recommended that you use the emacs-client bundled with the primary notmuch
-;; installation itself (as there are API changes)
-(autoload 'notmuch "notmuch" "notmuch mail" t)
-
-
-;; Put mail stuff in another config, load it in if you actually use it!
+;; Put mail stuff in another config, load it in if you actually use it! (Note:
+;; This doesn't seem to work...)
 (load "mail.el" 'missing-ok nil)
+
+;; Note: Tested with mu v0.9.18 @1f232b6 and Emacs 25.2
+(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
+
+;; make sure mu4e is in your load-path
+(require 'mu4e)
+
+;; Only needed if your maildir is _not_ ~/Maildir
+;; Must be a real dir, not a symlink
+;; (setq mu4e-maildir "/home/user/Maildir")
+
+;; these must start with a "/", and must exist
+;; (i.e.. /home/user/Maildir/sent must exist)
+;; you use e.g. 'mu mkdir' to make the Maildirs if they don't
+;; already exist
+
+;; below are the defaults; if they do not exist yet, mu4e offers to
+;; create them. they can also functions; see their docstrings.
+(setq mu4e-sent-folder   "/Sent")
+(setq mu4e-drafts-folder "/Drafts")
+(setq mu4e-trash-folder  "/Trash")
+
 
 
 ;; Databases -------------------------------------------------------------------
