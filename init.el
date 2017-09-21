@@ -259,6 +259,18 @@
 (global-auto-revert-mode t)
 
 
+
+;; Code editing ----------------------------------------------------------------
+
+(require 'newcomment)
+
+;; Activate auto-fill-mode globally for programming modes
+ (add-hook 'prog-mode-hook 'turn-on-auto-fill)
+;; But, make it so that it only runs when you're in a comment (e.g. not for
+;; prose like markdown, and not for code)
+(setq comment-auto-fill-only-comments 1)
+
+
 ;; Yasnippets ------------------------------------------------------------------
 
 (require 'yasnippet)
