@@ -49,7 +49,6 @@
                         stan-mode
                         spaceline
                         mouse3
-                        neotree
                         multi-term
                         ;; Note: If Stan is not installed, this seems to break everything
                         stan-snippets
@@ -206,11 +205,6 @@
 ;;(global-set-key (kbd "C-down") 'forward-paragraph)
 ;;(global-set-key (kbd "C-up") 'backward-paragraph)
 
-
-;; C-o for neotree
-(global-set-key (kbd "C-o") 'neotree-toggle)
-
-
 ;; Alt-arrow for window navigation
 (global-set-key (kbd "<M-up>")    'windmove-up)
 (global-set-key (kbd "<M-down>")  'windmove-down)
@@ -339,9 +333,7 @@
 
 ;; General text display --------------------------------------------------------
 
-;; Make wrapping at the end of a line use whole words Note, you want to exclude
-;; neo tree from this, it makes it very ugly Probably html files too (they tend
-;; to drift over 80 chars)
+;; Make wrapping at the end of a line use whole words
 (global-visual-line-mode t)
 
 
