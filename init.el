@@ -17,8 +17,6 @@
 ;;   character(s) back into the shell, which is very annoying
 ;;
 
-
-
 ;; Allow packages to be installed ----------------------------------------------
 
 (require 'package)
@@ -132,7 +130,6 @@
 
 (define-key cua-global-keymap (kbd "<home>") 'mwim-beginning)
 (define-key cua-global-keymap (kbd "<end>") 'mwim-end)
-
 
 ;; Don't tabify after rect' commands
 (setq cua-auto-tabify-rectangles nil)
@@ -265,6 +262,7 @@
 (setq comment-auto-fill-only-comments 1)
 
 
+
 ;; Yasnippets ------------------------------------------------------------------
 
 (require 'yasnippet)
@@ -309,6 +307,7 @@
           (lambda()
             ;; add this hook as buffer local, so it runs once per window.
             (add-hook 'window-configuration-change-hook 'comint-fix-window-size nil t)))
+
 
 
 ;; GUI stuff -------------------------------------------------------------------
@@ -478,10 +477,12 @@
 (setq scroll-step 1)
 
 
+
 ;; 80 col rule -----------------------------------------------------------------
 
 (require 'fill-column-indicator)
 (setq fci-rule-column 80)
+
 
 
 ;; Windows ---------------------------------------------------------------------
@@ -605,14 +606,13 @@
 
 
 
-;; Multi-term ------------------------------------------------------------------
-
-
 ;; General code editing --------------------------------------------------------
 
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 2)
 ;; (setq indent-line-function 'insert-tab)
+
+
 
 ;; SQL -------------------------------------------------------------------------
 
@@ -644,6 +644,8 @@
 (add-to-list 'auto-mode-alist '("\\.js?\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.css?\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.sass?\\'" . web-mode))
+
+
 
 ;; Bash scripts / terminal repl ------------------------------------------------
 
@@ -887,8 +889,7 @@ send regions above point."
 
 
 
-;; Polymode allow you to see formatted code snippets in documents like markdown
-;; and Rmarkdown
+;; Polymode --------------------------------------------------------------------
 
 ;;; Markdown
 (add-to-list 'auto-mode-alist '("\\.md"   . poly-markdown-mode))
@@ -903,6 +904,7 @@ send regions above point."
 ;; Big Rmarkdown buffers get slow af. See if this helps.
 (add-hook 'poly-markdown+r-mode-hook (lambda() (linum-mode -1)))
 (add-hook 'poly-markdown+r-mode-hook (lambda() (olivetti-mode t)))
+
 
 
 ;; Git -------------------------------------------------------------------------
@@ -987,6 +989,7 @@ send regions above point."
 (load "databases.el" 'missing-ok nil)
 
 
+
 ;; Project management ----------------------------------------------------------
 
 ;; (require 'projectile)
@@ -1039,6 +1042,7 @@ send regions above point."
                       (add-hook 'window-configuration-change-hook
                                 #'olivetti-set-environment nil t)))
                   (setq persp-olivetti-buffers-backup nil)))))
+
 
 
 ;; Customization ---------------------------------------------------------------
