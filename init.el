@@ -17,8 +17,6 @@
 ;;   character(s) back into the shell, which is very annoying
 ;;
 
-
-
 ;; Allow packages to be installed ----------------------------------------------
 
 (require 'package)
@@ -49,7 +47,6 @@
                         stan-mode
                         spaceline
                         mouse3
-                        neotree
                         multi-term
                         ;; Note: If Stan is not installed, this seems to break everything
                         stan-snippets
@@ -134,7 +131,6 @@
 (define-key cua-global-keymap (kbd "<home>") 'mwim-beginning)
 (define-key cua-global-keymap (kbd "<end>") 'mwim-end)
 
-
 ;; Don't tabify after rect' commands
 (setq cua-auto-tabify-rectangles nil)
 
@@ -206,11 +202,6 @@
 ;;(global-set-key (kbd "C-down") 'forward-paragraph)
 ;;(global-set-key (kbd "C-up") 'backward-paragraph)
 
-
-;; C-o for neotree
-(global-set-key (kbd "C-o") 'neotree-toggle)
-
-
 ;; Alt-arrow for window navigation
 (global-set-key (kbd "<M-up>")    'windmove-up)
 (global-set-key (kbd "<M-down>")  'windmove-down)
@@ -271,6 +262,7 @@
 (setq comment-auto-fill-only-comments 1)
 
 
+
 ;; Yasnippets ------------------------------------------------------------------
 
 (require 'yasnippet)
@@ -317,6 +309,7 @@
             (add-hook 'window-configuration-change-hook 'comint-fix-window-size nil t)))
 
 
+
 ;; GUI stuff -------------------------------------------------------------------
 
 ;; Remove the scroll bars
@@ -339,9 +332,7 @@
 
 ;; General text display --------------------------------------------------------
 
-;; Make wrapping at the end of a line use whole words Note, you want to exclude
-;; neo tree from this, it makes it very ugly Probably html files too (they tend
-;; to drift over 80 chars)
+;; Make wrapping at the end of a line use whole words
 (global-visual-line-mode t)
 
 
@@ -486,10 +477,12 @@
 (setq scroll-step 1)
 
 
+
 ;; 80 col rule -----------------------------------------------------------------
 
 (require 'fill-column-indicator)
 (setq fci-rule-column 80)
+
 
 
 ;; Windows ---------------------------------------------------------------------
@@ -613,14 +606,13 @@
 
 
 
-;; Multi-term ------------------------------------------------------------------
-
-
 ;; General code editing --------------------------------------------------------
 
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 2)
 ;; (setq indent-line-function 'insert-tab)
+
+
 
 ;; SQL -------------------------------------------------------------------------
 
@@ -654,6 +646,8 @@
 (add-to-list 'auto-mode-alist '("\\.js?\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.css?\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.sass?\\'" . web-mode))
+
+
 
 ;; Bash scripts / terminal repl ------------------------------------------------
 
@@ -897,8 +891,7 @@ send regions above point."
 
 
 
-;; Polymode allow you to see formatted code snippets in documents like markdown
-;; and Rmarkdown
+;; Polymode --------------------------------------------------------------------
 
 ;;; Markdown
 (add-to-list 'auto-mode-alist '("\\.md"   . poly-markdown-mode))
@@ -913,6 +906,7 @@ send regions above point."
 ;; Big Rmarkdown buffers get slow af. See if this helps.
 (add-hook 'poly-markdown+r-mode-hook (lambda() (linum-mode -1)))
 (add-hook 'poly-markdown+r-mode-hook (lambda() (olivetti-mode t)))
+
 
 
 ;; Git -------------------------------------------------------------------------
@@ -1029,6 +1023,7 @@ send regions above point."
                       (add-hook 'window-configuration-change-hook
                                 #'olivetti-set-environment nil t)))
                   (setq persp-olivetti-buffers-backup nil)))))
+
 
 
 ;; Customization ---------------------------------------------------------------
