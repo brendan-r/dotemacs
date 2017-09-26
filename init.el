@@ -635,6 +635,7 @@
     (insert-clause 0)
     (delete-clause 0)
     (update-clause 0)
+    (select-join-condition 0)
     (in-select-clause + sqlind-lineup-close-paren-to-open-indentation)
     (select-table-continuation + sqlind-lineup-close-paren-to-open-indentation)
     ,@sqlind-default-indentation-offsets-alist))
