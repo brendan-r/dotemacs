@@ -645,7 +645,8 @@
             (setq sqlind-indentation-offsets-alist
                   p43-sql-indentation-offsets-alist)))
 
-
+;; Automatically use the sqlind minor mode when editing SQL files
+(setq sql-mode-hook (quote (sqlind-minor-mode)))
 
 ;; Web stuff -------------------------------------------------------------------
 
