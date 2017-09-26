@@ -927,31 +927,6 @@ send regions above point."
 
 
 
-;; Appearance ------------------------------------------------------------------
-
-;; Make emacs transparent
-;;(set-frame-parameter (selected-frame) 'alpha '(<active> . <inactive>))
-;;(set-frame-parameter (selected-frame) 'alpha <both>)
-;;(set-frame-parameter (selected-frame) 'alpha '(99 . 98))
-;; (add-to-list 'default-frame-alist '(alpha . (99 . 98)))
-
-
-;; Hipster modeline
-(require 'spaceline-config)
-(spaceline-spacemacs-theme)
-
-
-;; Your theme
-(require 'sanityinc-tomorrow-eighties-theme)
-;;(require 'sanityinc-tomorrow-bright-theme)
-
-
-;; Use Emacs terminfo, not system terminfo
-;; http://stackoverflow.com/a/8920373
-(setq system-uses-terminfo nil)
-
-
-
 ;; Misc ------------------------------------------------------------------------
 
 ;; Run emacs as a server with clients
@@ -1075,3 +1050,28 @@ send regions above point."
       `((".*" . ,"~/.emacs.d/auto-save-list/")))
 (setq auto-save-file-name-transforms
       `((".*" ,"~/.emacs.d/auto-save-list/" t)))
+
+
+
+;; Appearance ------------------------------------------------------------------
+
+;; Make emacs transparent
+;;(set-frame-parameter (selected-frame) 'alpha '(<active> . <inactive>))
+;;(set-frame-parameter (selected-frame) 'alpha <both>)
+;;(set-frame-parameter (selected-frame) 'alpha '(99 . 98))
+;; (add-to-list 'default-frame-alist '(alpha . (99 . 98)))
+
+
+;; Hipster modeline
+(require 'spaceline-config)
+(spaceline-spacemacs-theme)
+
+
+;; Your theme
+(require 'sanityinc-tomorrow-eighties-theme)
+;;(require 'sanityinc-tomorrow-bright-theme)
+
+
+;; Use Emacs terminfo, not system terminfo
+;; http://stackoverflow.com/a/8920373
+(setq system-uses-terminfo nil)
