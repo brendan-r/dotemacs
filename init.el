@@ -937,33 +937,34 @@ send regions above point."
     ;; If there is a file called mail.el (where you should keep machine
     ;; specific, non committed email configs), then assume that mu4e is
     ;; installed, and run the following
-    (
-     ;; Note: Tested with mu v0.9.18 @1f232b6 and Emacs 25.2
-     (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
-
-     ;; make sure mu4e is in your load-path
-     (require 'mu4e)
-
-     ;; Only needed if your maildir is _not_ ~/Maildir
-     ;; Must be a real dir, not a symlink
-     ;; (setq mu4e-maildir "/home/user/Maildir")
-
-     ;; these must start with a "/", and must exist
-     ;; (i.e.. /home/user/Maildir/sent must exist)
-     ;; you use e.g. 'mu mkdir' to make the Maildirs if they don't
-     ;; already exist
-
-     ;; below are the defaults; if they do not exist yet, mu4e offers to
-     ;; create them. they can also functions; see their docstrings.
-     (setq mu4e-sent-folder   "/Sent")
-     (setq mu4e-drafts-folder "/Drafts")
-     (setq mu4e-trash-folder  "/Trash")
-     )
+    (progn
+      ;; Note: Tested with mu v0.9.18 @1f232b6 and Emacs 25.2
+      (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
 
       ;; You're not currently using this, but it does turn fancy emails into
       ;; plain text pretty effectively (you should verify what it does with
       ;; links etc.)
       ;; (setq mu4e-html2text-command "html2text -utf8 -width 72")
+
+      ;; make sure mu4e is in your load-path
+      (require 'mu4e)
+
+      ;; Only needed if your maildir is _not_ ~/Maildir
+      ;; Must be a real dir, not a symlink
+      ;; (setq mu4e-maildir "/home/user/Maildir")
+
+      ;; these must start with a "/", and must exist
+      ;; (i.e.. /home/user/Maildir/sent must exist)
+      ;; you use e.g. 'mu mkdir' to make the Maildirs if they don't
+      ;; already exist
+
+      ;; below are the defaults; if they do not exist yet, mu4e offers to
+      ;; create them. they can also functions; see their docstrings.
+      (setq mu4e-sent-folder   "/Sent")
+      (setq mu4e-drafts-folder "/Drafts")
+      (setq mu4e-trash-folder  "/Trash")
+      )
+  (ding)
   )
 
 
