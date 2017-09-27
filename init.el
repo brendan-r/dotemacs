@@ -933,7 +933,7 @@ send regions above point."
 
 ;; Mail ------------------------------------------------------------------------
 
-(if (load "mail.el" 'missing-ok nil)
+(if (load "~/.emacs.d/mail.el" 'missing-ok nil)
     ;; If there is a file called mail.el (where you should keep machine
     ;; specific, non committed email configs), then assume that mu4e is
     ;; installed, and run the following
@@ -967,7 +967,7 @@ send regions above point."
 ;; Databases -------------------------------------------------------------------
 
 ;; Put mail stuff in another config, load it in if you actually use it!
-(load "databases.el" 'missing-ok nil)
+(load "~/.emacs.d/databases.el" 'missing-ok nil)
 
 
 
