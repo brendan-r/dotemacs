@@ -960,6 +960,10 @@ send regions above point."
      (setq mu4e-trash-folder  "/Trash")
      )
 
+      ;; You're not currently using this, but it does turn fancy emails into
+      ;; plain text pretty effectively (you should verify what it does with
+      ;; links etc.)
+      ;; (setq mu4e-html2text-command "html2text -utf8 -width 72")
   )
 
 
