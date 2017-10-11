@@ -71,6 +71,7 @@
                         ivy
                         mwim
                         fold-this
+                        nodejs-repl
                         ))
 
 ;; Activate package autoloads
@@ -715,6 +716,16 @@
               (require 'company-elisp)
               (setq-local company-backends
                           (delete-dups (cons 'company-elisp (cons 'company-files company-backends)))))))
+
+
+
+;; Node / JS -------------------------------------------------------------------
+
+(require 'nodejs-repl)
+
+(add-hook 'js-mode-hook
+          (lambda ()
+            (define-key js-mode-map (kbd "<C-return>") 'nodejs-repl-send-region)))
 
 
 
