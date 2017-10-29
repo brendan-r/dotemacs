@@ -923,9 +923,22 @@ send regions above point."
 
 ;; Git -------------------------------------------------------------------------
 
-;; magit is great, and let's try magithub
 (require 'magit)
+
+;; Note, this taken from https://emacs.stackexchange.com/a/32610
+;; Owing to a problem you were experiencing with wrapping commit messages,
+;; caused by comment-auto-fill-only-comments, set to t, above
+(use-package git-commit
+             :ensure nil
+             :preface
+             (defun me/git-commit-set-fill-column ()
+               (setq-local comment-auto-fill-only-comments nil)
+               (setq fill-column 72))
+             :config
+             (advice-add 'git-commit-turn-on-auto-fill :before #'me/git-commit-set-fill-column))
+
 ;; (require 'magithub)
+
 ;; (magithub-feature-autoinject t)
 
 ;; Set key for magit-status
