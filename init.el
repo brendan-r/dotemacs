@@ -72,6 +72,7 @@
                         mwim
                         fold-this
                         nodejs-repl
+                        use-package
                         ))
 
 ;; Activate package autoloads
