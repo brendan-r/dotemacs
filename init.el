@@ -852,6 +852,10 @@
                                  (forward-line)
                                  (fold-this (point) (point-max)))))
 
+(defun rmd-unfold-all-blocks ()
+  fold-this-unfold-all)
+
+
 ;; E.g. to send a prefix, use C-u M-x rmd-send-buffer
 (defun rmd-fold-all-blocks (arg)
   "Fold all R blocks in an Rmarkdown file (can be undone with
