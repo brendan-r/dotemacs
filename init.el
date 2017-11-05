@@ -180,11 +180,6 @@
 ;; Fill/re-flow comments etc.
 (define-key cua-global-keymap (kbd "C-?") 'fill-individual-paragraphs)
 
-;; Mouse bindings
-;; Make right-click do something close to what people expect
-(global-set-key (kbd "<mouse-3>") 'mouse3-popup-menu)
-
-
 ;; Free up C-RET for REPLs (by default used by cua-rectangle-mark-mode, move the
 ;; latter to C-S-SPC)
 (define-key cua-global-keymap (kbd "<C-return>") nil)
@@ -219,6 +214,19 @@
 ;; Stuff if you're using a Mac
 (setq mac-command-modifier 'control)
 (setq mac-control-modifier 'meta)
+
+
+;; Mouse bindings --------------------------------------------------------------
+
+;; Mouse bindings
+;; Make right-click do something close to what people expect
+(global-set-key (kbd "<mouse-3>") 'mouse3-popup-menu)
+
+;; When you click on a buffer, but you happen to hit the margin, you still want
+;; to select it
+(global-set-key (kbd "<right-margin> <down-mouse-1>") 'mouse-select-window)
+(global-set-key (kbd "<left-margin> <down-mouse-1>") 'mouse-select-window)
+
 
 
 ;; Ivy -------------------------------------------------------------------------
