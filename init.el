@@ -896,6 +896,18 @@ send regions above point."
        ;; adjust this point to send prior regions
        (if arg (point) (point-max))))))
 
+
+
+(defun rmd-plot-chunk (header)
+  "Insert an r-chunk in markdown mode. Necessary due to interactions between
+polymode and yas snippet"
+  (interactive "sHeader: ")
+  (insert (concat "```{r " header ", fig.cap='(ref:" header
+                  ")'}\n\n\n\n```\n\n(ref:" header ") Plot caption here\n\n"))
+  (forward-line -6))
+
+
+
 ;; When the R/ESS shell resizes, let have access to that information for printing
 ;; http://stackoverflow.com/a/20015336/7237812
 (defun comint-fix-window-size ()
