@@ -39,7 +39,6 @@
                         magit
                         ess
                         projectile
-                        eyebrowse
                         yasnippet
                         eval-in-repl
                         expand-region
@@ -1052,34 +1051,6 @@ polymode and yas snippet"
 ;; (persp-mode 1)
 
 
-(with-eval-after-load "olivetti"
-  (with-eval-after-load "persp-mode"
-    (defvar persp-olivetti-buffers-backup nil)
-    (add-hook 'persp-before-deactivate-functions
-              #'(lambda (fow)
-                  (dolist (b (mapcar #'window-buffer
-                                     (window-list (selected-frame)
-                                                  'no-minibuf)))
-                    (with-current-buffer b
-                      (when (eq 'olivetti-split-window-sensibly
-                                split-window-preferred-function)
-                        (push b persp-olivetti-buffers-backup)
-                        (remove-hook 'window-configuration-change-hook
-                                     #'olivetti-set-environment t)
-                        (setq-local split-window-preferred-function nil)
-                        (olivetti-reset-all-windows))))))
-    (add-hook 'persp-activated-functions
-              #'(lambda (fow)
-                  (dolist (b persp-olivetti-buffers-backup)
-                    (with-current-buffer b
-                      (setq-local split-window-preferred-function
-                                  'olivetti-split-window-sensibly)
-                      (add-hook 'window-configuration-change-hook
-                                #'olivetti-set-environment nil t)))
-                  (setq persp-olivetti-buffers-backup nil)))))
-
-
-
 ;; Customization ---------------------------------------------------------------
 
 ;; When making changes via M-x customize-group, save the settings to a separate
@@ -1105,6 +1076,18 @@ polymode and yas snippet"
 (setq auto-save-file-name-transforms
       `((".*" ,"~/.emacs.d/auto-save-list/" t)))
 
+
+
+
+
+;; i3 Integration --------------------------------------------------------------
+
+;; This is pretty simple; if it looks like you're using i3, prefer popping
+;; frames as opposed to splitting windows. Doesn't work for everything
+;; (e.g. iELM), but works well enough most of the time. Assumes that wmctrl is
+;; installed, which it isn't by default, but it's only apt get away
+(when (string-match "i3" (shell-command-to-string "wmctrl -m"))
+  (setq pop-up-frames t))
 
 
 ;; Appearance ------------------------------------------------------------------
