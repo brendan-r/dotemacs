@@ -1092,6 +1092,7 @@ polymode and yas snippet"
 
 ;; Appearance ------------------------------------------------------------------
 
+;; Do this last so you get immediate visual feedback if something breaks
 ;; Make emacs transparent
 ;;(set-frame-parameter (selected-frame) 'alpha '(<active> . <inactive>))
 ;;(set-frame-parameter (selected-frame) 'alpha <both>)
