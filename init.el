@@ -72,6 +72,7 @@
                         fold-this
                         nodejs-repl
                         use-package
+                        sonic-pi
                         ))
 
 ;; Activate package autoloads
@@ -1088,6 +1089,21 @@ polymode and yas snippet"
 ;; installed, which it isn't by default, but it's only apt get away
 (when (string-match "i3" (shell-command-to-string "wmctrl -m"))
   (setq pop-up-frames t))
+
+
+;; Sonic pi stuff --------------------------------------------------------------
+(require 'sonic-pi)
+(setq sonic-pi-path "/usr/lib/sonic-pi/")
+
+;; Optionally define a hook
+(add-hook 'sonic-pi-mode-hook
+          (lambda ()
+            ;; This setq can go here instead if you wish
+            (setq sonic-pi-path "/usr/lib/sonic-pi/")
+            (define-key ruby-mode-map (kbd "<C-return>") 'sonic-pi-send-region)
+            (define-key ruby-mode-map "C-c C-b" 'sonic-pi-stop-all))
+          )
+
 
 
 ;; Appearance ------------------------------------------------------------------
