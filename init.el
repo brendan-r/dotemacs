@@ -349,7 +349,7 @@
 
 ;; Fonts -----------------------------------------------------------------------
 ;; 10pt (in 1/10pt units)
-(set-face-attribute 'default nil :height 105)
+(set-face-attribute 'default nil :height 110)
 
 
 
