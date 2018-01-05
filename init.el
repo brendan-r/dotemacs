@@ -626,8 +626,12 @@
 
 ;; SQL -------------------------------------------------------------------------
 
-(require 'sql-indent)
+;; ;; Use sqlite3 (the standard on Ubuntu, it seems)
+(setq sql-sqlite-program "sqlite3")
 
+;; ;; Indentation  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+(require 'sql-indent)
 ;; As per https://github.com/alex-hhh/emacs-sql-indent/issues/43
 ;;
 ;; Note: You'd like to get a level of indentation after 'on' within a join (for
@@ -649,6 +653,8 @@
 
 ;; Automatically use the sqlind minor mode when editing SQL files
 (setq sql-mode-hook (quote (sqlind-minor-mode)))
+
+
 
 ;; Web stuff -------------------------------------------------------------------
 
