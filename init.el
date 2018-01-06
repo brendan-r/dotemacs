@@ -39,7 +39,7 @@
                         magit
                         ess
                         projectile
-                        yasnippet
+                        ;;yasnippet
                         eval-in-repl
                         expand-region
                         fill-column-indicator
@@ -542,11 +542,11 @@
 
 ;; Unbind tab so it's possible to use yasnippets from
 ;; http://wiki.dreamrunner.org/public_html/Emacs/markdown.html
-(add-hook 'markdown-mode-hook
-          '(lambda ()
-             (auto-complete-mode t)
-             (local-unset-key [tab])
-             (setq-local yas-fallback-behavior '(apply auto-complete))))
+;; ;; (add-hook 'markdown-mode-hook
+;;           '(lambda ()
+;;              (auto-complete-mode t)
+;;              (local-unset-key [tab])
+;;              (setq-local yas-fallback-behavior '(apply auto-complete))))
 
 ;; Unbind Alt-arrow so that you can use it to navigate windows
 (add-hook 'markdown-mode-hook
@@ -696,8 +696,8 @@
   ;; try to get indent/completion working nicely
   (setq python-indent-trigger-commands '(my-company-indent-or-complete-common
                                          indent-for-tab-command
-                                         yas-expand
-                                         yas/expand
+                                         ;;yas-expand
+                                         ;;yas/expand
                                          ))
 
   ;; readline support is wonky at the moment
