@@ -251,6 +251,7 @@
 
 ;; Use smartparens
 (add-hook 'prog-mode-hook #'smartparens-mode)
+(require 'smartparens)
 ;; (add-hook 'ess-mode-hook #'rainbow-delimiters-mode)
 
 ;; Use rainbow delimiters when programming
