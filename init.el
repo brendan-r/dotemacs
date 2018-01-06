@@ -633,6 +633,7 @@
 ;; Indentation  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 (require 'sql-indent)
+
 ;; As per https://github.com/alex-hhh/emacs-sql-indent/issues/43
 ;;
 ;; Note: You'd like to get a level of indentation after 'on' within a join (for
@@ -1008,13 +1009,25 @@ polymode and yas snippet"
       ;; Note: Tested with mu v0.9.18 @1f232b6 and Emacs 25.2
       (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
 
-      ;; You're not currently using this, but it does turn fancy emails into
-      ;; plain text pretty effectively (you should verify what it does with
-      ;; links etc.)
-      ;; (setq mu4e-html2text-command "html2text -utf8 -width 72")
-
       ;; make sure mu4e is in your load-path
       (require 'mu4e)
+
+      ;; If you get your mail without an explicit command,
+      ;; use "true" for the command (this is the default)
+      (setq mu4e-get-mail-command "offlineimap")
+
+      ;; Use format=flowed
+      (setq mu4e-compose-format-flowed t)
+
+      ;; Use olivetti mode to make things look nice and wrap lines
+      (add-hook 'mu4e-compose-mode-hook
+                (lambda() (olivetti-mode t)))
+
+      (setq message-send-mail-function 'message-send-mail-with-sendmail)
+      (setq mu4e-view-html-plaintext-ratio-heuristic 1000)
+
+      ;; This could make HTML mail less horrible
+      (setq mu4e-html2text-command "html2text -utf8 -style pretty -width 72")
 
       ;; Only needed if your maildir is _not_ ~/Maildir
       ;; Must be a real dir, not a symlink
