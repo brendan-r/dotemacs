@@ -1136,14 +1136,15 @@ polymode and yas snippet"
 ;; (add-to-list 'default-frame-alist '(alpha . (99 . 98)))
 
 
-;; Hipster modeline
-(require 'spaceline-config)
-(spaceline-spacemacs-theme)
-
-
 ;; Your theme
 (require 'sanityinc-tomorrow-eighties-theme)
+(set-face-attribute 'fringe nil :background "#2d2d2d" :foreground "#2d2d2d")
+
 ;;(require 'sanityinc-tomorrow-bright-theme)
+
+;; Hipster modeline
+;; (require 'spaceline-config)
+;; (spaceline-spacemacs-theme)
 
 
 ;; Use Emacs terminfo, not system terminfo
