@@ -657,6 +657,17 @@
 ;; Automatically use the sqlind minor mode when editing SQL files
 (setq sql-mode-hook (quote (sqlind-minor-mode)))
 
+(require 'sql)
+
+;; Use sqlite3 (the standard on Ubuntu, it seems)
+(setq sql-sqlite-program "sqlite3")
+
+;; Make C-RET send code to REPL
+(define-key sql-mode-map (kbd "<C-return>") 'sql-send-region)
+;; Don't focus the REPL after sending SQL to it
+(setq sql-pop-to-buffer-after-send-region nil)
+
+
 
 
 ;; Web stuff -------------------------------------------------------------------
