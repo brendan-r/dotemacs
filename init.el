@@ -585,8 +585,11 @@
 ;; on startup.
 ;;
 ;; https://stackoverflow.com/a/23365580
-(setq-default message-log-max nil)
-(kill-buffer "*Messages*")
+;;
+;; Turns out you find these quite useful afterall
+;;
+;; (setq-default message-log-max nil)
+;; (kill-buffer "*Messages*")
 
 ;; Removes *scratch* from buffer after the mode has been set.
 ;; (defun remove-scratch-buffer ()
