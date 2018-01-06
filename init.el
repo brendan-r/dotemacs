@@ -630,10 +630,7 @@
 
 ;; SQL -------------------------------------------------------------------------
 
-;; ;; Use sqlite3 (the standard on Ubuntu, it seems)
-(setq sql-sqlite-program "sqlite3")
-
-;; ;; Indentation  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;; Indentation  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 (require 'sql-indent)
 ;; As per https://github.com/alex-hhh/emacs-sql-indent/issues/43
