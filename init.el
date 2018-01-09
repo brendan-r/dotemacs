@@ -73,6 +73,7 @@
                         fold-this
                         nodejs-repl
                         use-package
+                        undo-tree
                         ))
 
 ;; Activate package autoloads
@@ -214,6 +215,13 @@
 ;; Stuff if you're using a Mac
 (setq mac-command-modifier 'control)
 (setq mac-control-modifier 'meta)
+
+
+;; Undo / redo
+(global-undo-tree-mode 1)            ;; Turn on everywhere
+(global-set-key (kbd "C-z") 'undo)   ;; Make ctrl-z undo
+(defalias 'redo 'undo-tree-redo)
+(global-set-key (kbd "C-S-z") 'redo) ;; Make ctrl-Z redo
 
 
 ;; Mouse bindings --------------------------------------------------------------
@@ -1129,3 +1137,4 @@ polymode and yas snippet"
 ;; Use Emacs terminfo, not system terminfo
 ;; http://stackoverflow.com/a/8920373
 (setq system-uses-terminfo nil)
+(put 'downcase-region 'disabled nil)
