@@ -39,8 +39,7 @@
                         magit
                         ess
                         projectile
-                        eyebrowse
-                        yasnippet
+                        ;;yasnippet
                         eval-in-repl
                         expand-region
                         fill-column-indicator
@@ -74,6 +73,7 @@
                         nodejs-repl
                         use-package
                         undo-tree
+                        sonic-pi
                         ))
 
 ;; Activate package autoloads
@@ -259,6 +259,7 @@
 
 ;; Use smartparens
 (add-hook 'prog-mode-hook #'smartparens-mode)
+(require 'smartparens)
 ;; (add-hook 'ess-mode-hook #'rainbow-delimiters-mode)
 
 ;; Use rainbow delimiters when programming
@@ -357,7 +358,7 @@
 
 ;; Fonts -----------------------------------------------------------------------
 ;; 10pt (in 1/10pt units)
-(set-face-attribute 'default nil :height 105)
+(set-face-attribute 'default nil :height 110)
 
 
 
@@ -550,11 +551,11 @@
 
 ;; Unbind tab so it's possible to use yasnippets from
 ;; http://wiki.dreamrunner.org/public_html/Emacs/markdown.html
-(add-hook 'markdown-mode-hook
-          '(lambda ()
-             (auto-complete-mode t)
-             (local-unset-key [tab])
-             (setq-local yas-fallback-behavior '(apply auto-complete))))
+;; ;; (add-hook 'markdown-mode-hook
+;;           '(lambda ()
+;;              (auto-complete-mode t)
+;;              (local-unset-key [tab])
+;;              (setq-local yas-fallback-behavior '(apply auto-complete))))
 
 ;; Unbind Alt-arrow so that you can use it to navigate windows
 (add-hook 'markdown-mode-hook
@@ -593,8 +594,11 @@
 ;; on startup.
 ;;
 ;; https://stackoverflow.com/a/23365580
-(setq-default message-log-max nil)
-(kill-buffer "*Messages*")
+;;
+;; Turns out you find these quite useful afterall
+;;
+;; (setq-default message-log-max nil)
+;; (kill-buffer "*Messages*")
 
 ;; Removes *scratch* from buffer after the mode has been set.
 ;; (defun remove-scratch-buffer ()
@@ -634,6 +638,8 @@
 
 ;; SQL -------------------------------------------------------------------------
 
+;; Indentation  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 (require 'sql-indent)
 
 ;; As per https://github.com/alex-hhh/emacs-sql-indent/issues/43
@@ -657,6 +663,19 @@
 
 ;; Automatically use the sqlind minor mode when editing SQL files
 (setq sql-mode-hook (quote (sqlind-minor-mode)))
+
+(require 'sql)
+
+;; Use sqlite3 (the standard on Ubuntu, it seems)
+(setq sql-sqlite-program "sqlite3")
+
+;; Make C-RET send code to REPL
+(define-key sql-mode-map (kbd "<C-return>") 'sql-send-region)
+;; Don't focus the REPL after sending SQL to it
+(setq sql-pop-to-buffer-after-send-region nil)
+
+
+
 
 ;; Web stuff -------------------------------------------------------------------
 
@@ -684,8 +703,8 @@
   ;; try to get indent/completion working nicely
   (setq python-indent-trigger-commands '(my-company-indent-or-complete-common
                                          indent-for-tab-command
-                                         yas-expand
-                                         yas/expand
+                                         ;;yas-expand
+                                         ;;yas/expand
                                          ))
 
   ;; readline support is wonky at the moment
@@ -998,13 +1017,25 @@ polymode and yas snippet"
       ;; Note: Tested with mu v0.9.18 @1f232b6 and Emacs 25.2
       (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
 
-      ;; You're not currently using this, but it does turn fancy emails into
-      ;; plain text pretty effectively (you should verify what it does with
-      ;; links etc.)
-      ;; (setq mu4e-html2text-command "html2text -utf8 -width 72")
-
       ;; make sure mu4e is in your load-path
       (require 'mu4e)
+
+      ;; If you get your mail without an explicit command,
+      ;; use "true" for the command (this is the default)
+      (setq mu4e-get-mail-command "offlineimap")
+
+      ;; Use format=flowed
+      (setq mu4e-compose-format-flowed t)
+
+      ;; Use olivetti mode to make things look nice and wrap lines
+      (add-hook 'mu4e-compose-mode-hook
+                (lambda() (olivetti-mode t)))
+
+      (setq message-send-mail-function 'message-send-mail-with-sendmail)
+      (setq mu4e-view-html-plaintext-ratio-heuristic 1000)
+
+      ;; This could make HTML mail less horrible
+      (setq mu4e-html2text-command "html2text -utf8 -style pretty -width 72")
 
       ;; Only needed if your maildir is _not_ ~/Maildir
       ;; Must be a real dir, not a symlink
@@ -1060,34 +1091,6 @@ polymode and yas snippet"
 ;; (persp-mode 1)
 
 
-(with-eval-after-load "olivetti"
-  (with-eval-after-load "persp-mode"
-    (defvar persp-olivetti-buffers-backup nil)
-    (add-hook 'persp-before-deactivate-functions
-              #'(lambda (fow)
-                  (dolist (b (mapcar #'window-buffer
-                                     (window-list (selected-frame)
-                                                  'no-minibuf)))
-                    (with-current-buffer b
-                      (when (eq 'olivetti-split-window-sensibly
-                                split-window-preferred-function)
-                        (push b persp-olivetti-buffers-backup)
-                        (remove-hook 'window-configuration-change-hook
-                                     #'olivetti-set-environment t)
-                        (setq-local split-window-preferred-function nil)
-                        (olivetti-reset-all-windows))))))
-    (add-hook 'persp-activated-functions
-              #'(lambda (fow)
-                  (dolist (b persp-olivetti-buffers-backup)
-                    (with-current-buffer b
-                      (setq-local split-window-preferred-function
-                                  'olivetti-split-window-sensibly)
-                      (add-hook 'window-configuration-change-hook
-                                #'olivetti-set-environment nil t)))
-                  (setq persp-olivetti-buffers-backup nil)))))
-
-
-
 ;; Customization ---------------------------------------------------------------
 
 ;; When making changes via M-x customize-group, save the settings to a separate
@@ -1115,8 +1118,36 @@ polymode and yas snippet"
 
 
 
+
+
+;; i3 Integration --------------------------------------------------------------
+
+;; This is pretty simple; if it looks like you're using i3, prefer popping
+;; frames as opposed to splitting windows. Doesn't work for everything
+;; (e.g. iELM), but works well enough most of the time. Assumes that wmctrl is
+;; installed, which it isn't by default, but it's only apt get away
+(when (string-match "i3" (shell-command-to-string "wmctrl -m"))
+  (setq pop-up-frames t))
+
+
+;; Sonic pi stuff --------------------------------------------------------------
+(require 'sonic-pi)
+(setq sonic-pi-path "/usr/lib/sonic-pi/")
+
+;; Optionally define a hook
+(add-hook 'sonic-pi-mode-hook
+          (lambda ()
+            ;; This setq can go here instead if you wish
+            (setq sonic-pi-path "/usr/lib/sonic-pi/")
+            (define-key ruby-mode-map (kbd "<C-return>") 'sonic-pi-send-region)
+            (define-key ruby-mode-map "C-c C-b" 'sonic-pi-stop-all))
+          )
+
+
+
 ;; Appearance ------------------------------------------------------------------
 
+;; Do this last so you get immediate visual feedback if something breaks
 ;; Make emacs transparent
 ;;(set-frame-parameter (selected-frame) 'alpha '(<active> . <inactive>))
 ;;(set-frame-parameter (selected-frame) 'alpha <both>)
@@ -1124,14 +1155,15 @@ polymode and yas snippet"
 ;; (add-to-list 'default-frame-alist '(alpha . (99 . 98)))
 
 
-;; Hipster modeline
-(require 'spaceline-config)
-(spaceline-spacemacs-theme)
-
-
 ;; Your theme
 (require 'sanityinc-tomorrow-eighties-theme)
+(set-face-attribute 'fringe nil :background "#2d2d2d" :foreground "#2d2d2d")
+
 ;;(require 'sanityinc-tomorrow-bright-theme)
+
+;; Hipster modeline
+;; (require 'spaceline-config)
+;; (spaceline-spacemacs-theme)
 
 
 ;; Use Emacs terminfo, not system terminfo
