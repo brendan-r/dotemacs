@@ -163,7 +163,8 @@
 (define-key cua-global-keymap (kbd "C-b") 'ivy-switch-buffer)
 
 ;; Kill the current buffer
-(define-key cua-global-keymap (kbd "C-k") 'kill-this-buffer)
+(define-key cua-global-keymap (kbd "C-k")
+  '(lambda () (interactive) (kill-buffer (current-buffer))))
 
 ;; Multiple cursors
 (require 'multiple-cursors)
