@@ -74,6 +74,7 @@
                         use-package
                         undo-tree
                         sonic-pi
+                        smex
                         ))
 
 ;; Activate package autoloads
