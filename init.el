@@ -39,7 +39,7 @@
                         magit
                         ess
                         projectile
-                        ;;yasnippet
+                        yasnippet
                         eval-in-repl
                         expand-region
                         fill-column-indicator
@@ -310,7 +310,11 @@
 
 (yas-global-mode 1)
 
-
+;; It seems like it's faster/easier to select snippets using good names, and to
+;; keep tab free for auto-complete/company
+(define-key yas-minor-mode-map [(tab)] nil)
+(define-key yas-minor-mode-map (kbd "TAB") nil)
+(global-set-key (kbd "C-'") 'yas-insert-snippet)
 
 ;; REPL / comint settings ------------------------------------------------------
 
@@ -733,11 +737,11 @@
 
 (with-eval-after-load "python"
   ;; try to get indent/completion working nicely
-  (setq python-indent-trigger-commands '(my-company-indent-or-complete-common
-                                         indent-for-tab-command
-                                         ;;yas-expand
-                                         ;;yas/expand
-                                         ))
+  ;; (setq python-indent-trigger-commands '(my-company-indent-or-complete-common
+  ;;                                        indent-for-tab-command
+  ;;                                        ;;yas-expand
+  ;;                                        ;;yas/expand
+  ;;                                        ))
 
   ;; readline support is wonky at the moment
   (setq python-shell-completion-native-enable nil)
