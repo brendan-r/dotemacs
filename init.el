@@ -559,6 +559,27 @@
 
 
 
+;; org-mode --------------------------------------------------------------------
+
+
+
+;; Allow Control-Shift-Up to select wrapped paragraphs
+(setq org-disputed-keys t)
+(add-hook 'org-mode-hook
+          (lambda ()
+
+            (define-key org-mode-map (kbd "<M-Prior>") 'org-todo)
+            ;; (define-key org-mode-map (kbd "<C-S-up>") 'org-backward-paragraph)
+            ;; (define-key org-mode-map (kbd "<C-S-down>") 'org-foreward-paragraph)
+            ))
+
+
+(add-hook 'org-mode-hook (lambda() (linum-mode -1)))
+(add-hook 'org-mode-hook (lambda() (olivetti-mode t)))
+
+(setq org-default-notes-file (concat "~/notes.org"))
+
+
 ;; Start-up --------------------------------------------------------------------
 
 ;; Remove the splash-screen
