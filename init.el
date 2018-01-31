@@ -72,6 +72,7 @@
                         fold-this
                         nodejs-repl
                         use-package
+                        undo-tree
                         sonic-pi
                         ))
 
@@ -162,7 +163,8 @@
 (define-key cua-global-keymap (kbd "C-b") 'ivy-switch-buffer)
 
 ;; Kill the current buffer
-(define-key cua-global-keymap (kbd "C-k") 'kill-this-buffer)
+(define-key cua-global-keymap (kbd "C-k")
+  '(lambda () (interactive) (kill-buffer (current-buffer))))
 
 ;; Multiple cursors
 (require 'multiple-cursors)
@@ -216,6 +218,13 @@
 (setq mac-control-modifier 'meta)
 
 
+;; Undo / redo
+(global-undo-tree-mode 1)            ;; Turn on everywhere
+(global-set-key (kbd "C-z") 'undo)   ;; Make ctrl-z undo
+(defalias 'redo 'undo-tree-redo)
+(global-set-key (kbd "C-S-z") 'redo) ;; Make ctrl-Z redo
+
+
 ;; Mouse bindings --------------------------------------------------------------
 
 ;; Mouse bindings
@@ -232,7 +241,26 @@
 ;; Ivy -------------------------------------------------------------------------
 ;; Use it
 (ivy-mode t)
+(require 'smex)
 
+
+(setq ivy-initial-inputs-alist
+      '((org-refile . "^")
+        (org-agenda-refile . "^")
+        (org-capture-refile . "^")
+        (counsel-M-x . "^")
+        (counsel-describe-function . "^")
+        (counsel-describe-variable . "^")
+        (counsel-org-capture . "^")
+        (Man-completion-table . "^")
+        (woman . "^")))
+
+;; (defun ivy--custom-basic (str)
+;;   "Match things like in base-Emacs, bash, language-shells, etc. etc."
+;;   (ivy--regex-plus (concat "^" str))
+;;   )
+
+;; (setq ivy-re-builders-alist '((t . ivy--custom-basic)))
 
 ;; General behavior ------------------------------------------------------------
 
@@ -1176,3 +1204,4 @@ polymode and yas snippet"
 ;; Use Emacs terminfo, not system terminfo
 ;; http://stackoverflow.com/a/8920373
 (setq system-uses-terminfo nil)
+(put 'downcase-region 'disabled nil)
