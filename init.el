@@ -252,6 +252,7 @@
         (counsel-describe-function . "^")
         (counsel-describe-variable . "^")
         (counsel-org-capture . "^")
+        (counsel-find-file . "^")
         (Man-completion-table . "^")
         (woman . "^")))
 
