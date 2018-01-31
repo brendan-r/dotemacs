@@ -1014,6 +1014,9 @@ polymode and yas snippet"
       (add-hook 'mu4e-compose-mode-hook
                 (lambda() (olivetti-mode t)))
 
+      (add-hook 'mu4e-view-mode-hook
+                (lambda() (olivetti-mode t)))
+
       (setq message-send-mail-function 'message-send-mail-with-sendmail)
       (setq mu4e-view-html-plaintext-ratio-heuristic 1000)
 
