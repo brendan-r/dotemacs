@@ -1,0 +1,25 @@
+# -*- mode: snippet -*-
+# name: boilerplate-w-cte-daily-content
+# key: boilerplate-w-cte-daily-content
+# --
+-- To blame: @brendan | rocksb -------------------------------------------------
+--
+--
+with
+
+  ${1:cte_name} as (
+    select
+      $0
+    from
+      rollups.daily_content_watched_by_device
+    where
+      day >= '{{start_date}}' and
+      day <  '{{end_date}}'
+    group by
+  ),
+
+
+select
+  *
+from
+  ${1:cte_name}

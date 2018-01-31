@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: cte-daily-content
+# key: cte-daily-content
+# --
+${1:name} as (
+  select
+    $0
+  from
+    rollups.daily_content_watched_by_device
+  where
+    day >= '{{start_date}}' and
+    day <  '{{end_date}}'
+  group by
+),

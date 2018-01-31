@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: cte
+# key: cte
+# --
+${1:name} as (
+  select
+
+  from
+    $0
+  where
+    time > '{{start_date}}' and
+    time < '{{end_date}}'
+  group by
+),

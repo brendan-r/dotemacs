@@ -39,7 +39,7 @@
                         magit
                         ess
                         projectile
-                        ;;yasnippet
+                        yasnippet
                         eval-in-repl
                         expand-region
                         fill-column-indicator
@@ -74,6 +74,7 @@
                         use-package
                         undo-tree
                         sonic-pi
+                        smex
                         ))
 
 ;; Activate package autoloads
@@ -311,7 +312,11 @@
 
 (yas-global-mode 1)
 
-
+;; It seems like it's faster/easier to select snippets using good names, and to
+;; keep tab free for auto-complete/company
+(define-key yas-minor-mode-map [(tab)] nil)
+(define-key yas-minor-mode-map (kbd "TAB") nil)
+(global-set-key (kbd "C-'") 'yas-insert-snippet)
 
 ;; REPL / comint settings ------------------------------------------------------
 
@@ -578,15 +583,6 @@
 ;;              (local-unset-key [tab])
 ;;              (setq-local yas-fallback-behavior '(apply auto-complete))))
 
-;; Unbind Alt-arrow so that you can use it to navigate windows
-(add-hook 'markdown-mode-hook
-          (lambda ()
-            (local-unset-key (kbd "<M-up>"))
-            (local-unset-key (kbd "<M-left>"))
-            (local-unset-key (kbd "<M-right>"))
-            (local-unset-key (kbd "<M-down>"))
-            ))
-
 ;; Allow math mode for stuff in-between $..$ or $$..$$
 (setq markdown-enable-math t)
 
@@ -595,6 +591,27 @@
 (add-hook 'markdown-mode-hook (lambda() (linum-mode -1)))
 (add-hook 'markdown-mode-hook (lambda() (olivetti-mode t)))
 
+
+
+;; org-mode --------------------------------------------------------------------
+
+
+
+;; Allow Control-Shift-Up to select wrapped paragraphs
+(setq org-disputed-keys t)
+(add-hook 'org-mode-hook
+          (lambda ()
+
+            (define-key org-mode-map (kbd "<M-Prior>") 'org-todo)
+            ;; (define-key org-mode-map (kbd "<C-S-up>") 'org-backward-paragraph)
+            ;; (define-key org-mode-map (kbd "<C-S-down>") 'org-foreward-paragraph)
+            ))
+
+
+(add-hook 'org-mode-hook (lambda() (linum-mode -1)))
+(add-hook 'org-mode-hook (lambda() (olivetti-mode t)))
+
+(setq org-default-notes-file (concat "~/notes.org"))
 
 
 ;; Start-up --------------------------------------------------------------------
@@ -722,11 +739,11 @@
 
 (with-eval-after-load "python"
   ;; try to get indent/completion working nicely
-  (setq python-indent-trigger-commands '(my-company-indent-or-complete-common
-                                         indent-for-tab-command
-                                         ;;yas-expand
-                                         ;;yas/expand
-                                         ))
+  ;; (setq python-indent-trigger-commands '(my-company-indent-or-complete-common
+  ;;                                        indent-for-tab-command
+  ;;                                        ;;yas-expand
+  ;;                                        ;;yas/expand
+  ;;                                        ))
 
   ;; readline support is wonky at the moment
   (setq python-shell-completion-native-enable nil)
@@ -1050,6 +1067,9 @@ polymode and yas snippet"
 
       ;; Use olivetti mode to make things look nice and wrap lines
       (add-hook 'mu4e-compose-mode-hook
+                (lambda() (olivetti-mode t)))
+
+      (add-hook 'mu4e-view-mode-hook
                 (lambda() (olivetti-mode t)))
 
       (setq message-send-mail-function 'message-send-mail-with-sendmail)
