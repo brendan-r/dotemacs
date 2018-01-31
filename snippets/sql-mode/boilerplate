@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: boilerplate
+# key: boilerplate
+# --
+-- To blame: @brendan | rocksb -------------------------------------------------
+--
+--
+
+select
+from
+  $0
+where
+group by

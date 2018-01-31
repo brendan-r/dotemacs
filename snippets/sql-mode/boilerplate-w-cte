@@ -1,0 +1,24 @@
+# -*- mode: snippet -*-
+# name: boilerplate
+# key: boilerplate
+# --
+-- To blame: @brendan | rocksb -------------------------------------------------
+--
+--
+with
+
+  ${1:name} as (
+    select
+
+    from
+      $0
+    where
+
+    group by
+  ),
+
+
+select
+  *
+from
+  ${1:name}
