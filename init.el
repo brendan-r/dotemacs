@@ -549,15 +549,6 @@
 ;;              (local-unset-key [tab])
 ;;              (setq-local yas-fallback-behavior '(apply auto-complete))))
 
-;; Unbind Alt-arrow so that you can use it to navigate windows
-(add-hook 'markdown-mode-hook
-          (lambda ()
-            (local-unset-key (kbd "<M-up>"))
-            (local-unset-key (kbd "<M-left>"))
-            (local-unset-key (kbd "<M-right>"))
-            (local-unset-key (kbd "<M-down>"))
-            ))
-
 ;; Allow math mode for stuff in-between $..$ or $$..$$
 (setq markdown-enable-math t)
 
