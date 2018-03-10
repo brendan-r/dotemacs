@@ -25,6 +25,7 @@
 (add-to-list 'package-archives
              '("melpa" . "https://melpa.org/packages/") t)
 
+
 (when (< emacs-major-version 25)
   ;; For important compatibility libraries like cl-lib
   (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")))
@@ -1212,6 +1213,89 @@ polymode and yas snippet"
             (define-key ruby-mode-map (kbd "<C-return>") 'sonic-pi-send-region)
             (define-key ruby-mode-map "C-c C-b" 'sonic-pi-stop-all))
           )
+
+
+
+;; Elfeed ----------------------------------------------------------------------
+
+(require 'cl-lib)
+(require 'elfeed)
+(require 'youtube-dl)
+
+(load "~/.emacs.d/lisp/youtube-dl-emacs/youtube-dl.el" 'missing-ok nil)
+
+(global-set-key (kbd "C-x w") 'elfeed)
+
+
+;; ;; Stop lines wrapping in search mode
+;; (add-hook 'elfeed-search-mode-hook
+;;                (lambda() (visual-line-mode t)))
+
+
+;; Read entries in olivetti mode
+(add-hook 'elfeed-show-mode-hook
+                (lambda() (olivetti-mode t)))
+
+
+
+;; Somewhere in your .emacs file
+(setq elfeed-feeds
+      '("http://nullprogram.com/feed/"
+        "http://planet.emacsen.org/atom.xml"
+        ;; Boilerroom
+        "https://www.youtube.com/feeds/videos.xml?channel_id=UCGBpxWJr9FNOcFYA5GkKrMg"
+        ))
+
+
+
+;; youtube-dl config (yoinked straight from
+;; https://github.com/skeeto/.emacs.d/blob/master/etc/feed-setup.el)
+
+(setq youtube-dl-directory "~/Videos")
+
+(defface elfeed-youtube
+  '((t :foreground "#f9f"))
+  "Marks YouTube videos in Elfeed."
+  :group 'elfeed)
+
+(push '(youtube elfeed-youtube)
+      elfeed-search-face-alist)
+
+(defun elfeed-show-youtube-dl ()
+  "Download the current entry with youtube-dl."
+  (interactive)
+  (pop-to-buffer (youtube-dl (elfeed-entry-link elfeed-show-entry))))
+
+(cl-defun elfeed-search-youtube-dl (&key slow)
+  "Download the current entry with youtube-dl."
+  (interactive)
+  (let ((entries (elfeed-search-selected)))
+    (dolist (entry entries)
+      (if (null (youtube-dl (elfeed-entry-link entry)
+                            :title (elfeed-entry-title entry)
+                            :slow slow))
+          (message "Entry is not a YouTube link!")
+        (message "Downloading %s" (elfeed-entry-title entry)))
+      (elfeed-untag entry 'unread)
+      (elfeed-search-update-entry entry)
+      (unless (use-region-p) (forward-line)))))
+
+
+(defun expose (function &rest args)
+  "Return an interactive version of FUNCTION, 'exposing' it to the user."
+  (lambda ()
+    (interactive)
+    (apply function args)))
+
+(defalias 'elfeed-search-youtube-dl-slow
+  (expose #'elfeed-search-youtube-dl :slow t))
+
+(define-key elfeed-show-mode-map "d" 'elfeed-show-youtube-dl)
+(define-key elfeed-search-mode-map "d" 'elfeed-search-youtube-dl)
+(define-key elfeed-search-mode-map "D" 'elfeed-search-youtube-dl-slow)
+(define-key elfeed-search-mode-map "L" 'youtube-dl-list)
+
+
 
 
 
