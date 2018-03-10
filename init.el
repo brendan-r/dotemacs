@@ -1050,14 +1050,19 @@ polymode and yas snippet"
              :config
              (advice-add 'git-commit-turn-on-auto-fill :before #'me/git-commit-set-fill-column))
 
-;; (require 'magithub)
-
-;; (magithub-feature-autoinject t)
 
 ;; Set key for magit-status
 (global-set-key (kbd "C-x C-g") 'magit-status)
 
 
+;; Try out magithub
+;;
+;; This may cause errors without an update of magit. It *shouldn't* do anything
+;; unless it can auth, so adding this line *should* be harmless on machines where
+;; you don't have an interest in GH stuff.
+
+(require 'magithub)
+(magithub-feature-autoinject t)
 
 ;; Misc ------------------------------------------------------------------------
 
