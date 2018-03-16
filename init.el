@@ -718,11 +718,18 @@
 
 ;; Web stuff -------------------------------------------------------------------
 
-(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.js?\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.css?\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.sass?\\'" . web-mode))
+;; Note: For HTML and CSS, you could use web-mode (spacemacs does, for example),
+;; but using independent modes for now, mainly for testing out skewer
+(require 'js2-mode)
+(require 'skewer-mode)
 
+(add-to-list 'auto-mode-alist '("\\.html?\\'" . html-mode))
+(add-to-list 'auto-mode-alist '("\\.css?\\'" . css-mode))
+(add-to-list 'auto-mode-alist '("\\.js?\\'" . js2-mode))
+
+(add-hook 'js2-mode-hook 'skewer-mode)
+(add-hook 'css-mode-hook 'skewer-css-mode)
+(add-hook 'html-mode-hook 'skewer-html-mode)
 
 
 ;; Bash scripts / terminal repl ------------------------------------------------
