@@ -1273,7 +1273,12 @@ polymode and yas snippet"
     (dolist (entry entries)
       (if (null (youtube-dl (elfeed-entry-link entry)
                             :title (elfeed-entry-title entry)
-                            :slow slow))
+                            :slow slow
+                            :directory (concat
+                                        (file-name-as-directory youtube-dl-directory)
+                                        (elfeed-feed-title (elfeed-entry-feed entry))
+                                        )
+                            ))
           (message "Entry is not a YouTube link!")
         (message "Downloading %s" (elfeed-entry-title entry)))
       (elfeed-untag entry 'unread)
