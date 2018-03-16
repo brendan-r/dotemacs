@@ -1248,10 +1248,40 @@ polymode and yas snippet"
 
 ;; Somewhere in your .emacs file
 (setq elfeed-feeds
-      '("http://nullprogram.com/feed/"
-        "http://planet.emacsen.org/atom.xml"
+      '(
+        ;; Blogs -----------------------------------------------------------------------
+        ("http://nullprogram.com/feed/" blog emacs hacking)
+        ("http://planet.emacsen.org/atom.xml" blog emacs hacking)
+        ;;
+        ;; 'Magazine' stuff ------------------------------------------------
+        ;;
+        ;; Mike Zaminsky / Using Emacs
+        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCxkMDXQ5qzYOgXPRnOBrp1w" yt emacs hacking)
+        ;; Noisey
+        ("https://www.youtube.com/feeds/videos.xml?channel_id=UC0iwHRFpv2_fpojZgQhElEQ" yt music)
+        ;; Waypoint
+        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCWu9QuHF-dcakBmhullIH6w" yt music)
+        ;; iD Magazine
+        ("https://www.youtube.com/feeds/videos.xml?channel_id=UC9ISPZsMaBi5mutsgX6LC1g" yt music)
+        ;; Motherboard
+        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCB6PV0cvJpzlcXRG7nz6PpQ" yt hacking)
+        ;; Thump
+        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCS6R2iiAJ1FvEYl4B3zmljw" yt music)
+        ;;
+        ;; News -----------------------------------------------------------------------
+        ;;
+        ;; UK Parliament, PMQs only
+        ("https://www.youtube.com/feeds/videos.xml?playlist_id=PL40441042C458B62B" yt news)
+        ;;
+        ;; Music ---------------------------------------------------------------------
+        ;;
+        ;; Ninja Tune
+        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCEXRv_qihRwjsV91ftx23-A" yt music)
+        ;; Warp Records
+        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCvbd4lVoe8ur0zJJRuuhC_Q" yt music)
         ;; Boilerroom
-        "https://www.youtube.com/feeds/videos.xml?channel_id=UCGBpxWJr9FNOcFYA5GkKrMg"
+        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCGBpxWJr9FNOcFYA5GkKrMg" yt music live)
+
         ))
 
 
