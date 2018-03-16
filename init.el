@@ -1,15 +1,16 @@
 ;; TODO
 ;;
+;; - Try out straight.el
+;;
+;; - Add a .csv mode (toggle-truncate-lines and csv-align-fields on a mode hook
+;;   are probably sufficient)
+;;
 ;; - Figure out how to make the iESS R buffer show the last command run
 ;;   (even if it was via ess-eval-region, or similar)
 ;;
-;; - Find a good way to do auto-completion (with visible suggestions)
+;; - Find a good way to do auto-completion in R (with visible suggestions)
 ;;
 ;; - See if you can find a reasonable way to work with SQL interactively
-;;
-;; - Get a shortcut to pop multi-term
-;;
-;; - Figure out a good shortcut to do reverse search in a terminal
 ;;
 ;; Comint mode all shells:
 ;;
