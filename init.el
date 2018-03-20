@@ -78,6 +78,7 @@
                         sonic-pi
                         smex
                         elpy
+                        ranger-mode
                         ))
 
 ;; Activate package autoloads
@@ -1222,6 +1223,10 @@ polymode and yas snippet"
             (define-key ruby-mode-map "C-c C-b" 'sonic-pi-stop-all))
           )
 
+
+;; ranger-mode -----------------------------------------------------------------
+
+(setq ranger-cleanup-eagerly t)
 
 
 ;; Elfeed ----------------------------------------------------------------------
