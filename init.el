@@ -1359,8 +1359,8 @@ polymode and yas snippet"
 ;;(require 'sanityinc-tomorrow-bright-theme)
 
 ;; Hipster modeline
-;; (require 'spaceline-config)
-;; (spaceline-spacemacs-theme)
+(require 'spaceline-config)
+(spaceline-spacemacs-theme)
 
 
 ;; Use Emacs terminfo, not system terminfo
