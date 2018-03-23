@@ -78,7 +78,7 @@
                         sonic-pi
                         smex
                         elpy
-                        ranger-mode
+                        ranger
                         ))
 
 ;; Activate package autoloads
