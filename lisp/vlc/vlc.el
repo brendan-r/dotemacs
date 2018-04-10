@@ -37,8 +37,16 @@
         (cl-return-from :cancel))
       (delete-process vlc-process))
     (setf vlc-process
-	  ;; Start a proces controllable by the rc interface
-	  (start-process "vlc-media" nil vlc-program-name "--extraintf" "rc"))))
+          ;; Start a proces controllable by the rc interface
+          (start-process "vlc-media" nil vlc-program-name
+                         ;; Remove all the border stuff
+                         "--qt-minimal-view"
+                         ;; Prevents bad i3 interaction
+                         "--no-qt-video-autoresize"
+                         ;; Don't show the cone when there's nothing to play
+                         "--no-qt-bgcone"
+                         ;; Init the remote control interface
+                         "--extraintf" "rc"))))
 
 (defun vlc (&rest commands)
   "Send a command(-set) to a vlc subprocess.
