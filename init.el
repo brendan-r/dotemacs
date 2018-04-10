@@ -1256,14 +1256,14 @@ polymode and yas snippet"
 (add-hook 'elfeed-show-mode-hook
                 (lambda() (olivetti-mode t)))
 
-
-
 ;; Somewhere in your .emacs file
 (setq elfeed-feeds
       '(
-        ;; Blogs -----------------------------------------------------------------------
+        ;; Blogs ----------------------------------------------------------
+        ;;
         ("http://nullprogram.com/feed/" blog emacs hacking)
         ("http://planet.emacsen.org/atom.xml" blog emacs hacking)
+        ;;
         ;;
         ;; 'Magazine' stuff ------------------------------------------------
         ;;
@@ -1279,11 +1279,19 @@ polymode and yas snippet"
         ("https://www.youtube.com/feeds/videos.xml?channel_id=UCB6PV0cvJpzlcXRG7nz6PpQ" yt hacking)
         ;; Thump
         ("https://www.youtube.com/feeds/videos.xml?channel_id=UCS6R2iiAJ1FvEYl4B3zmljw" yt music)
+        ;; KODX Seattle
+        ("https://www.youtube.com/feeds/videos.xml?channel_id=UC4YGLMPVaCdMFiIJL9_Pq2A" yt interviews)
+
         ;;
         ;; News -----------------------------------------------------------------------
         ;;
         ;; UK Parliament, PMQs only
         ("https://www.youtube.com/feeds/videos.xml?playlist_id=PL40441042C458B62B" yt news)
+        ;; Democracy now
+        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCzuqE7-t13O4NIDYJfakrhw" yt news)
+        ;; Channel 4 news
+        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCTrQ7HXWRRxr7OsOtodr2_w" yt news)
+        ;;
         ;;
         ;; Music ---------------------------------------------------------------------
         ;;
@@ -1293,7 +1301,6 @@ polymode and yas snippet"
         ("https://www.youtube.com/feeds/videos.xml?channel_id=UCvbd4lVoe8ur0zJJRuuhC_Q" yt music)
         ;; Boilerroom
         ("https://www.youtube.com/feeds/videos.xml?channel_id=UCGBpxWJr9FNOcFYA5GkKrMg" yt music live)
-
         ))
 
 
