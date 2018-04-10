@@ -156,10 +156,6 @@
 ;; C-s -> save
 (define-key cua-global-keymap (kbd "C-s") 'save-buffer)
 
-;; C-f -> find
-(global-set-key (kbd "C-f") 'isearch-forward)
-(define-key isearch-mode-map "\C-f" 'isearch-repeat-forward)
-
 ;; Kill the buffer and close the window
 (define-key cua-global-keymap (kbd "C-S-w") 'kill-buffer-and-window)
 
@@ -245,11 +241,39 @@
 
 
 
+
 ;; Ivy -------------------------------------------------------------------------
 ;; Use it
-(ivy-mode t)
-(require 'smex)
+(require 'ivy)
+(require 'counsel)
+(require 'swiper)
 
+(ivy-mode 1)
+(setq ivy-use-virtual-buffers t)
+
+(define-key ivy-minibuffer-map (kbd "TAB") 'ivy-alt-done)
+
+(global-set-key (kbd "C-f") 'swiper)
+(global-set-key (kbd "M-x") 'counsel-M-x)
+(global-set-key (kbd "C-x C-f") 'counsel-find-file)
+(global-set-key (kbd "<f1> f") 'counsel-describe-function)
+(global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+(global-set-key (kbd "<f1> l") 'counsel-find-library)
+(global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+
+(setq ivy-re-builders-alist
+      '((t . ivy--regex-fuzzy)
+        (swiper . ivy--regex-plus)))
+
+(require 'smex)
+;; (require 'flx)
+;; (require 'company-flx)
+
+;; (with-eval-after-load 'company
+;;  (company-flx-mode +1))
+
+;; (setq ivy-initial-inputs-alist "^")
 
 ;; (setq ivy-initial-inputs-alist
 ;;       '((org-refile . "^")
