@@ -249,17 +249,17 @@
 (require 'smex)
 
 
-(setq ivy-initial-inputs-alist
-      '((org-refile . "^")
-        (org-agenda-refile . "^")
-        (org-capture-refile . "^")
-        (counsel-M-x . "^")
-        (counsel-describe-function . "^")
-        (counsel-describe-variable . "^")
-        (counsel-org-capture . "^")
-        (counsel-find-file . "^")
-        (Man-completion-table . "^")
-        (woman . "^")))
+;; (setq ivy-initial-inputs-alist
+;;       '((org-refile . "^")
+;;         (org-agenda-refile . "^")
+;;         (org-capture-refile . "^")
+;;         (counsel-M-x . "^")
+;;         (counsel-describe-function . "^")
+;;         (counsel-describe-variable . "^")
+;;         (counsel-org-capture . "^")
+;;         (counsel-find-file . "^")
+;;         (Man-completion-table . "^")
+;;         (woman . "^")))
 
 ;; (defun ivy--custom-basic (str)
 ;;   "Match things like in base-Emacs, bash, language-shells, etc. etc."
