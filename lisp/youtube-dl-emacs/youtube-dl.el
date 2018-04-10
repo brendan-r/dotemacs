@@ -30,6 +30,7 @@
 (require 'json)
 (require 'cl-lib)
 (require 'hl-line)
+(require 'vlc)
 
 (defgroup youtube-dl ()
   "Download queue for the youtube-dl command line program."
@@ -104,7 +105,9 @@ Instead of --rate-limit use `youtube-dl-slow-rate'."
   log          ; All program output (list of strings)
   log-end      ; Last log item (list of strings)
   paused-p     ; Non-nil if download is paused
-  slow-p)      ; Non-nil if download should be rate limited
+  slow-p       ; Non-nil if download should be rate limited
+  autoplay     ; Non-nil to enqueue in VLC when complete
+  )
 
 (defvar youtube-dl-items ()
   "List of all items still to be downloaded.")
@@ -140,8 +143,16 @@ Instead of --rate-limit use `youtube-dl-slow-rate'."
 (defun youtube-dl--sentinel (proc status)
   (let ((item (plist-get (process-plist proc) :item)))
     (setf youtube-dl-process nil)
+    ;; If the file is "finished"
     (if (equal status "finished\n")
-        (youtube-dl--remove item)
+        (progn
+         ;; Remove the item from the list
+         (youtube-dl--remove item)
+         ;; If the item's 'autoplay' value is true, then queue it up via VLC
+         (setq output_file
+               (concat (youtube-dl-item-directory item) "/" (youtube-dl-item-destination item)))
+         (if (youtube-dl-item-autoplay item) (vlc/enqueue output_file))
+         )
       (cl-incf (youtube-dl-item-failures item)))
     (youtube-dl--run)))
 
@@ -236,7 +247,7 @@ display purposes anyway."
 
 ;;;###autoload
 (cl-defun youtube-dl
-    (url &key title (priority 0) directory destination paused slow)
+    (url &key title (priority 0) directory destination paused slow autoplay)
   "Queues URL for download using youtube-dl, returning the new item."
   (interactive
    (list (read-from-minibuffer
@@ -251,7 +262,9 @@ display purposes anyway."
                                         :slow-p slow
                                         :directory full-dir
                                         :destination destination
-                                        :title title)))
+                                        :title title
+                                        :autoplay autoplay
+                                        )))
     (prog1 item
       (when id
         (youtube-dl--add item)
