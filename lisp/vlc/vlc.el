@@ -32,9 +32,9 @@
     (when (process-live-p vlc-process)
       ;; We already have live process
       (when (and (called-interactively-p 'interactive)
-		 ;; Offer to kill it
-		 (not (y-or-n-p "VLC already running, should I kill it? ")))
-	(cl-return-from :cancel))
+                 ;; Offer to kill it
+                 (not (y-or-n-p "VLC already running, should I kill it? ")))
+        (cl-return-from :cancel))
       (delete-process vlc-process))
     (setf vlc-process
 	  ;; Start a proces controllable by the rc interface
