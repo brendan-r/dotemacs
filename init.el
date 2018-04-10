@@ -79,6 +79,8 @@
                         smex
                         elpy
                         ranger
+                        skewer-mode
+                        simple-httpd
                         ))
 
 ;; Activate package autoloads
@@ -723,6 +725,7 @@
 ;; but using independent modes for now, mainly for testing out skewer
 (require 'js2-mode)
 (require 'skewer-mode)
+(require 'simple-httpd)
 
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . html-mode))
 (add-to-list 'auto-mode-alist '("\\.css?\\'" . css-mode))
