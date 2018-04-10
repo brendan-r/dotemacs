@@ -1328,14 +1328,31 @@ polymode and yas snippet"
   (interactive)
   (let ((entries (elfeed-search-selected)))
     (dolist (entry entries)
+
+      (setq vid-file (elfeed-youtube-dl-filename-sanizer
+                      (elfeed-entry-title entry)))
+
+      (setq vid-dir (concat
+                     (file-name-as-directory youtube-dl-directory)
+                     (elfeed-feed-title (elfeed-entry-feed entry))))
+
       (if (null (youtube-dl (elfeed-entry-link entry)
                             :title (elfeed-entry-title entry)
                             :slow slow
-                            :directory (concat
-                                        (file-name-as-directory youtube-dl-directory)
-                                        (elfeed-feed-title (elfeed-entry-feed entry))
-                                        )
-                            ))
+                            :destination vid-file
+                            :directory vid-dir
+                            :autoplay t
+                            )
+                ;; Note: You're not really how to do the queuing
+                ;; thing... Possibly a hook in ytdl, or just watch the process,
+                ;; or just watch for the file to appear..?
+                ;;
+                ;; Check out youtube-dl--sentinel
+                ;;
+                ;; Could you store whether it should be played or not
+                ;;
+                ;; (vlc/enqueue (concat (filename-as-directory vid-dir) vid-name))
+                )
           (message "Entry is not a YouTube link!")
         (message "Downloading %s" (elfeed-entry-title entry)))
       (elfeed-untag entry 'unread)
@@ -1358,7 +1375,29 @@ polymode and yas snippet"
 (define-key elfeed-search-mode-map "L" 'youtube-dl-list)
 
 
+(defun elfeed-youtube-dl-filename-sanizer(filename)
+  "Produce a sanitized filename for downloaded youtube-dl videos, using a simple
+  regex convention determined in elisp (as opposed to a sophisticated one
+  determined in Python).
 
+  The reasoning is that you'd like a simple string that you can pass to VLC once
+  the thing is donwloaded"
+  (concat
+   (replace-regexp-in-string
+    "_+" "_"
+    (replace-regexp-in-string "[[:space:][:punct:]]" "_" filename)
+    )
+   ".mp4"
+   )
+  )
+
+
+
+;; VLC ------------------------------------------------------------------------
+
+;; So, now you've downloaded all this crap to watch, you have to watch it
+
+(require 'vlc)
 
 
 ;; Appearance ------------------------------------------------------------------
