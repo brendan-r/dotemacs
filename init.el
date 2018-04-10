@@ -736,6 +736,10 @@
 (add-hook 'html-mode-hook 'skewer-html-mode)
 
 
+;; set root folder for httpd server
+(setq httpd-root "~/projects/forecast_site")
+
+
 ;; Bash scripts / terminal repl ------------------------------------------------
 
 (require 'essh) ; if not done elsewhere; essh is in the local lisp folder
