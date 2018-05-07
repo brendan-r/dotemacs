@@ -81,6 +81,7 @@
                         ranger
                         skewer-mode
                         simple-httpd
+                        counsel
                         ))
 
 ;; Activate package autoloads
