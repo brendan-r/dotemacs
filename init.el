@@ -81,6 +81,8 @@
                         skewer-mode
                         simple-httpd
                         counsel
+                        elfeed
+                        cl-lib
                         ))
 
 ;; Activate package autoloads
