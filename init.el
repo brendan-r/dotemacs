@@ -47,7 +47,6 @@
                         fill-column-indicator
                         stan-mode
                         spaceline
-                        mouse3
                         multi-term
                         ;; Note: If Stan is not installed, this seems to break everything
                         stan-snippets
