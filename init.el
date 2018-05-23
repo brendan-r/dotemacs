@@ -708,29 +708,29 @@
 
 ;; Indentation  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-(require 'sql-indent)
+;; (require 'sql-indent)
 
-;; As per https://github.com/alex-hhh/emacs-sql-indent/issues/43
-;;
-;; Note: You'd like to get a level of indentation after 'on' within a join (for
-;; long lists of conditions). Worth investigating in the future!
-(defvar p43-sql-indentation-offsets-alist
-  `((select-clause 0)
-    (insert-clause 0)
-    (delete-clause 0)
-    (update-clause 0)
-    (select-join-condition 0)
-    (in-select-clause + sqlind-lineup-close-paren-to-open-indentation)
-    (select-table-continuation + sqlind-lineup-close-paren-to-open-indentation)
-    ,@sqlind-default-indentation-offsets-alist))
+;; ;; As per https://github.com/alex-hhh/emacs-sql-indent/issues/43
+;; ;;
+;; ;; Note: You'd like to get a level of indentation after 'on' within a join (for
+;; ;; long lists of conditions). Worth investigating in the future!
+;; (defvar p43-sql-indentation-offsets-alist
+;;   `((select-clause 0)
+;;     (insert-clause 0)
+;;     (delete-clause 0)
+;;     (update-clause 0)
+;;     (select-join-condition 0)
+;;     (in-select-clause + sqlind-lineup-close-paren-to-open-indentation)
+;;     (select-table-continuation + sqlind-lineup-close-paren-to-open-indentation)
+;;     ,@sqlind-default-indentation-offsets-alist))
 
-(add-hook 'sqlind-minor-mode-hook
-          (lambda ()
-            (setq sqlind-indentation-offsets-alist
-                  p43-sql-indentation-offsets-alist)))
+;; (add-hook 'sqlind-minor-mode-hook
+;;           (lambda ()
+;;             (setq sqlind-indentation-offsets-alist
+;;                   p43-sql-indentation-offsets-alist)))
 
-;; Automatically use the sqlind minor mode when editing SQL files
-(setq sql-mode-hook (quote (sqlind-minor-mode)))
+;; ;; Automatically use the sqlind minor mode when editing SQL files
+;; (setq sql-mode-hook (quote (sqlind-minor-mode)))
 
 (require 'sql)
 
