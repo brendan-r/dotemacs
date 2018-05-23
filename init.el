@@ -1104,8 +1104,8 @@ polymode and yas snippet"
 ;; unless it can auth, so adding this line *should* be harmless on machines where
 ;; you don't have an interest in GH stuff.
 
-(require 'magithub)
-(magithub-feature-autoinject t)
+;; (require 'magithub)
+;; (magithub-feature-autoinject t)
 
 ;; Misc ------------------------------------------------------------------------
 
