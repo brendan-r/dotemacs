@@ -256,7 +256,7 @@
 
 (define-key ivy-minibuffer-map (kbd "TAB") 'ivy-alt-done)
 
-(global-set-key (kbd "C-f") 'swiper)
+(global-set-key (kbd "C-f") 'counsel-grep)
 (global-set-key (kbd "M-x") 'counsel-M-x)
 (global-set-key (kbd "C-x C-f") 'counsel-find-file)
 (global-set-key (kbd "<f1> f") 'counsel-describe-function)
@@ -268,6 +268,11 @@
 (setq ivy-re-builders-alist
       '((t . ivy--regex-fuzzy)
         (swiper . ivy--regex-plus)))
+
+
+(setq counsel-grep-base-command
+      "rg -i -M 120 --no-heading --line-number --color never '%s' %s")
+
 
 (require 'smex)
 ;; (require 'flx)
