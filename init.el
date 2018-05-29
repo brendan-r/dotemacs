@@ -83,6 +83,7 @@
                         counsel
                         elfeed
                         cl-lib
+                        yaml-mode
                         ))
 
 ;; Activate package autoloads
