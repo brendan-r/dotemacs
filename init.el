@@ -82,7 +82,13 @@
                         skewer-mode
                         simple-httpd
                         counsel
+                        ;; For reviewing papers
+                        pdf-tools
+                        org-ref
+                        ivy-bibtex
+                        interleave
                         ))
+
 
 ;; Activate package autoloads
 (package-initialize)
@@ -1259,6 +1265,63 @@ polymode and yas snippet"
 ;; ranger-mode -----------------------------------------------------------------
 
 (setq ranger-cleanup-eagerly t)
+
+
+
+;; Reviewing papers ------------------------------------------------------------
+;;
+;; Experimenting with the system described at:
+;; https://codearsonist.com/reading-for-programmers
+
+(require 'pdf-tools)
+(require 'org-ref)
+(require 'ivy-bibtex)
+(require 'interleave)
+
+;; pdf-tools - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+;; apparently nothing required. This is a replacement for docview
+;; (the built-in emacs pdf viewer)
+
+
+;; org-ref - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+;; Use this to make references to bibtex entries in documents that you're
+;; writing. It can also do loads of other cool shit, like extract references
+;; from pdfs which you click and drag into the .bib file. Sometimes it can even
+;; download the pdf! A demo here: https://www.youtube.com/watch?v=2t925KRBbFc
+(setq org-ref-notes-directory "~/Sync/"
+      org-ref-bibliography-notes "~/Sync/index.org"
+      org-ref-default-bibliography '("~/Sync/index.bib")
+      org-ref-pdf-directory "~/Sync/papers/")
+
+;; ivy-bibtex - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+;; Use this to track down local bibtex references, and e.g. pull up the paper
+
+;; If you're looking to find information on a paper that you don't have locally,
+;; then this can be used to find one via biblio.el, but it's faster to just call
+;; that directly and search
+
+;; This is cool for searching local stuff (assuming it exists). Searching
+;; remotely is a bit clunky.  You can do this in a semi manual fashion with M-x
+;; ivy-bibtex, M-o f, Crossref
+(setq
+ ivy-bibtex-bibliography "~/Sync/index.bib" ;; where your references are stored
+ ivy-bibtex-library-path "~/Sync/lib/" ;; where your pdfs etc are stored
+ ivy-bibtex-notes-path "~/Sync/index.org" ;; where your notes are stored
+ bibtex-completion-bibliography "~/Sync/index.bib" ;; writing completion
+ bibtex-completion-notes-path "~/Sync/index.org"
+ ivy-re-builders-alist
+ '((ivy-bibtex . ivy--regex-ignore-order)
+   (t . ivy--regex-plus))
+ )
+
+
+;; interleave  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;;
+;; It would be cool if you could figure out how to make this use separate frames
+
 
 
 ;; Elfeed ----------------------------------------------------------------------
