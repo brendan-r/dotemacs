@@ -47,7 +47,6 @@
                         fill-column-indicator
                         stan-mode
                         spaceline
-                        mouse3
                         multi-term
                         ;; Note: If Stan is not installed, this seems to break everything
                         stan-snippets
@@ -82,6 +81,9 @@
                         skewer-mode
                         simple-httpd
                         counsel
+                        elfeed
+                        cl-lib
+                        yaml-mode
                         ;; For reviewing papers
                         pdf-tools
                         org-ref
@@ -260,7 +262,7 @@
 
 (define-key ivy-minibuffer-map (kbd "TAB") 'ivy-alt-done)
 
-(global-set-key (kbd "C-f") 'swiper)
+(global-set-key (kbd "C-f") 'counsel-grep)
 (global-set-key (kbd "M-x") 'counsel-M-x)
 (global-set-key (kbd "C-x C-f") 'counsel-find-file)
 (global-set-key (kbd "<f1> f") 'counsel-describe-function)
@@ -272,6 +274,11 @@
 (setq ivy-re-builders-alist
       '((t . ivy--regex-fuzzy)
         (swiper . ivy--regex-plus)))
+
+
+(setq counsel-grep-base-command
+      "rg -i -M 120 --no-heading --line-number --color never '%s' %s")
+
 
 (require 'smex)
 ;; (require 'flx)
@@ -713,29 +720,29 @@
 
 ;; Indentation  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-(require 'sql-indent)
+;; (require 'sql-indent)
 
-;; As per https://github.com/alex-hhh/emacs-sql-indent/issues/43
-;;
-;; Note: You'd like to get a level of indentation after 'on' within a join (for
-;; long lists of conditions). Worth investigating in the future!
-(defvar p43-sql-indentation-offsets-alist
-  `((select-clause 0)
-    (insert-clause 0)
-    (delete-clause 0)
-    (update-clause 0)
-    (select-join-condition 0)
-    (in-select-clause + sqlind-lineup-close-paren-to-open-indentation)
-    (select-table-continuation + sqlind-lineup-close-paren-to-open-indentation)
-    ,@sqlind-default-indentation-offsets-alist))
+;; ;; As per https://github.com/alex-hhh/emacs-sql-indent/issues/43
+;; ;;
+;; ;; Note: You'd like to get a level of indentation after 'on' within a join (for
+;; ;; long lists of conditions). Worth investigating in the future!
+;; (defvar p43-sql-indentation-offsets-alist
+;;   `((select-clause 0)
+;;     (insert-clause 0)
+;;     (delete-clause 0)
+;;     (update-clause 0)
+;;     (select-join-condition 0)
+;;     (in-select-clause + sqlind-lineup-close-paren-to-open-indentation)
+;;     (select-table-continuation + sqlind-lineup-close-paren-to-open-indentation)
+;;     ,@sqlind-default-indentation-offsets-alist))
 
-(add-hook 'sqlind-minor-mode-hook
-          (lambda ()
-            (setq sqlind-indentation-offsets-alist
-                  p43-sql-indentation-offsets-alist)))
+;; (add-hook 'sqlind-minor-mode-hook
+;;           (lambda ()
+;;             (setq sqlind-indentation-offsets-alist
+;;                   p43-sql-indentation-offsets-alist)))
 
-;; Automatically use the sqlind minor mode when editing SQL files
-(setq sql-mode-hook (quote (sqlind-minor-mode)))
+;; ;; Automatically use the sqlind minor mode when editing SQL files
+;; (setq sql-mode-hook (quote (sqlind-minor-mode)))
 
 (require 'sql)
 
@@ -1109,8 +1116,8 @@ polymode and yas snippet"
 ;; unless it can auth, so adding this line *should* be harmless on machines where
 ;; you don't have an interest in GH stuff.
 
-(require 'magithub)
-(magithub-feature-autoinject t)
+;; (require 'magithub)
+;; (magithub-feature-autoinject t)
 
 ;; Misc ------------------------------------------------------------------------
 
