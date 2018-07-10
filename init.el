@@ -659,6 +659,11 @@
 
 (setq org-default-notes-file (concat "~/notes.org"))
 
+(setq org-agenda-files
+      (append
+       (file-expand-wildcards "~/*.org")
+       (file-expand-wildcards "~/personal/org/*.org")))
+
 
 ;; Start-up --------------------------------------------------------------------
 
