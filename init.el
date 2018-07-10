@@ -801,8 +801,10 @@
 (elpy-enable)
 
 ;; Use a standard REPL
-(setq python-shell-interpreter "python"
+(setq python-shell-interpreter "python3"
       python-shell-interpreter-args "-i")
+
+(setq elpy-rpc-python-command "python3")
 
 ;; ;; Use Jupyter
 ;; (setq python-shell-interpreter "jupyter"
