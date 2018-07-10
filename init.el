@@ -1262,6 +1262,9 @@ polymode and yas snippet"
 (require 'ivy-bibtex)
 (require 'interleave)
 
+
+(setq reading-list-file (file-truename "~/Sync/index.org"))
+
 ;; pdf-tools - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ;; apparently nothing required. This is a replacement for docview
@@ -1275,7 +1278,7 @@ polymode and yas snippet"
 ;; from pdfs which you click and drag into the .bib file. Sometimes it can even
 ;; download the pdf! A demo here: https://www.youtube.com/watch?v=2t925KRBbFc
 (setq org-ref-notes-directory "~/Sync/"
-      org-ref-bibliography-notes "~/Sync/index.org"
+      org-ref-bibliography-notes reading-list-file
       org-ref-default-bibliography '("~/Sync/index.bib")
       org-ref-pdf-directory "~/Sync/papers/")
 
@@ -1295,7 +1298,7 @@ polymode and yas snippet"
  ivy-bibtex-library-path "~/Sync/lib/" ;; where your pdfs etc are stored
  ivy-bibtex-notes-path "~/Sync/index.org" ;; where your notes are stored
  bibtex-completion-bibliography "~/Sync/index.bib" ;; writing completion
- bibtex-completion-notes-path "~/Sync/index.org"
+ bibtex-completion-notes-path reading-list-file
  ivy-re-builders-alist
  '((ivy-bibtex . ivy--regex-ignore-order)
    (t . ivy--regex-plus))
