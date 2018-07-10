@@ -89,6 +89,7 @@
                         org-ref
                         ivy-bibtex
                         interleave
+                        frames-only-mode
                         ))
 
 
@@ -1252,7 +1253,10 @@ polymode and yas snippet"
 ;; (e.g. iELM), but works well enough most of the time. Assumes that wmctrl is
 ;; installed, which it isn't by default, but it's only apt get away
 (when (string-match "i3" (shell-command-to-string "wmctrl -m"))
-  (setq pop-up-frames t))
+  (progn
+    (require 'frames-only-mode)
+    (frames-only-mode t)
+    ))
 
 
 ;; Sonic pi stuff --------------------------------------------------------------
