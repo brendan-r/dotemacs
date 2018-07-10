@@ -508,10 +508,10 @@
 
 ;; enable cua and transient mark modes in term-line-mode
 ;; Taken from https://www.emacswiki.org/emacs/AnsiTermHints
-(defadvice term-line-mode (after term-line-mode-fixes ())
-  (set (make-local-variable 'cua-mode) t)
-  (set (make-local-variable 'transient-mark-mode) t))
-(ad-activate 'term-line-mode)
+;; (defadvice term-line-mode (after term-line-mode-fixes ())
+;;   (set (make-local-variable 'cua-mode) t)
+;;   (set (make-local-variable 'transient-mark-mode) t))
+;; (ad-activate 'term-line-mode)
 
 
 ;; disable cua and transient mark modes in term-char-mode
