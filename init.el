@@ -1190,33 +1190,6 @@ polymode and yas snippet"
 
 
 
-;; Project management ----------------------------------------------------------
-
-;; (require 'projectile)
-;; (require 'perspective)
-;; (require 'persp-projectile)
-
-;; (require 'persp-mode)
-
-;; ;; Get projectile to user .Rproj files to indicate projects
-;; (add-to-list 'projectile-project-root-files-bottom-up ".Rproj")
-
-;; (define-key projectile-mode-map (kbd "C-x x s")
-;;   'projectile-persp-switch-project)
-
-;; Trying out workgroups... I have suspicion I'll end up using eyebrowse
-
-;; (require 'eyebrowse)
-;; (global-set-key (kbd "C-c C-w") 'eyebrowse-keymap-prefix)
-;; (eyebrowse-mode 1)
-
-;; (require 'persp-mode)
-;; (persp-mode 1)
-
-;; (require 'persp-mode)
-;; (persp-mode 1)
-
-
 ;; Customization ---------------------------------------------------------------
 
 ;; When making changes via M-x customize-group, save the settings to a separate
