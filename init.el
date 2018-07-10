@@ -1441,32 +1441,62 @@ RECORD is a formatted record as expected by `biblio-insert-result'."
 (add-hook 'elfeed-show-mode-hook
                 (lambda() (olivetti-mode t)))
 
-;; Somewhere in your .emacs file
+;; You can use
+;; https://www.youtube.com/feeds/videos.xml?playlist_id=xxx
+;; or
+;; https://www.youtube.com/feeds/videos.xml?channel_id=xxx
 (setq elfeed-feeds
       '(
-        ;; Blogs ----------------------------------------------------------
-        ;;
-        ("http://nullprogram.com/feed/" blog emacs hacking)
-        ("http://planet.emacsen.org/atom.xml" blog emacs hacking)
-        ;;
-        ;;
         ;; 'Magazine' stuff ------------------------------------------------
         ;;
         ;; Mike Zaminsky / Using Emacs
         ("https://www.youtube.com/feeds/videos.xml?channel_id=UCxkMDXQ5qzYOgXPRnOBrp1w" yt emacs hacking)
         ;; Noisey
         ("https://www.youtube.com/feeds/videos.xml?channel_id=UC0iwHRFpv2_fpojZgQhElEQ" yt music)
-        ;; Waypoint
-        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCWu9QuHF-dcakBmhullIH6w" yt music)
         ;; iD Magazine
         ("https://www.youtube.com/feeds/videos.xml?channel_id=UC9ISPZsMaBi5mutsgX6LC1g" yt music)
         ;; Motherboard
         ("https://www.youtube.com/feeds/videos.xml?channel_id=UCB6PV0cvJpzlcXRG7nz6PpQ" yt hacking)
         ;; Thump
         ("https://www.youtube.com/feeds/videos.xml?channel_id=UCS6R2iiAJ1FvEYl4B3zmljw" yt music)
+        ;; The Fader
+        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCRCOCvfOkoqneyQCbNOUPwg" yt music)
         ;; KODX Seattle
         ("https://www.youtube.com/feeds/videos.xml?channel_id=UC4YGLMPVaCdMFiIJL9_Pq2A" yt interviews)
 
+        ;;
+        ;;
+        ;; Data Science Stuff --------------------------------------------------
+        ;;
+        ;; Brian Caffo!
+        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCdjFpvS8lvT2MJVthOUvlyg" yt work)
+        ;; A man called Derek Kane, never heard-of-him/watched-these before
+        ("https://www.youtube.com/feeds/videos.xml?channel_id=UC33qFpcu7eHFtpZ6dp3FFXw" yt work)
+        ;; PyData
+        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCOjD18EJYcsBog4IozkF_7w" yt work)
+        ;; Harvard's Stat 110 class. Mainly the guts of parametric
+        ;; distributions. YT RSS limited to first 15, but there's 15 more
+        ("https://www.youtube.com/feeds/videos.xml?playlist_id=PL2SOU6wwxB0uwwH80KTQ6ht66KWxbzTIo" yt work)
+        ;; O'Reilly Strata blah blah 2018
+        ("https://www.youtube.com/feeds/videos.xml?playlist_id=PL055Epbe6d5a_38V9wp-aru0XQ34dgqCA" yt work)
+        ;; Spark Summit
+        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCRzsq7k4-kT-h3TDUBQ82-w" yt work)
+        ;; From Brian / others
+        ;;
+        ;;
+        ;; Data Science Stuff, but more 'YouTubey' -----------------------------
+        ;;
+        ;; Mainly copied from sites with lists when googling 'data science
+        ;; youtube'. Possibly not good.
+        ;;
+        ;; Dan Van Boxel
+        ("https://www.youtube.com/feeds/videos.xml?channel_id=UC6tnRFKGiq1DlybcqP5rZ7A" yt work)
+        ;; Hvass Labs
+        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCbba38V6vcglqVL--8kVVmg" yt work)
+        ;; sentdex
+        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCfzlCWGWYyIQ0aLC5w48gBQ" yt work)
+        ;; The SemiColon (more tutorial crap)
+        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCwB7HrnRlOfasrbCJoiZ9Lg" yt work)
         ;;
         ;; News -----------------------------------------------------------------------
         ;;
@@ -1478,14 +1508,24 @@ RECORD is a formatted record as expected by `biblio-insert-result'."
         ("https://www.youtube.com/feeds/videos.xml?channel_id=UCTrQ7HXWRRxr7OsOtodr2_w" yt news)
         ;;
         ;;
+        ;; Games & Gaming
+        ;;----------------------------------------------------------
+        ;; Waypoint
+        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCWu9QuHF-dcakBmhullIH6w" yt gaming)
+        ;; G4 TV!
+        ("https://www.youtube.com/feeds/videos.xml?playlist_id=PLb9M3FeiZ1K74ni3oo-JmCAAnChPwQCdo" yt gaming)
+        ;;
         ;; Music ---------------------------------------------------------------------
         ;;
         ;; Ninja Tune
         ("https://www.youtube.com/feeds/videos.xml?channel_id=UCEXRv_qihRwjsV91ftx23-A" yt music)
         ;; Warp Records
-        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCvbd4lVoe8ur0zJJRuuhC_Q" yt music)
+        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCvbd4lVoe8ur0zJJRuuhC_Q" reconyt music)
         ;; Boilerroom
         ("https://www.youtube.com/feeds/videos.xml?channel_id=UCGBpxWJr9FNOcFYA5GkKrMg" yt music live)
+
+        ;; Alias Bass
+        ("https://www.youtube.com/feeds/videos.xml?channel_id=UC3SZ8dE0Mg_7GdsarM_CTOg" yt music)
         ))
 
 
