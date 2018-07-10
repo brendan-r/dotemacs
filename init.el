@@ -1316,6 +1316,108 @@ polymode and yas snippet"
 ;; It would be cool if you could figure out how to make this use separate frames
 
 
+;; biblio.el - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+;; Get a list of the exit code and the output from the function
+
+;; Things you want to happen:
+;;
+;; 1. Download the paper
+;; 2. Add a bibtex entry (you could extract this from biblio, or, you could
+;;    possibly obtain it from org-ref)
+;;    You should use this (write-region <STRING> nil <FILENAME> 'append)
+;; 3. Add an entry in the org-file
+
+;; 4. Open it in interleave mode
+
+(defun add-to-reading-list (title file)
+    "Based on the title of a paper, and a path to it's PDF, create a reading list
+  entry"
+    ;; Come up with the string that you want to add to your reading-list
+    (setq org-reading-list-entry
+          (format
+           "\n\n* %s\n  :PROPERTIES:\n  :INTERLEAVE_PDF: %s\n  :END:\n\n"
+           title file))
+
+    ;; Append that string to the end of your reading-list
+    (write-region org-reading-list-entry nil reading-list-file 'append)
+    ;; Note: it might be a better idea to open the file in a buffer, and then
+    ;; append the text to the end, as you want to move
+    )
+
+
+(defun get-paper-async (title doi)
+  "
+Shell out the to command get-from-doi. If it works, return the shell output as a
+string, otherwise, error out
+
+This works, but you can't have it return the filename without waiting on
+it. This means that you need to write to a temporary buffer somewhere, and then
+do something when that worked. Or, just do everything inside this async
+function.
+
+"
+  (async-start
+   ;; The thing to be done asynchronously
+   (lambda ()
+      (with-temp-buffer
+        (list (call-process
+               (file-truename "~/projects/dotfiles/bin/get-from-doi")
+               nil
+               (current-buffer)
+               nil
+               "10.2307/3149462"
+               (file-truename "~/Sync/papers/"))
+              (buffer-string)
+              "hello"
+              )
+        )
+      )
+
+   ;; The thing to do when that thing is done
+   (lambda (result)
+
+     (setq exit-code (pop result))
+     (setq file-name (pop result))
+     (setq other-thing (pop result))
+
+     (if (eq exit-code 0)
+         (progn
+           (message "Downloaded paper '%s'  DOI: %s" file-name other-thing)
+           (message "Downloaded paper '%s'  DOI: %s" title doi)
+           (add-to-reading-list title file-name)
+           Here, you'd insert something to open the file
+           (message "Finnished! %s" file-name)
+           )
+       ;;(error "Couldn't find a PDF for that DOI")
+       (error "Failed to download paper '%s'  DOI: %s" title doi)
+       )
+     )
+   )
+  )
+
+
+(defun biblio-get-paper--lookup-record (record)
+  "Retrieve a RECORD from Dissemin, and display it.
+RECORD is a formatted record as expected by `biblio-insert-result'."
+  (let-alist record
+    (if .doi
+        (progn
+          (message "Attempting to download paper '%s'  DOI: %s" .title .doi)
+          (get-paper-async .title .doi)
+          )
+      (user-error "Need both a DOI and a title, which don't appear to be present"))))
+
+(defun biblio-get-paper--register-action ()
+  "Add Dissemin to list of `biblio-selection-mode' actions."
+  (add-to-list 'biblio-selection-mode-actions-alist
+               '("Download and add to reading list" . biblio-get-paper--lookup-record)))
+
+
+(add-hook 'biblio-selection-mode-hook #'biblio-get-paper--register-action)
+
+
 
 ;; Elfeed ----------------------------------------------------------------------
 
