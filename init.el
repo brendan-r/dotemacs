@@ -1273,10 +1273,16 @@ polymode and yas snippet"
 
 ;; org-ref - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+;; For some reason you get an error about this, which goes away if you set it,
+;; as per https://github.com/jkitchin/org-ref/blob/master/org-ref.org
+(setq org-latex-prefer-user-labels t)
+
 ;; Use this to make references to bibtex entries in documents that you're
 ;; writing. It can also do loads of other cool shit, like extract references
 ;; from pdfs which you click and drag into the .bib file. Sometimes it can even
 ;; download the pdf! A demo here: https://www.youtube.com/watch?v=2t925KRBbFc
+(require 'org-ref)
+
 (setq org-ref-notes-directory "~/Sync/"
       org-ref-bibliography-notes reading-list-file
       org-ref-default-bibliography '("~/Sync/index.bib")
