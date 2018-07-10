@@ -855,7 +855,7 @@
   (define-key emacs-lisp-mode-map (kbd "C-c C-c") 'eir-eval-in-ielm)
   (define-key emacs-lisp-mode-map (kbd "<C-return>") 'eir-eval-in-ielm)
   (define-key emacs-lisp-mode-map (kbd "C-c C-b") 'eval-buffer)
-  (define-key emacs-lisp-mode-map (kbd "<C-S-return>") 'eval-buffer)
+  ;; (define-key emacs-lisp-mode-map (kbd "<C-S-return>") 'eval-buffer)
   ;; For *scratch*
   (define-key lisp-interaction-mode-map "\C-c\C-c" 'eir-eval-in-ielm)
   (define-key lisp-interaction-mode-map (kbd "<C-return>") 'eir-eval-in-ielm)
