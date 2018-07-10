@@ -553,11 +553,14 @@
 ;; Scrolling -------------------------------------------------------------------
 
 ;; nice scrolling
-(setq scroll-margin 0
-      scroll-conservatively 100000
-      scroll-preserve-screen-position 1)
+(setq scroll-margin 0)
+(setq scroll-step 1)
+(setq scroll-conservatively 10000)
+(setq auto-window-vscroll nil)
 
 ;; one line at a time
+(setq scroll-preserve-screen-position 1)
+
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
 ;; don't accelerate scrolling
 (setq mouse-wheel-progressive-speed nil)
@@ -1217,8 +1220,6 @@ polymode and yas snippet"
 
 
 
-
-
 ;; i3 Integration --------------------------------------------------------------
 
 ;; This is pretty simple; if it looks like you're using i3, prefer popping
@@ -1230,6 +1231,7 @@ polymode and yas snippet"
     (require 'frames-only-mode)
     (frames-only-mode t)
     ))
+
 
 
 ;; Sonic pi stuff --------------------------------------------------------------
