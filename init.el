@@ -643,6 +643,9 @@
 
 ;; Org-mode --------------------------------------------------------------------
 
+;; TODO
+;; Add some decent capture templates, especially for research / things to review
+;;
 
 ;; Allow Control-Shift-Up to select wrapped paragraphs
 (setq org-disputed-keys t)
@@ -661,8 +664,7 @@
 
 (setq org-agenda-files
       (append
-       (file-expand-wildcards "~/*.org")
-       (file-expand-wildcards "~/personal/org/*.org")))
+       (file-expand-wildcards "~/Sync/*.org")))
 
 
 ;; Start-up --------------------------------------------------------------------
