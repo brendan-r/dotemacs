@@ -663,8 +663,7 @@
 (setq org-default-notes-file (concat "~/notes.org"))
 
 (setq org-agenda-files
-      (append
-       (file-expand-wildcards "~/Sync/*.org")))
+      (append "~/Nextcloud/org"))
 
 
 ;; Start-up --------------------------------------------------------------------
@@ -1274,7 +1273,7 @@ polymode and yas snippet"
 (require 'interleave)
 
 
-(setq reading-list-file (file-truename "~/Sync/index.org"))
+(setq reading-list-file (file-truename "~/Nextcloud/org/reading-list.org"))
 
 ;; pdf-tools - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -1294,10 +1293,10 @@ polymode and yas snippet"
 ;; download the pdf! A demo here: https://www.youtube.com/watch?v=2t925KRBbFc
 (require 'org-ref)
 
-(setq org-ref-notes-directory "~/Sync/"
+(setq org-ref-notes-directory "~/Nextcloud/org/"
       org-ref-bibliography-notes reading-list-file
-      org-ref-default-bibliography '("~/Sync/index.bib")
-      org-ref-pdf-directory "~/Sync/papers/")
+      org-ref-default-bibliography '("~/Nextcloud/org/index.bib")
+      org-ref-pdf-directory "~/Nextcloud/papers/")
 
 ;; ivy-bibtex - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -1311,10 +1310,10 @@ polymode and yas snippet"
 ;; remotely is a bit clunky.  You can do this in a semi manual fashion with M-x
 ;; ivy-bibtex, M-o f, Crossref
 (setq
- ivy-bibtex-bibliography "~/Sync/index.bib" ;; where your references are stored
- ivy-bibtex-library-path "~/Sync/lib/" ;; where your pdfs etc are stored
- ivy-bibtex-notes-path "~/Sync/index.org" ;; where your notes are stored
- bibtex-completion-bibliography "~/Sync/index.bib" ;; writing completion
+ ivy-bibtex-bibliography "~/Nextcloud/org/index.bib" ;; where your references are stored
+ ivy-bibtex-library-path "~/Nextcloud/papers/" ;; where your pdfs etc are stored
+ ivy-bibtex-notes-path "~/Nextcloud/org/index.org" ;; where your notes are stored
+ bibtex-completion-bibliography "~/Nextcloud/org/index.bib" ;; writing completion
  bibtex-completion-notes-path reading-list-file
  ivy-re-builders-alist
  '((ivy-bibtex . ivy--regex-ignore-order)
@@ -1379,7 +1378,7 @@ function.
                (current-buffer)
                nil
                "10.2307/3149462"
-               (file-truename "~/Sync/papers/"))
+               (file-truename "~/Nextcloud/papers/"))
               (buffer-string)
               "hello"
               )
