@@ -90,6 +90,8 @@
                         ivy-bibtex
                         interleave
                         frames-only-mode
+                        ;; Optional, for work stuff
+                        org-gcal
                         ))
 
 
@@ -665,7 +667,7 @@
 ;; Use the indented-mode / clean-view by default
 (setq org-startup-indented t)
 
-(setq org-agenda-files '("~/Nextcloud/org"))
+(setq org-agenda-files '("~/Nextcloud/org" "~/Nextcloud/org/work"))
 
 ;; Put state-changes into the :LOGBOOK: drawer
 (setq org-log-into-drawer "LOGBOOK")
