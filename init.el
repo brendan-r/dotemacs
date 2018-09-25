@@ -662,6 +662,9 @@
 
 (setq org-default-notes-file (concat "~/notes.org"))
 
+;; Use the indented-mode / clean-view by default
+(setq org-startup-indented t)
+
 (setq org-agenda-files
       (append "~/Nextcloud/org"))
 
