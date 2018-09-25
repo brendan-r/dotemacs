@@ -671,7 +671,6 @@
 (setq org-log-into-drawer "LOGBOOK")
 
 
-
 ;; Start-up --------------------------------------------------------------------
 
 ;; Remove the splash-screen
