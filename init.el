@@ -662,8 +662,9 @@
 
 (setq org-default-notes-file (concat "~/notes.org"))
 
-(setq org-agenda-files
-      (append "~/Nextcloud/org"))
+(setq org-agenda-files '("~/Nextcloud/org"))
+
+
 
 
 ;; Start-up --------------------------------------------------------------------
