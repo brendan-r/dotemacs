@@ -665,6 +665,9 @@
 (setq org-agenda-files '("~/Nextcloud/org"))
 
 
+;; Put state-changes into the :LOGBOOK: drawer
+(setq org-log-into-drawer "LOGBOOK")
+
 
 
 ;; Start-up --------------------------------------------------------------------
