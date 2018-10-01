@@ -673,6 +673,18 @@
 (setq org-log-into-drawer "LOGBOOK")
 
 
+;; A custom function for marking things as done in the past (useful for tracking
+;; habits). Taken from: https://emacs.stackexchange.com/a/9451
+(defun org-todo-did-on-date (&optional arg)
+  (interactive "P")
+  (cl-letf* ((org-read-date-prefer-future nil)
+             (my-current-time (org-read-date t t nil "when:" nil nil nil))
+            ((symbol-function #'org-current-effective-time)
+             #'(lambda () my-current-time)))
+    (org-todo arg)
+    ))
+
+
 ;; Start-up --------------------------------------------------------------------
 
 ;; Remove the splash-screen
