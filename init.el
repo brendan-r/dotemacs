@@ -662,12 +662,12 @@
 (add-hook 'org-mode-hook (lambda() (linum-mode -1)))
 (add-hook 'org-mode-hook (lambda() (olivetti-mode t)))
 
-(setq org-default-notes-file (concat "~/notes.org"))
+(setq org-default-notes-file (concat "~/Nextcloud/org/inbox.org"))
 
 ;; Use the indented-mode / clean-view by default
 (setq org-startup-indented t)
 
-(setq org-agenda-files '("~/Nextcloud/org" "~/Nextcloud/org/work"))
+(setq org-agenda-files '("~/Nextcloud/org"))
 
 ;; Put state-changes into the :LOGBOOK: drawer
 (setq org-log-into-drawer "LOGBOOK")
