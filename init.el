@@ -696,6 +696,30 @@
         "* %?\nEntered on %U\n  %i\n  %a")))
 
 
+;; Time stamping  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+;; Taken from https://github.com/sk8ingdom/.emacs.d/blob/9d2f40c261864533df59be452117941a7f9b3e3f/org-mode-config/org-todo-states.el
+
+;; Record time and note when a task is completed
+(setq org-log-done 'note)
+
+;; Record time and note when the scheduled date of a task is modified
+(setq org-log-reschedule 'note)
+
+;; Record time and note when the deadline of a task is modified
+(setq org-log-redeadline 'note)
+
+;; Record time and note when clocking out of a task
+(setq org-log-clock-out 'note)
+
+;; Record time and note when a task is refiled
+(setq org-log-refile 'note)
+
+;; Log inserting a heading
+(setq org-trest-insert-todo-heading-as-state-change t)
+
+
+
 ;; Start-up --------------------------------------------------------------------
 
 ;; Remove the splash-screen
