@@ -673,6 +673,8 @@
 (setq org-log-into-drawer "LOGBOOK")
 
 
+;; Agenda-views  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 ;; A custom function for marking things as done in the past (useful for tracking
 ;; habits). Taken from: https://emacs.stackexchange.com/a/9451
 (defun org-todo-did-on-date (&optional arg)
@@ -683,6 +685,15 @@
              #'(lambda () my-current-time)))
     (org-todo arg)
     ))
+
+
+;; Capture templates  - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+(setq org-capture-templates
+ '(("t" "Todo" entry (file+headline "~/Nextcloud/org/inbox.org" "Tasks")
+        "* TODO %?\n  %i\n  %a")
+   ("j" "Journal" entry (file+olp+datetree "~/Nextcloud/org/todo.org")
+        "* %?\nEntered on %U\n  %i\n  %a")))
 
 
 ;; Start-up --------------------------------------------------------------------
