@@ -719,6 +719,16 @@
 (setq org-trest-insert-todo-heading-as-state-change t)
 
 
+;; Agenda views  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+;; An agenda view without personal stuff in it
+(setq org-agenda-custom-commands
+      '(("c" "Simple agenda view"
+         ((agenda ""))
+         ((org-agenda-tag-filter-preset '("-personal")))
+         ))
+      )
+
 
 ;; Start-up --------------------------------------------------------------------
 
