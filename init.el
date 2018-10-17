@@ -53,6 +53,8 @@
                         virtualenvwrapper
                         flycheck
                         flyspell
+                        flyspell-lazy
+                        flyspell-correct-ivy
                         rainbow-delimiters
                         smartparens
                         web-mode
@@ -139,6 +141,36 @@
 (setq flycheck-check-syntax-automatically (quote (save idle-change mode-enabled)))
 (setq flycheck-idle-change-delay 3)
 
+
+;; Flyspell --------------------------------------------------------------------
+
+;; Try to calm Flyspell down a little, to reduce typing latency on slower
+;; machines
+(require 'flyspell-lazy)
+(flyspell-lazy-mode 1)
+
+;; Do spell checking in normal text!
+(add-hook 'text-mode-hook #'flyspell-mode)
+
+;; Do spell checking in your comments!
+(add-hook 'prog-mode-hook #'flyspell-prog-mode)
+
+;; Spell checking in ESSmode (doesn't seem to work)
+(add-hook 'ess-mode-hook #'flyspell-prog-mode)
+
+;; For some reason flyspell needs to be enabled for ESS specifically
+(add-hook 'ess-mode-hook
+          (lambda ()
+            (flyspell-prog-mode)
+            (run-hooks 'prog-mode-hook)
+            ))
+
+;; Make use Ivy for flyspell completions.
+;;
+;; Note: You should try and make this run 'flyspell-buffer' prior to the correct
+;; command, now that flyspell is slow
+(require 'flyspell-correct-ivy)
+(define-key flyspell-mode-map (kbd "C-;") 'flyspell-correct-wrapper)
 
 
 ;; Key bindings ----------------------------------------------------------------
@@ -312,15 +344,6 @@
 ;; (setq ivy-re-builders-alist '((t . ivy--custom-basic)))
 
 ;; General behavior ------------------------------------------------------------
-
-;; Do spell checking in your comments!
-(add-hook 'prog-mode-hook #'flyspell-prog-mode)
-
-;; Do spell checking in normal text!
-(add-hook 'text-mode-hook #'flyspell-mode)
-
-;; Spell checking in ESSmode (doesn't seem to work)
-(add-hook 'ess-mode-hook #'flyspell-prog-mode)
 
 ;; Control-arrow over a whole word, e.g. from |long_word to long_word|, not
 ;; long|_word
@@ -1002,13 +1025,6 @@
 (define-key ess-mode-map (kbd "C-l") 'comint-clear-buffer)
 (define-key inferior-ess-mode-map (kbd "C-l") 'comint-clear-buffer)
 
-
-;; For some reason flyspell needs to be enabled for ESS specifically
-(add-hook 'ess-mode-hook
-          (lambda ()
-            (flyspell-prog-mode)
-            (run-hooks 'prog-mode-hook)
-            ))
 
 ;; The iESS R buffer only seems to be able to cycle through things directly
 ;; typed into it (e.g. not sent from and R buffer), which makes it pretty
