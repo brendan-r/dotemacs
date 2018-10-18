@@ -752,6 +752,12 @@
          ))
       )
 
+;; Google Calendar integration - - - - - - - - - - - - - - - - - - - - - - - - -
+;;
+;; Shouldn't cause a problem if the file is missing. Possibly best to make it
+;; machine specific.
+(load "~/.emacs.d/org-gcal.el" 'missing-ok nil)
+
 
 ;; Start-up --------------------------------------------------------------------
 
