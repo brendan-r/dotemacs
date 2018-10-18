@@ -1268,6 +1268,10 @@ polymode and yas snippet"
       (setq mu4e-sent-folder   "/Sent")
       (setq mu4e-drafts-folder "/Drafts")
       (setq mu4e-trash-folder  "/Trash")
+
+      ;; Load the mail file again to overwrite any settings for local use
+      (load "~/.emacs.d/mail.el")
+
       )
   (ding)
   )
