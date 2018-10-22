@@ -319,7 +319,7 @@ With argument, do this that many times."
 
 (define-key ivy-minibuffer-map (kbd "TAB") 'ivy-alt-done)
 
-(global-set-key (kbd "C-f") 'counsel-grep)
+(global-set-key (kbd "C-f") 'counsel-grep-or-swiper)
 (global-set-key (kbd "M-x") 'counsel-M-x)
 (global-set-key (kbd "C-x C-f") 'counsel-find-file)
 (global-set-key (kbd "<f1> f") 'counsel-describe-function)
