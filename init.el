@@ -1763,8 +1763,9 @@ RECORD is a formatted record as expected by `biblio-insert-result'."
 ;;(require 'sanityinc-tomorrow-bright-theme)
 
 ;; Hipster modeline
-(require 'spaceline-config)
-(spaceline-spacemacs-theme)
+;; Note: This uses up a notable amount of CPU on your little x200t!
+;; (require 'spaceline-config)
+;; (spaceline-spacemacs-theme)
 
 
 ;; Use Emacs terminfo, not system terminfo
