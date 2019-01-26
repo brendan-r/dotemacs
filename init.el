@@ -717,6 +717,9 @@ With argument, do this that many times."
 ;; Put state-changes into the :LOGBOOK: drawer
 (setq org-log-into-drawer "LOGBOOK")
 
+;; Don't force images to be full size in org buffers
+(setq org-image-actual-width nil)
+
 
 ;; Agenda-views  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
