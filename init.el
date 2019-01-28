@@ -1260,7 +1260,7 @@ polymode and yas snippet"
     ;; installed, and run the following
     (progn
       ;; Note: Tested with mu v0.9.18 @1f232b6 and Emacs 25.2
-      (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
+      (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
 
       ;; make sure mu4e is in your load-path
       (require 'mu4e)
