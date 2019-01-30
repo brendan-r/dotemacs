@@ -781,6 +781,9 @@ With argument, do this that many times."
 ;;
 ;; Shouldn't cause a problem if the file is missing. Possibly best to make it
 ;; machine specific.
+;;
+;; Note: You're also running this every 30 mins to stay up-to-date, with a cron
+;;job via  /usr/bin/emacsclient --eval "(org-gcal-fetch)"
 (load "~/.emacs.d/org-gcal.el" 'missing-ok nil)
 
 
