@@ -707,6 +707,9 @@ With argument, do this that many times."
 (add-hook 'org-mode-hook (lambda() (linum-mode -1)))
 (add-hook 'org-mode-hook (lambda() (olivetti-mode t)))
 
+;; In ediff, expand all the headings
+(add-hook 'ediff-prepare-buffer-hook #'outline-show-all)
+
 (setq org-default-notes-file (concat "~/Nextcloud/org/inbox.org"))
 
 ;; Use the indented-mode / clean-view by default
