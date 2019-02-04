@@ -726,6 +726,21 @@ With argument, do this that many times."
 ;; Hide slashes for italics etc.
 (setq org-hide-emphasis-markers t)
 
+;; When diffing org-mode files with ediff, expand everything
+(add-hook 'ediff-prepare-buffer-hook #'outline-show-all)
+
+;; A little function for merging conflicts that arise via NextCloud
+
+;; Notes/tips on ediff:
+;; - There's an implicit cursor which moves between each diff, as well as a
+;;   neutral 'start' and 'end'
+;; - You move between them with space/delete
+;; - Press B to copy changes from one to the other
+;; - You can always directly edit a buffer
+
+(setq ediff-split-window-function (quote split-window-horizontally))
+
+
 
 
 ;; Agenda-views  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -792,6 +807,30 @@ With argument, do this that many times."
 ;; Note: You're also running this every 30 mins to stay up-to-date, with a cron
 ;;job via  /usr/bin/emacsclient --eval "(org-gcal-fetch)"
 (load "~/.emacs.d/org-gcal.el" 'missing-ok nil)
+
+
+
+
+;; Ediff -----------------------------------------------------------------------
+
+;; Windows  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+;; Make Ediff take you back to your old window configuration when you quit
+;; Taken from: https://emacs.stackexchange.com/a/7486
+
+(defvar ediff-last-windows nil
+  "Last ediff window configuration.")
+
+(defun ediff-restore-windows ()
+  "Restore window configuration to `ediff-last-windows'."
+  (set-window-configuration ediff-last-windows)
+  (remove-hook 'ediff-after-quit-hook-internal
+               'ediff-restore-windows))
+
+(defadvice ediff-buffers (around ediff-restore-windows activate)
+  (setq ediff-last-windows (current-window-configuration))
+  (add-hook 'ediff-after-quit-hook-internal 'ediff-restore-windows)
+  ad-do-it)
 
 
 ;; Start-up --------------------------------------------------------------------
