@@ -723,6 +723,10 @@ With argument, do this that many times."
 ;; Don't force images to be full size in org buffers
 (setq org-image-actual-width nil)
 
+;; Hide slashes for italics etc.
+(setq org-hide-emphasis-markers t)
+
+
 
 ;; Agenda-views  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
