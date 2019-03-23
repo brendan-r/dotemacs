@@ -792,10 +792,15 @@ With argument, do this that many times."
 ;; Agenda views  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ;; An agenda view without personal stuff in it
+
 (setq org-agenda-custom-commands
-      '(("c" "Simple agenda view"
+      '(("w" "Work Stuff"
          ((agenda ""))
          ((org-agenda-tag-filter-preset '("-personal")))
+         )
+        ("p" "Personal Stuff"
+         ((agenda ""))
+         ((org-agenda-tag-filter-preset '("+personal")))
          ))
       )
 
