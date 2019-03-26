@@ -741,7 +741,16 @@ With argument, do this that many times."
 (setq ediff-split-window-function (quote split-window-horizontally))
 
 
-
+;; Note: You can try and use something like this to customize the agenda. Tried
+;; and aborted here quickly, but could be useul.
+;; (setq org-agenda-prefix-format '((agenda . " %i %-12:c%?-12t% s")
+;;          (timeline . "  % s")
+;;          (todo .
+;;                " %i %-12:c %(concat \"[ \"(org-format-outline-path (org-get-outline-path)) \" ]\") ")
+;;          (tags .
+;;                " %i %-12:c %(concat \"[ \"(org-format-outline-path (org-get-outline-path)) \" ]\") ")
+;;          (search . " %i %-12:c"))
+;;       )
 
 ;; Agenda-views  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
