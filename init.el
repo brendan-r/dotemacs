@@ -319,7 +319,14 @@ With argument, do this that many times."
 
 (define-key ivy-minibuffer-map (kbd "TAB") 'ivy-alt-done)
 
-(global-set-key (kbd "C-f") 'counsel-grep-or-swiper)
+;; (global-set-key (kbd "C-f") 'counsel-grep-or-swiper)
+;; Prefer isearch for now, again
+
+(define-key isearch-mode-map (kbd "C-F") 'isearch-forward-symbol-at-point)
+(define-key isearch-mode-map (kbd "C-f") 'isearch-repeat-forward)
+(global-set-key (kbd "C-f") 'isearch-forward)
+(global-set-key (kbd "C-S-f") 'isearch-forward-symbol-at-point)
+
 (global-set-key (kbd "M-x") 'counsel-M-x)
 (global-set-key (kbd "C-x C-f") 'counsel-find-file)
 (global-set-key (kbd "<f1> f") 'counsel-describe-function)
