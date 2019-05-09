@@ -697,6 +697,8 @@ With argument, do this that many times."
 
 ;; Org-mode --------------------------------------------------------------------
 
+(require 'org-habit)
+
 ;; TODO
 ;; Add some decent capture templates, especially for research / things to review
 ;;
