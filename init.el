@@ -828,7 +828,8 @@ With argument, do this that many times."
 ;; machine specific.
 ;;
 ;; Note: You're also running this every 30 mins to stay up-to-date, with a cron
-;;job via  /usr/bin/emacsclient --eval "(org-gcal-fetch)"
+;; job via /usr/bin/emacs --script ~/.emacs.d/init.el --eval "(org-gcal-fetch)"
+;; (previously via /usr/bin/emacsclient --eval "(org-gcal-fetch)")
 (load "~/.emacs.d/org-gcal.el" 'missing-ok nil)
 
 
