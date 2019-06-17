@@ -67,6 +67,8 @@
                         auto-complete
                         color-theme-sanityinc-tomorrow
                         polymode
+                        poly-R
+                        poly-markdown
                         let-alist ;; Terminal version seems ask for this periodically
                         persp-mode
                         which-key
@@ -1269,14 +1271,18 @@ polymode and yas snippet"
 
 ;; Polymode --------------------------------------------------------------------
 
+;; (require 'polymode)
+;; (require 'poly-markdown)
+(require 'poly-R)
+
 ;;; Markdown
 (add-to-list 'auto-mode-alist '("\\.md"   . poly-markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.page" . poly-markdown-mode))
 
 ;;; R modes
-(add-to-list 'auto-mode-alist '("\\.Snw" . poly-noweb+r-mode))
-(add-to-list 'auto-mode-alist '("\\.Rnw" . poly-noweb+r-mode))
-(add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+r-mode))
+(add-to-list 'auto-mode-alist '("\\.Snw" . poly-noweb+R-mode))
+(add-to-list 'auto-mode-alist '("\\.Rnw" . poly-noweb+R-mode))
+(add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+R-mode))
 
 
 ;; Big Rmarkdown buffers get slow af. See if this helps.
