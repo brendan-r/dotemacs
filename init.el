@@ -63,7 +63,7 @@
                         olivetti
                         exec-path-from-shell
                         multiple-cursors
-                        ;;markdown-mode
+                        markdown-mode
                         auto-complete
                         color-theme-sanityinc-tomorrow
                         polymode
