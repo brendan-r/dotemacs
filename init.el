@@ -834,8 +834,76 @@ With argument, do this that many times."
 ;; (previously via /usr/bin/emacsclient --eval "(org-gcal-fetch)")
 (load "~/.emacs.d/org-gcal.el" 'missing-ok nil)
 
+;; Little commands  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;;
+;; Pinched from https://github.com/alphapapa/unpackaged.el#ensure-blank-lines-between-headings-and-before-contents
 
 
+(defun ap/org-fix-blank-lines (prefix)
+  "Fix blank lines (or lack thereof) between entries and between planning-lines/drawers and entry contents in current subtree.
+    With prefix, operate on whole buffer."
+  (interactive "P")
+  (save-excursion
+    (when prefix
+      (goto-char (point-min)))
+    (when (org-before-first-heading-p)
+      (outline-next-heading))
+    (ap/org-fix-blank-lines-between-subtree-nodes)
+    (ap/org-fix-blank-lines-after-headings)))
+
+(defun ap/org-fix-blank-lines-between-subtree-nodes ()
+  "Make sure each heading in subtree is separated from the previous heading's content by a blank line."
+  (interactive)
+  (save-excursion
+    (unless (org-at-heading-p)
+      (org-back-to-heading))
+    (ignore-errors
+      ;; Try to work on the parent-level heading to fix all siblings
+      ;; of current heading, but if we're at a top-level heading,
+      ;; ignore the error.
+      (outline-up-heading 1))
+    (let ((m (point-marker)))
+      (cl-flet ((fix nil (while (not (looking-back "\n\n"))
+                           (insert-before-markers "\n"))))
+        (org-map-entries #'fix t 'tree))
+      ;; Inserting blank lines may move the point, depending on whether
+      ;; it was at the beginning of a heading line or somewhere else.
+      ;; Use the marker to make sure we are at the same position.
+      (goto-char m)
+      (org-with-wide-buffer
+       ;; `org-map-entries' narrows the buffer, so `looking-back'
+       ;; can't see newlines before the top heading, which may cause
+       ;; extra newlines to be inserted.  Now we clean them up.
+       (outline-back-to-heading)
+       (while (looking-back (rx (>= 3 "\n")))
+         (delete-char -1 nil)))
+      (set-marker m nil))))
+
+(defun ap/org-fix-blank-lines-after-headings ()
+  "Make sure a blank line exists after a heading's drawers and planning lines, before the entry content."
+  (interactive)
+  (when (org-before-first-heading-p)
+    (user-error "Before first heading."))
+  (cl-flet ((fix nil (let ((end (org-entry-end-position)))
+                       (forward-line)
+                       (while (and (org-at-planning-p)
+                                   (< (point) (point-max)))
+                         ;; Skip planning lines
+                         (forward-line))
+                       (while (re-search-forward org-drawer-regexp end t)
+                         ;; Skip drawers.  You might think that
+                         ;; `org-at-drawer-p' would suffice, but for
+                         ;; some reason it doesn't work correctly
+                         ;; when operating on hidden text.  This
+                         ;; works, taken from
+                         ;; `org-agenda-get-some-entry-text'.
+                         (re-search-forward "^[ \t]*:END:.*\n?" end t)
+                         (goto-char (match-end 0)))
+                       (unless (or (= (point) (point-max))
+                                   (org-at-heading-p)
+                                   (looking-at-p "\n"))
+                         (insert "\n")))))
+    (org-map-entries #'fix t 'tree)))
 
 ;; Ediff -----------------------------------------------------------------------
 
