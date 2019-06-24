@@ -726,7 +726,7 @@ With argument, do this that many times."
 ;; Use the indented-mode / clean-view by default
 (setq org-startup-indented t)
 
-(setq org-agenda-files '("~/Nextcloud/org" "~/Nextcloud/org/meetings"))
+(setq org-agenda-files '("~/Nextcloud/org"))
 
 ;; Put state-changes into the :LOGBOOK: drawer
 (setq org-log-into-drawer "LOGBOOK")
