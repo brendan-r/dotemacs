@@ -777,6 +777,9 @@ With argument, do this that many times."
     ))
 
 
+;; Include archive files in the agenda
+(setq org-agenda-archives-mode t)
+
 ;; Capture templates  - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 (setq org-capture-templates
