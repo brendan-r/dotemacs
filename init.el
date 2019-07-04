@@ -96,6 +96,7 @@
                         frames-only-mode
                         ;; Optional, for work stuff
                         org-gcal
+                        anki-editor
                         ))
 
 
@@ -836,6 +837,11 @@ With argument, do this that many times."
 ;; job via /usr/bin/emacs --script ~/.emacs.d/init.el --eval "(org-gcal-fetch)"
 ;; (previously via /usr/bin/emacsclient --eval "(org-gcal-fetch)")
 (load "~/.emacs.d/org-gcal.el" 'missing-ok nil)
+
+
+;; Anki integration - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+(setq anki-editor-create-decks t)
 
 ;; Little commands  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;;
