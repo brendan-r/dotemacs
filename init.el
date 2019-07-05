@@ -794,6 +794,9 @@ With argument, do this that many times."
    ("j" "Journal" entry (file+olp+datetree "~/Nextcloud/org/todo.org")
         "* %?\nEntered on %U\n  %i\n  %a")))
 
+;; Show state-changes in log-mode
+(setq org-agenda-log-mode-items '(closed clock state))
+
 
 ;; Time stamping  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
