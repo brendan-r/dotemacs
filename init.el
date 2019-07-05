@@ -172,8 +172,8 @@
 ;;
 ;; Note: You should try and make this run 'flyspell-buffer' prior to the correct
 ;; command, now that flyspell is slow
-(require 'flyspell-correct-ivy)
-(define-key flyspell-mode-map (kbd "C-;") 'flyspell-correct-wrapper)
+;; (require 'flyspell-correct-ivy)
+;; (define-key flyspell-mode-map (kbd "C-;") 'flyspell-correct-wrapper)
 
 
 ;; Key bindings ----------------------------------------------------------------
