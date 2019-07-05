@@ -12,6 +12,7 @@
         org-metaright
         org-return-indent
         org-self-insert-command
+        org-shiftcontrolright
         org-shiftmetaleft
         org-shiftmetaright
         org-shiftright
