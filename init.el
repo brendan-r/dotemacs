@@ -147,6 +147,11 @@
 
 ;; Flyspell --------------------------------------------------------------------
 
+;; When using aspell, use this environment variable so that your personal
+;; dictionary is synced across machines
+(setenv "ASPELL_CONF" (concat "home-dir " (expand-file-name
+                                           "~/Nextcloud/dictionary/")))
+
 ;; Try to calm Flyspell down a little, to reduce typing latency on slower
 ;; machines
 (require 'flyspell-lazy)
