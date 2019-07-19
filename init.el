@@ -1085,10 +1085,10 @@ With argument, do this that many times."
 (elpy-enable)
 
 ;; Use a standard REPL
-(setq python-shell-interpreter "python3"
+(setq python-shell-interpreter "python3.6"
       python-shell-interpreter-args "-i")
 
-(setq elpy-rpc-python-command "python3")
+(setq elpy-rpc-python-command "python3.6")
 
 ;; ;; Use Jupyter
 ;; (setq python-shell-interpreter "jupyter"
