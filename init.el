@@ -851,6 +851,11 @@ With argument, do this that many times."
 
 (setq anki-editor-create-decks t)
 
+
+;; LaTeX stuff  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+(plist-put org-format-latex-options :scale 1.5)
+
 ;; Little commands  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;;
 ;; Pinched from https://github.com/alphapapa/unpackaged.el#ensure-blank-lines-between-headings-and-before-contents
