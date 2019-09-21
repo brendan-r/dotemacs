@@ -855,6 +855,7 @@ With argument, do this that many times."
 ;; LaTeX stuff  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 (plist-put org-format-latex-options :scale 1.5)
+(setq org-preview-latex-image-directory "media/latex-cache")
 
 ;; Little commands  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;;
