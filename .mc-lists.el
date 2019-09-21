@@ -4,6 +4,8 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+        backward-delete-word
+        cua-paste
         markdown-outdent-or-delete
         mwim-beginning
         mwim-end
