@@ -1596,10 +1596,10 @@ polymode and yas snippet"
 ;; remotely is a bit clunky.  You can do this in a semi manual fashion with M-x
 ;; ivy-bibtex, M-o f, Crossref
 (setq
- ivy-bibtex-bibliography "~/Nextcloud/org/index.bib" ;; where your references are stored
+ ivy-bibtex-bibliography "~/Nextcloud/org/bibtex/index.bib" ;; where your references are stored
  ivy-bibtex-library-path "~/Nextcloud/papers/" ;; where your pdfs etc are stored
  ivy-bibtex-notes-path "~/Nextcloud/org/index.org" ;; where your notes are stored
- bibtex-completion-bibliography "~/Nextcloud/org/index.bib" ;; writing completion
+ bibtex-completion-bibliography "~/Nextcloud/org/bibtex/index.bib" ;; writing completion
  bibtex-completion-notes-path reading-list-file
  ivy-re-builders-alist
  '((ivy-bibtex . ivy--regex-ignore-order)
