@@ -50,7 +50,7 @@
                         multi-term
                         ;; Note: If Stan is not installed, this seems to break everything
                         stan-snippets
-                        virtualenvwrapper
+                        ;; virtualenvwrapper
                         flycheck
                         flyspell
                         flyspell-lazy
@@ -715,6 +715,18 @@ With argument, do this that many times."
 ;; Use an arrow instead of ...
 (setq org-ellipsis "⤵")
 
+;; Use syntax highlighting in source blocks while editing.
+(setq org-src-fontify-natively t)
+
+;; Make TAB act as if it were issued in a buffer of the language’s major mode.
+(setq org-src-tab-acts-natively t)
+
+;; When editing a code snippet, use the current window rather than popping open a new one (which shows the same information).
+(setq org-src-window-setup 'current-window)
+
+;; Stops org-mode messing with indentation
+(setq org-src-preserve-indentation t)
+
 ;; Allow Control-Shift-Up to select wrapped paragraphs
 (setq org-disputed-keys t)
 (add-hook 'org-mode-hook
@@ -861,10 +873,17 @@ With argument, do this that many times."
 (plist-put org-format-latex-options :scale 1.5)
 (setq org-preview-latex-image-directory "media/latex-cache")
 
+;; org-babel  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages '((python . t)))
+
+;; Use Python3 when running code from org-mode
+(setq org-babel-python-command "python3")
+
 ;; Little commands  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;;
 ;; Pinched from https://github.com/alphapapa/unpackaged.el#ensure-blank-lines-between-headings-and-before-contents
-
 
 (defun ap/org-fix-blank-lines (prefix)
   "Fix blank lines (or lack thereof) between entries and between planning-lines/drawers and entry contents in current subtree.
@@ -1094,11 +1113,17 @@ With argument, do this that many times."
 (package-initialize)
 (elpy-enable)
 
-;; Use a standard REPL
-(setq python-shell-interpreter "python3.6"
-      python-shell-interpreter-args "-i")
+;; Elpy should use Python3 for RPC
+(setq elpy-rpc-python-command "python3")
 
-(setq elpy-rpc-python-command "python3.6")
+;; Use a standard REPL
+(setq python-shell-interpreter "python3")
+
+;; Note: This seemed to cause some warning
+;; (setq python-shell-interpreter "python3"
+;;       python-shell-interpreter-args "-i")
+
+
 
 ;; ;; Use Jupyter
 ;; (setq python-shell-interpreter "jupyter"
