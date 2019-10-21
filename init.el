@@ -494,12 +494,10 @@ With argument, do this that many times."
 (set-face-attribute 'default nil :height 110)
 
 
-
 ;; Menu / minbuffer navigation -------------------------------------------------
 
 ;; No more typing the whole yes or no. Just y or n will do.
 (fset 'yes-or-no-p 'y-or-n-p)
-
 
 
 ;; Text wrapping ---------------------------------------------------------------
@@ -865,8 +863,9 @@ With argument, do this that many times."
 
 ;; Anki integration - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+;; If you're making cards for a deck that doesn't exist yet, go ahead and create
+;; it
 (setq anki-editor-create-decks t)
-
 
 ;; LaTeX stuff  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
