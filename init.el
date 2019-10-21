@@ -711,6 +711,10 @@ With argument, do this that many times."
 ;; Add some decent capture templates, especially for research / things to review
 ;;
 
+
+;; Use an arrow instead of ...
+(setq org-ellipsis "⤵")
+
 ;; Allow Control-Shift-Up to select wrapped paragraphs
 (setq org-disputed-keys t)
 (add-hook 'org-mode-hook
