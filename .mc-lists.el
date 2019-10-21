@@ -10,6 +10,7 @@
         mwim-beginning
         mwim-end
         org-cycle
+        org-insert-heading-respect-content
         org-metaleft
         org-metaright
         org-return-indent
