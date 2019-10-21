@@ -1467,27 +1467,47 @@ polymode and yas snippet"
 
       ;; If you get your mail without an explicit command,
       ;; use "true" for the command (this is the default)
-      (setq mu4e-get-mail-command "offlineimap")
+      (setq mu4e-get-mail-command "mbsync kolab")
+
+      ;; Apparently this is needed for mybsync
+      ;; http://pragmaticemacs.com/emacs/migrating-from-offlineimap-to-mbsync-for-mu4e/
+      (setq mu4e-change-filenames-when-moving t)
 
       ;; Use format=flowed
       (setq mu4e-compose-format-flowed t)
 
-      ;; Use olivetti mode to make things look nice and wrap lines
+      ;; Use olivetti mode to make things look nice and wrap lines when
+      ;; reading/writing messages
       (add-hook 'mu4e-compose-mode-hook
                 (lambda() (olivetti-mode t)))
 
       (add-hook 'mu4e-view-mode-hook
                 (lambda() (olivetti-mode t)))
 
-      (setq message-send-mail-function 'message-send-mail-with-sendmail)
+      ;; Disable visual-line-mode when looking at your inbox
+      (add-hook 'mu4e-headers-mode-hook
+                (lambda() (toggle-truncate-lines t)))
+
       (setq mu4e-view-html-plaintext-ratio-heuristic 1000)
 
-      ;; This could make HTML mail less horrible
-      (setq mu4e-html2text-command "html2text -utf8 -style pretty -width 72")
+      ;; Once a mail has been sent, kill the buffer instead of burying it
+      (setq message-kill-buffer-on-exit t)
+
+      ;; Put attachements here
+      (setq mu4e-attachment-dir "~/Downloads")
+
+      ;; Show people's emails addresses as well as thier names
+      (setq mu4e-view-show-addresses t)
+
+      (setq mu4e-split-view 'horizontal)
+
+      ;; Command to convert HTML emails to plain-text. Use w3m, but with root
+      ;; and network access disabled
+      (setq mu4e-html2text-command "unshare -rn w3m -T text/html -dump -cols 72")
 
       ;; Only needed if your maildir is _not_ ~/Maildir
       ;; Must be a real dir, not a symlink
-      ;; (setq mu4e-maildir "/home/user/Maildir")
+      ;; (setq mu4e-maildir (expand-file-name "~/.mail"))
 
       ;; these must start with a "/", and must exist
       ;; (i.e.. /home/user/Maildir/sent must exist)
@@ -1496,9 +1516,42 @@ polymode and yas snippet"
 
       ;; below are the defaults; if they do not exist yet, mu4e offers to
       ;; create them. they can also functions; see their docstrings.
-      (setq mu4e-sent-folder   "/Sent")
-      (setq mu4e-drafts-folder "/Drafts")
-      (setq mu4e-trash-folder  "/Trash")
+      (setq mu4e-sent-folder   "/kolab/Sent")
+      (setq mu4e-drafts-folder "/kolab/Drafts")
+      (setq mu4e-trash-folder  "/kolab/Trash")
+
+      ;; Sending mail - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+      ;; (setq mu4e-user-mail-address-list "brendan@brendanrocks.com")
+
+      ;; Default identity
+      (setq user-mail-address "brendan@brendanrocks.com" user-full-name "Brendan Rocks")
+
+      (require 'smtpmail-async)
+
+      ;; An alternative to this would be to use sendmail and something like
+      ;; https://wiki.archlinux.org/index.php/Msmtp#GNOME_Keyring
+      ;; See this person's dotfiles for mu4e config
+      ;; https://github.com/hrs/dotfiles/blob/master/emacs/.emacs.d/configuration.org
+      (setq
+       send-mail-function 'async-smtpmail-send-it
+       message-send-mail-function 'async-smtpmail-send-it
+       smtpmail-smtp-server "smtp.kolabnow.com"
+       smtpmail-stream-type 'starttls
+       starttls-use-gnutls t
+       smtpmail-smtp-service 587
+       )
+
+
+      ;; Headers View (e.g. inbox)  - - - - - - - - - - - - - - - - -
+
+      (setq mu4e-headers-fields
+            '((:human-date . 12)
+              (:flags . 6)
+              ;; (:mailing-list . 10) ;; Not useful!
+              (:from . 22)
+              (:subject)
+             ))
 
       ;; Load the mail file again to overwrite any settings for local use
       (load "~/.emacs.d/mail.el")
