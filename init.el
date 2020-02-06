@@ -1838,6 +1838,8 @@ RECORD is a formatted record as expected by `biblio-insert-result'."
         ;;
         ;; Data Science Stuff --------------------------------------------------
         ;;
+        ;; An Econometrics person
+        ("https://www.youtube.com/feeds/videos.xml?channel_id=UC3tFZR3eL1bDY8CqZDOQh-w" yt work)
         ;; Brian Caffo!
         ("https://www.youtube.com/feeds/videos.xml?channel_id=UCdjFpvS8lvT2MJVthOUvlyg" yt work)
         ;; A man called Derek Kane, never heard-of-him/watched-these before
