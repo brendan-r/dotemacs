@@ -982,8 +982,8 @@ With argument, do this that many times."
 ;; Makes *scratch* empty.
 (setq initial-scratch-message "")
 
-;; Change the scratch buffer to markdown-mode
-(setq initial-major-mode 'markdown-mode)
+;; Change the scratch buffer to org-mode
+(setq initial-major-mode 'org-mode)
 
 
 ;; Forces the messages to 0, and kills the *Messages* buffer - thus disabling it
