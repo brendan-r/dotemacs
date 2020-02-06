@@ -24,5 +24,5 @@
 
 (setq mc/cmds-to-run-once
       '(
-        indent-new-comment-line
+        ivy-switch-buffer
         ))
