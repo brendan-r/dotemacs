@@ -6,6 +6,7 @@
       '(
         backward-delete-word
         cua-paste
+        delete-word
         markdown-outdent-or-delete
         mwim-beginning
         mwim-end
@@ -23,4 +24,5 @@
 
 (setq mc/cmds-to-run-once
       '(
+        indent-new-comment-line
         ))
