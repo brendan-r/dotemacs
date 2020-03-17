@@ -1443,12 +1443,11 @@ polymode and yas snippet"
 ;; Misc ------------------------------------------------------------------------
 
 ;; Run emacs as a server with clients
-(setq server-use-tcp t)
+;; (setq server-use-tcp t)
 (server-start)
 
 ;; Strip trailing whitespace from files on save
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
-
 
 
 ;; Mail ------------------------------------------------------------------------
