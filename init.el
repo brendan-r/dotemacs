@@ -1595,18 +1595,15 @@ polymode and yas snippet"
 
 
 
-;; i3 Integration --------------------------------------------------------------
+;; Tiling WM integration -------------------------------------------------------
+;;
+;; Re:i3/yabai: No checking if a specific tiling WM is being used, the code
+;; below will have to be manually disabled if you're back to floating windows.
 
-;; This is pretty simple; if it looks like you're using i3, prefer popping
-;; frames as opposed to splitting windows. Doesn't work for everything
-;; (e.g. iELM), but works well enough most of the time. Assumes that wmctrl is
-;; installed, which it isn't by default, but it's only apt get away
-(when (string-match "i3" (shell-command-to-string "wmctrl -m"))
-  (progn
-    (require 'frames-only-mode)
-    (frames-only-mode t)
-    ))
-
+(progn
+  (require 'frames-only-mode)
+  (frames-only-mode t)
+  )
 
 
 ;; Sonic pi stuff --------------------------------------------------------------
