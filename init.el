@@ -211,8 +211,8 @@
 ;; Kill the buffer and close the window
 (define-key cua-global-keymap (kbd "C-S-w") 'kill-buffer-and-window)
 
-;; Close the current window
-(define-key cua-global-keymap (kbd "C-w") 'delete-window)
+;; Close the current frame
+(define-key cua-global-keymap (kbd "C-w") 'delete-frame)
 
 ;; Switch buffer
 (define-key cua-global-keymap (kbd "C-b") 'ivy-switch-buffer)
