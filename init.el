@@ -97,6 +97,7 @@
                         ;; Optional, for work stuff
                         org-gcal
                         anki-editor
+                        leetcode
                         ))
 
 
@@ -135,6 +136,28 @@
 ;; Which key provides a little menu for if you get a brain-freeze in the middle
 ;; of typing out command
 (which-key-mode t)
+
+
+
+;; LeetCode Client - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+(require 'leetcode)
+(setq leetcode-prefer-language "python3")
+(setq leetcode-prefer-sql "mysql")
+
+
+;; Functions for prose --------------------------------------------------------
+;; Wrap paragraph to a single line: https://emacs.stackexchange.com/a/2608
+;; It is the opposite of fill-paragraph
+(defun unfill-paragraph ()
+  "Takes a multi-line paragraph and makes it into a single line of text."
+  (interactive)
+  (let ((fill-column (point-max)))
+    (fill-paragraph nil)))
+
+ ;; Handy key definition
+ (define-key global-map "\M-Q" 'unfill-paragraph)
+
 
 
 
