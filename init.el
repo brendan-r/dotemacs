@@ -1471,6 +1471,13 @@ polymode and yas snippet"
       ;; http://pragmaticemacs.com/emacs/migrating-from-offlineimap-to-mbsync-for-mu4e/
       (setq mu4e-change-filenames-when-moving t)
 
+      ;; Use Gmail style message citations
+      ;; customize the reply-quote-string
+      (setq message-citation-line-format "On %a %d %b %Y at %R, %f wrote:\n")
+      ;; choose to use the formatted string
+      (setq message-citation-line-function 'message-insert-formatted-citation-line)
+      (setq message-cite-style message-cite-style-gmail)
+
       ;; Use format=flowed
       (setq mu4e-compose-format-flowed t)
 
@@ -1494,7 +1501,7 @@ polymode and yas snippet"
       ;; Put attachements here
       (setq mu4e-attachment-dir "~/Downloads")
 
-      ;; Show people's emails addresses as well as thier names
+      ;; Show people's email addresses as well as thier names
       (setq mu4e-view-show-addresses t)
 
       (setq mu4e-split-view 'horizontal)
@@ -1502,6 +1509,11 @@ polymode and yas snippet"
       ;; Command to convert HTML emails to plain-text. Use w3m, but with root
       ;; and network access disabled
       (setq mu4e-html2text-command "unshare -rn w3m -T text/html -dump -cols 72")
+
+      ;; Note: This doesn't work as expected, but leaving it here for now as a
+      ;; 'bookmark'
+      (add-to-list 'mu4e-view-actions
+                   '("ViewInBrowser" . mu4e-action-view-in-browser) t)
 
       ;; Only needed if your maildir is _not_ ~/Maildir
       ;; Must be a real dir, not a symlink
