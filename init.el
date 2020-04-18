@@ -207,6 +207,9 @@
 
 ;; Turn on easy mode (you have OS level keybindings!)
 (cua-mode t)
+(define-key cua-global-keymap (kbd "C-S-v") 'cua-paste-pop)
+
+
 
 ;; Use move-where-i-mean to arrive at the beginning/end of indented lines
 (setq mwim-beginning-of-line-function 'beginning-of-visual-line
