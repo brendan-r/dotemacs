@@ -713,15 +713,6 @@ With argument, do this that many times."
 ;; Use an arrow instead of ...
 (setq org-ellipsis "⤵")
 
-;; Use syntax highlighting in source blocks while editing.
-(setq org-src-fontify-natively t)
-
-;; Make TAB act as if it were issued in a buffer of the language’s major mode.
-(setq org-src-tab-acts-natively t)
-
-;; When editing a code snippet, use the current window rather than popping open a new one (which shows the same information).
-(setq org-src-window-setup 'current-window)
-
 ;; Stops org-mode messing with indentation
 (setq org-src-preserve-indentation t)
 
@@ -752,7 +743,7 @@ With argument, do this that many times."
 (setq org-log-into-drawer "LOGBOOK")
 
 ;; Don't force images to be full size in org buffers
-(setq org-image-actual-width nil)
+(setq org-image-actual-width 750)
 
 ;; Hide slashes for italics etc.
 (setq org-hide-emphasis-markers t)
@@ -818,6 +809,8 @@ With argument, do this that many times."
 
 ;; Record time and note when a task is completed
 (setq org-log-done 'time)
+;; Disabled -- canceled more often than not
+;; (setq org-log-done 'note)
 
 ;; Record time and note when the scheduled date of a task is modified
 (setq org-log-reschedule 'note)
@@ -875,10 +868,22 @@ With argument, do this that many times."
 ;; org-babel  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 (org-babel-do-load-languages
- 'org-babel-load-languages '((python . t)))
+ 'org-babel-load-languages '(
+                             (python . t)
+                             (R . t)
+                             ))
 
 ;; Use Python3 when running code from org-mode
 (setq org-babel-python-command "python3")
+
+;; Use syntax highlighting in source blocks while editing.
+(setq org-src-fontify-natively t)
+
+;; Make TAB act as if it were issued in a buffer of the language’s major mode.
+(setq org-src-tab-acts-natively t)
+
+;; When editing a code snippet, use the current window rather than popping open a new one (which shows the same information).
+(setq org-src-window-setup 'reorganize-frame)
 
 ;; Little commands  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;;
