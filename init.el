@@ -23,13 +23,11 @@
 (require 'package)
 (require 'cl)
 
+;; Package archives/repos
 (add-to-list 'package-archives
              '("melpa" . "https://melpa.org/packages/") t)
+(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
 
-
-(when (< emacs-major-version 25)
-  ;; For important compatibility libraries like cl-lib
-  (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")))
 (package-initialize)
 
 ;; Add the emacs package dirs to the loadpath
