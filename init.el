@@ -176,8 +176,8 @@
 
 ;; Try to calm Flyspell down a little, to reduce typing latency on slower
 ;; machines
-(require 'flyspell-lazy)
-(flyspell-lazy-mode 1)
+;; (require 'flyspell-lazy)
+;; (flyspell-lazy-mode 1)
 
 ;; Do spell checking in normal text!
 (add-hook 'text-mode-hook #'flyspell-mode)
