@@ -20,8 +20,8 @@
 
 ;; Allow packages to be installed ----------------------------------------------
 
-(require 'package)
-(require 'cl)
+(require 'use-package)
+(setq use-package-verbose t)
 
 ;; Package archives/repos
 (add-to-list 'package-archives
@@ -43,16 +43,12 @@
                         eval-in-repl
                         expand-region
                         fill-column-indicator
-                        stan-mode
                         spaceline
                         multi-term
-                        ;; Note: If Stan is not installed, this seems to break everything
-                        stan-snippets
                         ;; virtualenvwrapper
                         flycheck
                         flyspell
                         flyspell-lazy
-                        flyspell-correct-ivy
                         rainbow-delimiters
                         smartparens
                         web-mode
@@ -67,41 +63,34 @@
                         polymode
                         poly-R
                         poly-markdown
-                        let-alist ;; Terminal version seems ask for this periodically
                         persp-mode
                         which-key
-                        ivy
                         mwim
                         fold-this
                         nodejs-repl
                         use-package
                         undo-tree
-                        sonic-pi
                         smex
                         elpy
-                        ranger
                         skewer-mode
                         simple-httpd
-                        counsel
                         elfeed
-                        cl-lib
                         yaml-mode
                         ;; For reviewing papers
                         pdf-tools
                         org-ref
-                        ivy-bibtex
-                        interleave
                         frames-only-mode
                         org-caldav
-                        ;; Optional, for work stuff
-                        org-gcal
                         anki-editor
                         leetcode
+                        vertico
+                        consult
+                        jupyter
                         ))
 
 
+
 ;; Activate package autoloads
-(package-initialize)
 (setq package-initialize nil)
 
 ;; make sure stale packages don't get loaded
@@ -128,6 +117,10 @@
 ;; on OSX Emacs needs help setting up the system paths
 (when (memq window-system '(mac ns))
   (exec-path-from-shell-initialize))
+
+
+;; (setenv "PATH" (concat "/opt/homebrew/bin/:" (getenv "PATH")))
+;; (setq exec-path (append '("/opt/homebrew/bin/") exec-path))
 
 
 
@@ -195,12 +188,6 @@
             (run-hooks 'prog-mode-hook)
             ))
 
-;; Make use Ivy for flyspell completions.
-;;
-;; Note: You should try and make this run 'flyspell-buffer' prior to the correct
-;; command, now that flyspell is slow
-;; (require 'flyspell-correct-ivy)
-;; (define-key flyspell-mode-map (kbd "C-;") 'flyspell-correct-wrapper)
 
 
 ;; Key bindings ----------------------------------------------------------------
@@ -240,7 +227,7 @@
 (define-key cua-global-keymap (kbd "C-w") 'delete-frame)
 
 ;; Switch buffer
-(define-key cua-global-keymap (kbd "C-b") 'ivy-switch-buffer)
+(define-key cua-global-keymap (kbd "C-b") 'switch-to-buffer)
 
 ;; Kill the current buffer
 (define-key cua-global-keymap (kbd "C-k")
@@ -322,9 +309,8 @@ With argument, do this that many times."
   (interactive "p")
   (delete-word (- arg)))
 
-(global-set-key (kbd "<C-backspace>") 'backward-delete-word)
-(global-set-key (kbd "<C-delete>") 'delete-word)
-
+(global-set-key (kbd "<M-backspace>") 'backward-delete-word)
+(global-set-key (kbd "<M-delete>") 'delete-word)
 
 
 ;; Mouse bindings --------------------------------------------------------------
@@ -341,69 +327,8 @@ With argument, do this that many times."
 
 
 
-;; Ivy -------------------------------------------------------------------------
-;; Use it
-(require 'ivy)
-(require 'counsel)
-(require 'swiper)
-
-(ivy-mode 1)
-(setq ivy-use-virtual-buffers t)
-
-(define-key ivy-minibuffer-map (kbd "TAB") 'ivy-alt-done)
-
-;; (global-set-key (kbd "C-f") 'counsel-grep-or-swiper)
-;; Prefer isearch for now, again
-
-(define-key isearch-mode-map (kbd "C-F") 'isearch-forward-symbol-at-point)
-(define-key isearch-mode-map (kbd "C-f") 'isearch-repeat-forward)
-(global-set-key (kbd "C-f") 'isearch-forward)
-(global-set-key (kbd "C-S-f") 'isearch-forward-symbol-at-point)
-
-(global-set-key (kbd "M-x") 'counsel-M-x)
-(global-set-key (kbd "C-x C-f") 'counsel-find-file)
-(global-set-key (kbd "<f1> f") 'counsel-describe-function)
-(global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-(global-set-key (kbd "<f1> l") 'counsel-find-library)
-(global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-
-(setq ivy-re-builders-alist
-      '((t . ivy--regex-fuzzy)
-        (swiper . ivy--regex-plus)))
-
-
-(setq counsel-grep-base-command
-      "rg -i -M 120 --no-heading --line-number --color never -e '%s' %s")
-
-
 (require 'smex)
-;; (require 'flx)
-;; (require 'company-flx)
 
-;; (with-eval-after-load 'company
-;;  (company-flx-mode +1))
-
-;; (setq ivy-initial-inputs-alist "^")
-
-;; (setq ivy-initial-inputs-alist
-;;       '((org-refile . "^")
-;;         (org-agenda-refile . "^")
-;;         (org-capture-refile . "^")
-;;         (counsel-M-x . "^")
-;;         (counsel-describe-function . "^")
-;;         (counsel-describe-variable . "^")
-;;         (counsel-org-capture . "^")
-;;         (counsel-find-file . "^")
-;;         (Man-completion-table . "^")
-;;         (woman . "^")))
-
-;; (defun ivy--custom-basic (str)
-;;   "Match things like in base-Emacs, bash, language-shells, etc. etc."
-;;   (ivy--regex-plus (concat "^" str))
-;;   )
-
-;; (setq ivy-re-builders-alist '((t . ivy--custom-basic)))
 
 ;; General behavior ------------------------------------------------------------
 
@@ -412,9 +337,10 @@ With argument, do this that many times."
 (setq superword-mode 1)
 
 ;; Use smartparens
-(add-hook 'prog-mode-hook #'smartparens-mode)
-(require 'smartparens)
-;; (add-hook 'ess-mode-hook #'rainbow-delimiters-mode)
+;; (require 'smartparens)
+;; (add-hook 'prog-mode-hook #'smartparens-mode)
+
+(add-hook 'ess-mode-hook #'rainbow-delimiters-mode)
 
 ;; Use rainbow delimiters when programming
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
@@ -558,12 +484,7 @@ With argument, do this that many times."
 
 ;; Line numbers ----------------------------------------------------------------
 
-;; It's mad how much of a pain they are! For the time being, going without them
-;;
-;; (require 'linum)
-;; (setq linum-format "%3d ")
-;;(global-linum-mode 1)
-
+;; Investigate display-line-numbers-mode
 
 
 ;; Encoding --------------------------------------------------------------------
@@ -576,14 +497,14 @@ With argument, do this that many times."
 
 ;; ansi-term stuff -------------------------------------------------------------
 
-;; Remove line numbers in term-mode
-(add-hook 'term-mode-hook 'my-inhibit-global-linum-mode)
+;; ;; Remove line numbers in term-mode
+;; (add-hook 'term-mode-hook 'my-inhibit-global-linum-mode)
 
-(defun my-inhibit-global-linum-mode ()
-  "Counter-act `global-linum-mode'."
-  (add-hook 'after-change-major-mode-hook
-            (lambda () (linum-mode 0))
-            :append :local))
+;; (defun my-inhibit-global-linum-mode ()
+;;   "Counter-act `global-linum-mode'."
+;;   (add-hook 'after-change-major-mode-hook
+;;             (lambda () (linum-mode 0))
+;;             :append :local))
 
 ;; always use bash
 (defvar my-term-shell "/bin/bash")
@@ -721,19 +642,44 @@ With argument, do this that many times."
 
 ;; Use Olivetti mode whenever the mode loads (and disable linum-mode)
 (require 'olivetti)
-(add-hook 'markdown-mode-hook (lambda() (linum-mode -1)))
+;; (add-hook 'markdown-mode-hook (lambda() (linum-mode -1)))
 (add-hook 'markdown-mode-hook (lambda() (olivetti-mode t)))
 
 
 
 ;; Org-mode --------------------------------------------------------------------
 
+;; Basic keybindings
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "C-<return>") 'org-insert-heading))
+
+
+
+(require 'org-crypt)
+(org-crypt-use-before-save-magic)
+(setq org-tags-exclude-from-inheritance '("crypt"))
+
+(setq org-crypt-key nil)
+;; GPG key to use for encryption.
+;; nil means  use symmetric encryption unconditionally.
+;; "" means use symmetric encryption unless heading sets CRYPTKEY property.
+
+(setq auto-save-default nil)
+;; Auto-saving does not cooperate with org-crypt.el: so you need to
+;; turn it off if you plan to use org-crypt.el quite often.  Otherwise,
+;; you'll get an (annoying) message each time you start Org.
+
+;; To turn it off only locally, you can insert this:
+;;
+;; # -*- buffer-auto-save-file-name: nil; -*-
+
+
+
 (require 'org-habit)
 
 ;; TODO
 ;; Add some decent capture templates, especially for research / things to review
 ;;
-
 
 ;; Use an arrow instead of ...
 (setq org-ellipsis "⤵")
@@ -746,12 +692,12 @@ With argument, do this that many times."
 (add-hook 'org-mode-hook
           (lambda ()
             (define-key org-mode-map (kbd "<M-prior>") 'org-todo)
-            ;; (define-key org-mode-map (kbd "<C-S-up>") 'org-backward-paragraph)
-            ;; (define-key org-mode-map (kbd "<C-S-down>") 'org-foreward-paragraph)
+            (define-key org-mode-map (kbd "<M-S-left>") 'org-promote-subtree)
+            (define-key org-mode-map (kbd "<M-S-right>") 'org-demote-subtree)
             ))
 
 
-(add-hook 'org-mode-hook (lambda() (linum-mode -1)))
+;; (add-hook 'org-mode-hook (lambda() (linum-mode -1)))
 (add-hook 'org-mode-hook (lambda() (olivetti-mode t)))
 
 ;; In ediff, expand all the headings
@@ -762,7 +708,41 @@ With argument, do this that many times."
 ;; Use the indented-mode / clean-view by default
 (setq org-startup-indented t)
 
-(setq org-agenda-files '("~/Nextcloud/org"))
+(setq org-agenda-files '("~/Nextcloud/org/personal"))
+(setq org-agenda-skip-archived-trees t)
+;; (defun my/org-agenda-files-exclude-archives (dir)
+;;   "Set `org-agenda-files` to .org files in DIR, excluding .org_archive files."
+;;   (setq org-agenda-files
+;;         (seq-filter
+;;          (lambda (file)
+;;            (not (string-suffix-p ".org_archive" file)))
+;;          (directory-files-recursively dir "\\.org$"))))
+
+;; (my/org-agenda-files-exclude-archives "~/Nextcloud/org/personal")
+
+
+;; (setq org-agenda-files
+;;       (remove "~/Nextcloud/org/personal/embed-agenda-test.org"
+;;               (remove "~/Nextcloud/org/personal/eow-summaries.org"
+;;                       (directory-files-recursively "~/Nextcloud/org/personal/" "\\.org$"))))
+
+
+
+(defun exclude-subdirectory (dirname)
+  (not (or (string-prefix-p "~/Nextcloud/org/personal/archive" dirname)
+           (string-prefix-p "~/Nextcloud/org/personal/reviews" dirname))))
+
+(setq org-agenda-files
+      (directory-files-recursively "~/Nextcloud/org/personal/" "\\.org$" nil 'exclude-subdirectory))
+
+
+;; A test of showing more details in the agenda view... You don't like how this looks!
+;; (setq org-agenda-prefix-format
+;;       '((agenda . " %i %-12:c%?-12t% s%b")
+;;         (todo . " %i %-12:c")
+;;         (tags . " %i %-12:c")
+;;         (search . " %i %-12:c")))
+
 
 ;; Put state-changes into the :LOGBOOK: drawer
 (setq org-log-into-drawer "LOGBOOK")
@@ -801,16 +781,56 @@ With argument, do this that many times."
 
 ;; Agenda-views  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-;; A custom function for marking things as done in the past (useful for tracking
-;; habits). Taken from: https://emacs.stackexchange.com/a/9451
-(defun org-todo-did-on-date (&optional arg)
+(defun debug-agenda-marker ()
+  "Debug function to check agenda marker info"
+  (interactive)
+  (when (derived-mode-p 'org-agenda-mode)
+    (let ((marker (org-get-at-bol 'org-marker)))
+      (if marker
+          (message "Marker: %s, Buffer: %s, Position: %d"
+                   marker
+                   (marker-buffer marker)
+                   (marker-position marker))
+        (message "No marker found at current line")))))
+
+
+(defun test-org-with-point-at ()
+  (interactive)
+  (when (derived-mode-p 'org-agenda-mode)
+    (let ((marker (org-get-at-bol 'org-marker)))
+      (when marker
+        (org-with-point-at marker
+          (message "Successfully in buffer: %s, at heading: %s"
+                   (buffer-name)
+                   (org-get-heading t t t t)))))))
+
+
+
+(defun my-org-todo-did-on-date (&optional arg)
+  "Change the TODO state of an item, prompting for the date it was done.
+This command works in both Org-mode file buffers and the Org Agenda.
+When called, it prompts for a date. This date is then used to
+timestamp the closing of the task, instead of the current time.
+This is useful for marking habits or tasks as done on a day in the past."
   (interactive "P")
-  (cl-letf* ((org-read-date-prefer-future nil)
-             (my-current-time (org-read-date t t nil "when:" nil nil nil))
-            ((symbol-function #'org-current-effective-time)
-             #'(lambda () my-current-time)))
-    (org-todo arg)
-    ))
+  (cl-letf* (;; Setting `org-read-date-prefer-future' to nil makes the calendar
+             ;; default to the current date, not a future one.
+             (org-read-date-prefer-future nil)
+             ;; Prompt the user for a date and store it.
+             (completion-date (org-read-date t t nil "Mark as done on date:"))
+             ;; Temporarily redefine `org-current-effective-time' to return
+             ;; the date we just selected. `org-todo' and `org-agenda-todo'
+             ;; will use this to create the CLOSED timestamp.
+             ((symbol-function #'org-current-effective-time)
+              #'(lambda () completion-date)))
+
+    ;; Check if the current buffer is in `org-agenda-mode`.
+    (if (derived-mode-p 'org-agenda-mode)
+        ;; If yes, call `org-agenda-todo`, which handles finding the
+        ;; task in its source file and changing its state.
+        (org-agenda-todo arg)
+      ;; If no, we are in a regular Org file, so call `org-todo' directly.
+      (org-todo arg))))
 
 
 ;; Include archive files in the agenda
@@ -855,18 +875,25 @@ With argument, do this that many times."
 
 ;; Agenda views  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-;; An agenda view without personal stuff in it
+;; Display high priority items
+;; See: https://orgmode.org/worg/org-tutorials/org-custom-agenda-commands.html
+(setq org-agenda-custom-commands
+      '(("p" "High Priority items" ;; (1) (2) (3) (4)
+         ((agenda ""))
+         ((org-agenda-tag-filter-preset '("+PRIORITY=\"A\""))))
+))
+
 
 (setq org-agenda-custom-commands
-      '(("w" "Work Stuff"
-         ((agenda ""))
-         ((org-agenda-tag-filter-preset '("-personal")))
-         )
-        ("p" "Personal Stuff"
-         ((agenda ""))
-         ((org-agenda-tag-filter-preset '("+personal")))
-         ))
-      )
+      '(("w" "Tasks completed last week"
+         ((tags "CLOSED>=\"<-7d>\""
+                ((org-agenda-overriding-header "Completed Tasks in the Last Week")))))))
+
+
+(setq org-agenda-skip-function
+      '(org-agenda-skip-entry-if 'tag "EXCLUDE_FROM_AGENDA"))
+
+
 
 ;; Google Calendar integration - - - - - - - - - - - - - - - - - - - - - - - - -
 ;;
@@ -900,7 +927,15 @@ With argument, do this that many times."
  'org-babel-load-languages '(
                              (python . t)
                              (R . t)
+                             (jupyter . t)
                              ))
+
+
+;; A line
+
+(setq org-babel-R-command "/usr/local/bin/R --no-save")
+
+(setq-default inferior-R-program-name "/usr/local/bin/R")
 
 ;; Use Python3 when running code from org-mode
 (setq org-babel-python-command "python3")
@@ -918,71 +953,71 @@ With argument, do this that many times."
 ;;
 ;; Pinched from https://github.com/alphapapa/unpackaged.el#ensure-blank-lines-between-headings-and-before-contents
 
-(defun ap/org-fix-blank-lines (prefix)
-  "Fix blank lines (or lack thereof) between entries and between planning-lines/drawers and entry contents in current subtree.
-    With prefix, operate on whole buffer."
-  (interactive "P")
-  (save-excursion
-    (when prefix
-      (goto-char (point-min)))
-    (when (org-before-first-heading-p)
-      (outline-next-heading))
-    (ap/org-fix-blank-lines-between-subtree-nodes)
-    (ap/org-fix-blank-lines-after-headings)))
+;; (defun ap/org-fix-blank-lines (prefix)
+;;   "Fix blank lines (or lack thereof) between entries and between planning-lines/drawers and entry contents in current subtree.
+;;     With prefix, operate on whole buffer."
+;;   (interactive "P")
+;;   (save-excursion
+;;     (when prefix
+;;       (goto-char (point-min)))
+;;     (when (org-before-first-heading-p)
+;;       (outline-next-heading))
+;;     (ap/org-fix-blank-lines-between-subtree-nodes)
+;;     (ap/org-fix-blank-lines-after-headings)))
 
-(defun ap/org-fix-blank-lines-between-subtree-nodes ()
-  "Make sure each heading in subtree is separated from the previous heading's content by a blank line."
-  (interactive)
-  (save-excursion
-    (unless (org-at-heading-p)
-      (org-back-to-heading))
-    (ignore-errors
-      ;; Try to work on the parent-level heading to fix all siblings
-      ;; of current heading, but if we're at a top-level heading,
-      ;; ignore the error.
-      (outline-up-heading 1))
-    (let ((m (point-marker)))
-      (cl-flet ((fix nil (while (not (looking-back "\n\n"))
-                           (insert-before-markers "\n"))))
-        (org-map-entries #'fix t 'tree))
-      ;; Inserting blank lines may move the point, depending on whether
-      ;; it was at the beginning of a heading line or somewhere else.
-      ;; Use the marker to make sure we are at the same position.
-      (goto-char m)
-      (org-with-wide-buffer
-       ;; `org-map-entries' narrows the buffer, so `looking-back'
-       ;; can't see newlines before the top heading, which may cause
-       ;; extra newlines to be inserted.  Now we clean them up.
-       (outline-back-to-heading)
-       (while (looking-back (rx (>= 3 "\n")))
-         (delete-char -1 nil)))
-      (set-marker m nil))))
+;; (defun ap/org-fix-blank-lines-between-subtree-nodes ()
+;;   "Make sure each heading in subtree is separated from the previous heading's content by a blank line."
+;;   (interactive)
+;;   (save-excursion
+;;     (unless (org-at-heading-p)
+;;       (org-back-to-heading))
+;;     (ignore-errors
+;;       ;; Try to work on the parent-level heading to fix all siblings
+;;       ;; of current heading, but if we're at a top-level heading,
+;;       ;; ignore the error.
+;;       (outline-up-heading 1))
+;;     (let ((m (point-marker)))
+;;       (cl-flet ((fix nil (while (not (looking-back "\n\n"))
+;;                            (insert-before-markers "\n"))))
+;;         (org-map-entries #'fix t 'tree))
+;;       ;; Inserting blank lines may move the point, depending on whether
+;;       ;; it was at the beginning of a heading line or somewhere else.
+;;       ;; Use the marker to make sure we are at the same position.
+;;       (goto-char m)
+;;       (org-with-wide-buffer
+;;        ;; `org-map-entries' narrows the buffer, so `looking-back'
+;;        ;; can't see newlines before the top heading, which may cause
+;;        ;; extra newlines to be inserted.  Now we clean them up.
+;;        (outline-back-to-heading)
+;;        (while (looking-back (rx (>= 3 "\n")))
+;;          (delete-char -1 nil)))
+;;       (set-marker m nil))))
 
-(defun ap/org-fix-blank-lines-after-headings ()
-  "Make sure a blank line exists after a heading's drawers and planning lines, before the entry content."
-  (interactive)
-  (when (org-before-first-heading-p)
-    (user-error "Before first heading."))
-  (cl-flet ((fix nil (let ((end (org-entry-end-position)))
-                       (forward-line)
-                       (while (and (org-at-planning-p)
-                                   (< (point) (point-max)))
-                         ;; Skip planning lines
-                         (forward-line))
-                       (while (re-search-forward org-drawer-regexp end t)
-                         ;; Skip drawers.  You might think that
-                         ;; `org-at-drawer-p' would suffice, but for
-                         ;; some reason it doesn't work correctly
-                         ;; when operating on hidden text.  This
-                         ;; works, taken from
-                         ;; `org-agenda-get-some-entry-text'.
-                         (re-search-forward "^[ \t]*:END:.*\n?" end t)
-                         (goto-char (match-end 0)))
-                       (unless (or (= (point) (point-max))
-                                   (org-at-heading-p)
-                                   (looking-at-p "\n"))
-                         (insert "\n")))))
-    (org-map-entries #'fix t 'tree)))
+;; (defun ap/org-fix-blank-lines-after-headings ()
+;;   "Make sure a blank line exists after a heading's drawers and planning lines, before the entry content."
+;;   (interactive)
+;;   (when (org-before-first-heading-p)
+;;     (user-error "Before first heading."))
+;;   (cl-flet ((fix nil (let ((end (org-entry-end-position)))
+;;                        (forward-line)
+;;                        (while (and (org-at-planning-p)
+;;                                    (< (point) (point-max)))
+;;                          ;; Skip planning lines
+;;                          (forward-line))
+;;                        (while (re-search-forward org-drawer-regexp end t)
+;;                          ;; Skip drawers.  You might think that
+;;                          ;; `org-at-drawer-p' would suffice, but for
+;;                          ;; some reason it doesn't work correctly
+;;                          ;; when operating on hidden text.  This
+;;                          ;; works, taken from
+;;                          ;; `org-agenda-get-some-entry-text'.
+;;                          (re-search-forward "^[ \t]*:END:.*\n?" end t)
+;;                          (goto-char (match-end 0)))
+;;                        (unless (or (= (point) (point-max))
+;;                                    (org-at-heading-p)
+;;                                    (looking-at-p "\n"))
+;;                          (insert "\n")))))
+;;     (org-map-entries #'fix t 'tree)))
 
 ;; Ediff -----------------------------------------------------------------------
 
@@ -1004,6 +1039,15 @@ With argument, do this that many times."
   (setq ediff-last-windows (current-window-configuration))
   (add-hook 'ediff-after-quit-hook-internal 'ediff-restore-windows)
   ad-do-it)
+
+
+;; Chess -----------------------------------------------------------------------
+
+(require 'pygn-mode)
+
+
+
+
 
 
 ;; Start-up --------------------------------------------------------------------
@@ -1106,6 +1150,10 @@ With argument, do this that many times."
 
 
 
+(setq sqlformat-command 'sql-formatter)
+;; Optional additional args
+(setq sqlformat-args '("-s2" "-g"))
+
 
 ;; Web stuff -------------------------------------------------------------------
 
@@ -1143,7 +1191,6 @@ With argument, do this that many times."
 
 (require 'elpy)
 
-(package-initialize)
 (elpy-enable)
 
 ;; Elpy should use Python3 for RPC
@@ -1171,6 +1218,12 @@ With argument, do this that many times."
 (add-hook 'elpy-mode-hook
           (lambda ()
             (set-fill-column 79)))
+
+
+
+(add-to-list 'load-path "~/path/to/jupyter")
+(require 'jupyter)
+
 
 
 
@@ -1250,8 +1303,6 @@ With argument, do this that many times."
 ;; Start R in the working directory by default
 (setq ess-ask-for-ess-directory nil)
 
-;; Stop ess converting an underscore to <-
-(ess-toggle-underscore nil)
 
 ;; Possibly make it do Rstudio style things...?
 (setq ess-default-style (quote RStudio))
@@ -1264,7 +1315,7 @@ With argument, do this that many times."
   'ess-eval-region-or-function-or-paragraph-and-step)
 
 ;; Remove line-numbers in the R REPL
-(add-hook 'inferior-ess-mode-hook (lambda () (linum-mode -1)))
+;; (add-hook 'inferior-ess-mode-hook (lambda () (linum-mode -1)))
 
 ;; This should make things not freeze, I think
 (setq ess-eval-visibly-p 'nowait)
@@ -1439,7 +1490,7 @@ polymode and yas snippet"
 
 
 ;; Big Rmarkdown buffers get slow af. See if this helps.
-(add-hook 'poly-markdown+r-mode-hook (lambda() (linum-mode -1)))
+;; (add-hook 'poly-markdown+r-mode-hook (lambda() (linum-mode -1)))
 (add-hook 'poly-markdown+r-mode-hook (lambda() (olivetti-mode t)))
 
 
@@ -1678,9 +1729,6 @@ polymode and yas snippet"
 
 (require 'pdf-tools)
 (require 'org-ref)
-(require 'ivy-bibtex)
-(require 'interleave)
-
 
 (setq reading-list-file (file-truename "~/Nextcloud/org/reading-list.org"))
 
@@ -1718,21 +1766,6 @@ polymode and yas snippet"
 ;; This is cool for searching local stuff (assuming it exists). Searching
 ;; remotely is a bit clunky.  You can do this in a semi manual fashion with M-x
 ;; ivy-bibtex, M-o f, Crossref
-(setq
- ivy-bibtex-bibliography "~/Nextcloud/org/bibtex/index.bib" ;; where your references are stored
- ivy-bibtex-library-path "~/Nextcloud/papers/" ;; where your pdfs etc are stored
- ivy-bibtex-notes-path "~/Nextcloud/org/index.org" ;; where your notes are stored
- bibtex-completion-bibliography "~/Nextcloud/org/bibtex/index.bib" ;; writing completion
- bibtex-completion-notes-path reading-list-file
- ivy-re-builders-alist
- '((ivy-bibtex . ivy--regex-ignore-order)
-   (t . ivy--regex-plus))
- )
-
-
-;; interleave  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;;
-;; It would be cool if you could figure out how to make this use separate frames
 
 
 ;; biblio.el - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1750,20 +1783,20 @@ polymode and yas snippet"
 
 ;; 4. Open it in interleave mode
 
-(defun add-to-reading-list (title file)
-    "Based on the title of a paper, and a path to it's PDF, create a reading list
-  entry"
-    ;; Come up with the string that you want to add to your reading-list
-    (setq org-reading-list-entry
-          (format
-           "\n\n* %s\n  :PROPERTIES:\n  :INTERLEAVE_PDF: %s\n  :END:\n\n"
-           title file))
+;; (defun add-to-reading-list (title file)
+;;     "Based on the title of a paper, and a path to it's PDF, create a reading list
+;;   entry"
+;;     ;; Come up with the string that you want to add to your reading-list
+;;     (setq org-reading-list-entry
+;;           (format
+;;            "\n\n* %s\n  :PROPERTIES:\n  :INTERLEAVE_PDF: %s\n  :END:\n\n"
+;;            title file))
 
     ;; Append that string to the end of your reading-list
-    (write-region org-reading-list-entry nil reading-list-file 'append)
+   ;;  (write-region org-reading-list-entry nil reading-list-file 'append)
     ;; Note: it might be a better idea to open the file in a buffer, and then
     ;; append the text to the end, as you want to move
-    )
+   ;;  )
 
 
 (defun get-paper-async (title doi)
@@ -1840,223 +1873,218 @@ RECORD is a formatted record as expected by `biblio-insert-result'."
 
 ;; Elfeed ----------------------------------------------------------------------
 
-(require 'cl-lib)
-(require 'elfeed)
-(require 'youtube-dl)
+;; (require 'cl-lib)
+;; (require 'elfeed)
+;; (require 'youtube-dl)
 
-(load "~/.emacs.d/lisp/youtube-dl-emacs/youtube-dl.el" 'missing-ok nil)
+;; (load "~/.emacs.d/lisp/youtube-dl-emacs/youtube-dl.el" 'missing-ok nil)
 
-(global-set-key (kbd "C-x w") 'elfeed)
-
-
-;; ;; Stop lines wrapping in search mode
-;; (add-hook 'elfeed-search-mode-hook
-;;                (lambda() (visual-line-mode t)))
+;; (global-set-key (kbd "C-x w") 'elfeed)
 
 
-;; Read entries in olivetti mode
-(add-hook 'elfeed-show-mode-hook
-                (lambda() (olivetti-mode t)))
-
-;; You can use
-;; https://www.youtube.com/feeds/videos.xml?playlist_id=xxx
-;; or
-;; https://www.youtube.com/feeds/videos.xml?channel_id=xxx
-(setq elfeed-feeds
-      '(
-        ;; 'Magazine' stuff ----------------------------------------------------
-        ;;
-        ;; Mike Zaminsky / Using Emacs
-        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCxkMDXQ5qzYOgXPRnOBrp1w" yt emacs hacking entertainment)
-        ;; Noisey
-        ("https://www.youtube.com/feeds/videos.xml?channel_id=UC0iwHRFpv2_fpojZgQhElEQ" yt music entertainment)
-        ;; iD Magazine
-        ("https://www.youtube.com/feeds/videos.xml?channel_id=UC9ISPZsMaBi5mutsgX6LC1g" yt music entertainment)
-        ;; Motherboard
-        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCB6PV0cvJpzlcXRG7nz6PpQ" yt hacking entertainment)
-        ;; Thump
-        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCS6R2iiAJ1FvEYl4B3zmljw" yt music entertainment)
-        ;; The Fader
-        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCRCOCvfOkoqneyQCbNOUPwg" yt music entertainment)
-        ;; KODX Seattle
-        ("https://www.youtube.com/feeds/videos.xml?channel_id=UC4YGLMPVaCdMFiIJL9_Pq2A" yt interviews entertainment)
-        ;;
-        ;;
-        ;; Data Science Stuff --------------------------------------------------
-        ;;
-        ;; An Econometrics person
-        ("https://www.youtube.com/feeds/videos.xml?channel_id=UC3tFZR3eL1bDY8CqZDOQh-w" yt work)
-        ;; Brian Caffo!
-        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCdjFpvS8lvT2MJVthOUvlyg" yt work)
-        ;; A man called Derek Kane, never heard-of-him/watched-these before
-        ("https://www.youtube.com/feeds/videos.xml?channel_id=UC33qFpcu7eHFtpZ6dp3FFXw" yt work)
-        ;; PyData
-        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCOjD18EJYcsBog4IozkF_7w" yt work)
-        ;; Harvard's Stat 110 class. Mainly the guts of parametric
-        ;; distributions. YT RSS limited to first 15, but there's 15 more
-        ("https://www.youtube.com/feeds/videos.xml?playlist_id=PL2SOU6wwxB0uwwH80KTQ6ht66KWxbzTIo" yt work)
-        ;; O'Reilly Strata blah blah 2018
-        ("https://www.youtube.com/feeds/videos.xml?playlist_id=PL055Epbe6d5a_38V9wp-aru0XQ34dgqCA" yt work)
-        ;; Spark Summit
-        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCRzsq7k4-kT-h3TDUBQ82-w" yt work)
-        ;; InfoQ conferences: "AI", ML, data engineering
-        ("https://www.youtube.com/feeds/videos.xml?playlist_id=PLndbWGuLoHeYsZk6VpCEj_SSd9IFgjJ-2" yt work)
-        ;; Uber AI labs
-        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCOb_oiEfSedawuvRA0oaVoQ" yt work)
-        ;;
-        ;;
-        ;; Data Science Stuff, but more 'YouTubey' -----------------------------
-        ;;
-        ;; Mainly copied from sites with lists when googling 'data science
-        ;; youtube'. Possibly not good.
-        ;;
-        ;; Dan Van Boxel
-        ("https://www.youtube.com/feeds/videos.xml?channel_id=UC6tnRFKGiq1DlybcqP5rZ7A" yt work)
-        ;; Hvass Labs
-        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCbba38V6vcglqVL--8kVVmg" yt work)
-        ;; sentdex
-        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCfzlCWGWYyIQ0aLC5w48gBQ" yt work)
-        ;; The SemiColon (more tutorial crap)
-        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCwB7HrnRlOfasrbCJoiZ9Lg" yt work)
-        ;;
-        ;; News ----------------------------------------------------------------
-        ;;
-        ;; UK Parliament, PMQs only
-        ("https://www.youtube.com/feeds/videos.xml?playlist_id=PL40441042C458B62B" yt news)
-        ;; Democracy now
-        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCzuqE7-t13O4NIDYJfakrhw" yt news)
-        ;; Channel 4 news
-        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCTrQ7HXWRRxr7OsOtodr2_w" yt news)
-        ;;
-        ;;
-        ;; Games & Gaming ------------------------------------------------------
-        ;;
-        ;; Waypoint
-        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCWu9QuHF-dcakBmhullIH6w" yt gaming)
-        ;; G4 TV!
-        ("https://www.youtube.com/feeds/videos.xml?playlist_id=PLb9M3FeiZ1K74ni3oo-JmCAAnChPwQCdo" yt gaming)
-        ;;
-        ;; Music ---------------------------------------------------------------
-        ;;
-        ;; Ninja Tune
-        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCEXRv_qihRwjsV91ftx23-A" yt music)
-        ;; Warp Records
-        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCvbd4lVoe8ur0zJJRuuhC_Q" yt music)
-        ;; Boilerroom
-        ("https://www.youtube.com/feeds/videos.xml?channel_id=UCGBpxWJr9FNOcFYA5GkKrMg" yt music live)
-        ;; Alias Bass
-        ("https://www.youtube.com/feeds/videos.xml?channel_id=UC3SZ8dE0Mg_7GdsarM_CTOg" yt music)
-        ))
+;; ;; ;; Stop lines wrapping in search mode
+;; ;; (add-hook 'elfeed-search-mode-hook
+;; ;;                (lambda() (visual-line-mode t)))
 
 
+;; ;; Read entries in olivetti mode
+;; (add-hook 'elfeed-show-mode-hook
+;;                 (lambda() (olivetti-mode t)))
 
-;; youtube-dl config (yoinked straight from
-;; https://github.com/skeeto/.emacs.d/blob/master/etc/feed-setup.el)
-
-(setq youtube-dl-directory "~/Videos")
-
-(defface elfeed-youtube
-  '((t :foreground "#f9f"))
-  "Marks YouTube videos in Elfeed."
-  :group 'elfeed)
-
-(push '(youtube elfeed-youtube)
-      elfeed-search-face-alist)
-
-(defun elfeed-show-youtube-dl ()
-  "Download the current entry with youtube-dl."
-  (interactive)
-  (pop-to-buffer (youtube-dl (elfeed-entry-link elfeed-show-entry))))
-
-(cl-defun elfeed-search-youtube-dl (&key slow)
-  "Download the current entry with youtube-dl."
-  (interactive)
-  (let ((entries (elfeed-search-selected)))
-    (dolist (entry entries)
-
-      (setq vid-file (elfeed-youtube-dl-filename-sanizer
-                      (elfeed-entry-title entry)))
-
-      (setq vid-dir (concat
-                     (file-name-as-directory youtube-dl-directory)
-                     (elfeed-feed-title (elfeed-entry-feed entry))))
-
-      (if (null (youtube-dl (elfeed-entry-link entry)
-                            :title (elfeed-entry-title entry)
-                            :slow slow
-                            :destination vid-file
-                            :directory vid-dir
-                            :autoplay t
-                            )
-                ;; Note: You're not really how to do the queuing
-                ;; thing... Possibly a hook in ytdl, or just watch the process,
-                ;; or just watch for the file to appear..?
-                ;;
-                ;; Check out youtube-dl--sentinel
-                ;;
-                ;; Could you store whether it should be played or not
-                ;;
-                ;; (vlc/enqueue (concat (filename-as-directory vid-dir) vid-name))
-                )
-          (message "Entry is not a YouTube link!")
-        (message "Downloading %s" (elfeed-entry-title entry)))
-      (elfeed-untag entry 'unread)
-      (elfeed-search-update-entry entry)
-      (unless (use-region-p) (forward-line)))))
-
-
-(defun expose (function &rest args)
-  "Return an interactive version of FUNCTION, 'exposing' it to the user."
-  (lambda ()
-    (interactive)
-    (apply function args)))
-
-(defalias 'elfeed-search-youtube-dl-slow
-  (expose #'elfeed-search-youtube-dl :slow t))
-
-(define-key elfeed-show-mode-map "d" 'elfeed-show-youtube-dl)
-(define-key elfeed-search-mode-map "d" 'elfeed-search-youtube-dl)
-(define-key elfeed-search-mode-map "D" 'elfeed-search-youtube-dl-slow)
-(define-key elfeed-search-mode-map "L" 'youtube-dl-list)
-
-
-(defun elfeed-youtube-dl-filename-sanizer(filename)
-  "Produce a sanitized filename for downloaded youtube-dl videos, using a simple
-  regex convention determined in elisp (as opposed to a sophisticated one
-  determined in Python).
-
-  The reasoning is that you'd like a simple string that you can pass to VLC once
-  the thing is donwloaded"
-  (concat
-   (replace-regexp-in-string
-    "_+" "_"
-    (replace-regexp-in-string "[[:space:][:punct:]]" "_" filename)
-    )
-   ".mp4"
-   )
-  )
+;; ;; You can use
+;; ;; https://www.youtube.com/feeds/videos.xml?playlist_id=xxx
+;; ;; or
+;; ;; https://www.youtube.com/feeds/videos.xml?channel_id=xxx
+;; (setq elfeed-feeds
+;;       '(
+;;         ;; 'Magazine' stuff ----------------------------------------------------
+;;         ;;
+;;         ;; Mike Zaminsky / Using Emacs
+;;         ("https://www.youtube.com/feeds/videos.xml?channel_id=UCxkMDXQ5qzYOgXPRnOBrp1w" yt emacs hacking entertainment)
+;;         ;; Noisey
+;;         ("https://www.youtube.com/feeds/videos.xml?channel_id=UC0iwHRFpv2_fpojZgQhElEQ" yt music entertainment)
+;;         ;; iD Magazine
+;;         ("https://www.youtube.com/feeds/videos.xml?channel_id=UC9ISPZsMaBi5mutsgX6LC1g" yt music entertainment)
+;;         ;; Motherboard
+;;         ("https://www.youtube.com/feeds/videos.xml?channel_id=UCB6PV0cvJpzlcXRG7nz6PpQ" yt hacking entertainment)
+;;         ;; Thump
+;;         ("https://www.youtube.com/feeds/videos.xml?channel_id=UCS6R2iiAJ1FvEYl4B3zmljw" yt music entertainment)
+;;         ;; The Fader
+;;         ("https://www.youtube.com/feeds/videos.xml?channel_id=UCRCOCvfOkoqneyQCbNOUPwg" yt music entertainment)
+;;         ;; KODX Seattle
+;;         ("https://www.youtube.com/feeds/videos.xml?channel_id=UC4YGLMPVaCdMFiIJL9_Pq2A" yt interviews entertainment)
+;;         ;;
+;;         ;;
+;;         ;; Data Science Stuff --------------------------------------------------
+;;         ;;
+;;         ;; An Econometrics person
+;;         ("https://www.youtube.com/feeds/videos.xml?channel_id=UC3tFZR3eL1bDY8CqZDOQh-w" yt work)
+;;         ;; Brian Caffo!
+;;         ("https://www.youtube.com/feeds/videos.xml?channel_id=UCdjFpvS8lvT2MJVthOUvlyg" yt work)
+;;         ;; A man called Derek Kane, never heard-of-him/watched-these before
+;;         ("https://www.youtube.com/feeds/videos.xml?channel_id=UC33qFpcu7eHFtpZ6dp3FFXw" yt work)
+;;         ;; PyData
+;;         ("https://www.youtube.com/feeds/videos.xml?channel_id=UCOjD18EJYcsBog4IozkF_7w" yt work)
+;;         ;; Harvard's Stat 110 class. Mainly the guts of parametric
+;;         ;; distributions. YT RSS limited to first 15, but there's 15 more
+;;         ("https://www.youtube.com/feeds/videos.xml?playlist_id=PL2SOU6wwxB0uwwH80KTQ6ht66KWxbzTIo" yt work)
+;;         ;; O'Reilly Strata blah blah 2018
+;;         ("https://www.youtube.com/feeds/videos.xml?playlist_id=PL055Epbe6d5a_38V9wp-aru0XQ34dgqCA" yt work)
+;;         ;; Spark Summit
+;;         ("https://www.youtube.com/feeds/videos.xml?channel_id=UCRzsq7k4-kT-h3TDUBQ82-w" yt work)
+;;         ;; InfoQ conferences: "AI", ML, data engineering
+;;         ("https://www.youtube.com/feeds/videos.xml?playlist_id=PLndbWGuLoHeYsZk6VpCEj_SSd9IFgjJ-2" yt work)
+;;         ;; Uber AI labs
+;;         ("https://www.youtube.com/feeds/videos.xml?channel_id=UCOb_oiEfSedawuvRA0oaVoQ" yt work)
+;;         ;;
+;;         ;;
+;;         ;; Data Science Stuff, but more 'YouTubey' -----------------------------
+;;         ;;
+;;         ;; Mainly copied from sites with lists when googling 'data science
+;;         ;; youtube'. Possibly not good.
+;;         ;;
+;;         ;; Dan Van Boxel
+;;         ("https://www.youtube.com/feeds/videos.xml?channel_id=UC6tnRFKGiq1DlybcqP5rZ7A" yt work)
+;;         ;; Hvass Labs
+;;         ("https://www.youtube.com/feeds/videos.xml?channel_id=UCbba38V6vcglqVL--8kVVmg" yt work)
+;;         ;; sentdex
+;;         ("https://www.youtube.com/feeds/videos.xml?channel_id=UCfzlCWGWYyIQ0aLC5w48gBQ" yt work)
+;;         ;; The SemiColon (more tutorial crap)
+;;         ("https://www.youtube.com/feeds/videos.xml?channel_id=UCwB7HrnRlOfasrbCJoiZ9Lg" yt work)
+;;         ;;
+;;         ;; News ----------------------------------------------------------------
+;;         ;;
+;;         ;; UK Parliament, PMQs only
+;;         ("https://www.youtube.com/feeds/videos.xml?playlist_id=PL40441042C458B62B" yt news)
+;;         ;; Democracy now
+;;         ("https://www.youtube.com/feeds/videos.xml?channel_id=UCzuqE7-t13O4NIDYJfakrhw" yt news)
+;;         ;; Channel 4 news
+;;         ("https://www.youtube.com/feeds/videos.xml?channel_id=UCTrQ7HXWRRxr7OsOtodr2_w" yt news)
+;;         ;;
+;;         ;;
+;;         ;; Games & Gaming ------------------------------------------------------
+;;         ;;
+;;         ;; Waypoint
+;;         ("https://www.youtube.com/feeds/videos.xml?channel_id=UCWu9QuHF-dcakBmhullIH6w" yt gaming)
+;;         ;; G4 TV!
+;;         ("https://www.youtube.com/feeds/videos.xml?playlist_id=PLb9M3FeiZ1K74ni3oo-JmCAAnChPwQCdo" yt gaming)
+;;         ;;
+;;         ;; Music ---------------------------------------------------------------
+;;         ;;
+;;         ;; Ninja Tune
+;;         ("https://www.youtube.com/feeds/videos.xml?channel_id=UCEXRv_qihRwjsV91ftx23-A" yt music)
+;;         ;; Warp Records
+;;         ("https://www.youtube.com/feeds/videos.xml?channel_id=UCvbd4lVoe8ur0zJJRuuhC_Q" yt music)
+;;         ;; Boilerroom
+;;         ("https://www.youtube.com/feeds/videos.xml?channel_id=UCGBpxWJr9FNOcFYA5GkKrMg" yt music live)
+;;         ;; Alias Bass
+;;         ("https://www.youtube.com/feeds/videos.xml?channel_id=UC3SZ8dE0Mg_7GdsarM_CTOg" yt music)
+;;         ))
 
 
 
-;; VLC ------------------------------------------------------------------------
+;; ;; youtube-dl config (yoinked straight from
+;; ;; https://github.com/skeeto/.emacs.d/blob/master/etc/feed-setup.el)
 
-;; So, now you've downloaded all this crap to watch, you have to watch it
+;; (setq youtube-dl-directory "~/Videos")
 
-(require 'vlc)
+;; (defface elfeed-youtube
+;;   '((t :foreground "#f9f"))
+;;   "Marks YouTube videos in Elfeed."
+;;   :group 'elfeed)
+
+;; (push '(youtube elfeed-youtube)
+;;       elfeed-search-face-alist)
+
+;; (defun elfeed-show-youtube-dl ()
+;;   "Download the current entry with youtube-dl."
+;;   (interactive)
+;;   (pop-to-buffer (youtube-dl (elfeed-entry-link elfeed-show-entry))))
+
+;; (cl-defun elfeed-search-youtube-dl (&key slow)
+;;   "Download the current entry with youtube-dl."
+;;   (interactive)
+;;   (let ((entries (elfeed-search-selected)))
+;;     (dolist (entry entries)
+
+;;       (setq vid-file (elfeed-youtube-dl-filename-sanizer
+;;                       (elfeed-entry-title entry)))
+
+;;       (setq vid-dir (concat
+;;                      (file-name-as-directory youtube-dl-directory)
+;;                      (elfeed-feed-title (elfeed-entry-feed entry))))
+
+;;       (if (null (youtube-dl (elfeed-entry-link entry)
+;;                             :title (elfeed-entry-title entry)
+;;                             :slow slow
+;;                             :destination vid-file
+;;                             :directory vid-dir
+;;                             :autoplay t
+;;                             )
+;;                 ;; Note: You're not really how to do the queuing
+;;                 ;; thing... Possibly a hook in ytdl, or just watch the process,
+;;                 ;; or just watch for the file to appear..?
+;;                 ;;
+;;                 ;; Check out youtube-dl--sentinel
+;;                 ;;
+;;                 ;; Could you store whether it should be played or not
+;;                 ;;
+;;                 ;; (vlc/enqueue (concat (filename-as-directory vid-dir) vid-name))
+;;                 )
+;;           (message "Entry is not a YouTube link!")
+;;         (message "Downloading %s" (elfeed-entry-title entry)))
+;;       (elfeed-untag entry 'unread)
+;;       (elfeed-search-update-entry entry)
+;;       (unless (use-region-p) (forward-line)))))
+
+
+;; (defun expose (function &rest args)
+;;   "Return an interactive version of FUNCTION, 'exposing' it to the user."
+;;   (lambda ()
+;;     (interactive)
+;;     (apply function args)))
+
+;; (defalias 'elfeed-search-youtube-dl-slow
+;;   (expose #'elfeed-search-youtube-dl :slow t))
+
+;; (define-key elfeed-show-mode-map "d" 'elfeed-show-youtube-dl)
+;; (define-key elfeed-search-mode-map "d" 'elfeed-search-youtube-dl)
+;; (define-key elfeed-search-mode-map "D" 'elfeed-search-youtube-dl-slow)
+;; (define-key elfeed-search-mode-map "L" 'youtube-dl-list)
+
+
+;; (defun elfeed-youtube-dl-filename-sanizer(filename)
+;;   "Produce a sanitized filename for downloaded youtube-dl videos, using a simple
+;;   regex convention determined in elisp (as opposed to a sophisticated one
+;;   determined in Python).
+
+;;   The reasoning is that you'd like a simple string that you can pass to VLC once
+;;   the thing is donwloaded"
+;;   (concat
+;;    (replace-regexp-in-string
+;;     "_+" "_"
+;;     (replace-regexp-in-string "[[:space:][:punct:]]" "_" filename)
+;;     )
+;;    ".mp4"
+;;    )
+;;   )
+
+
+
+;; ;; VLC ------------------------------------------------------------------------
+
+;; ;; So, now you've downloaded all this crap to watch, you have to watch it
+
+;; (require 'vlc)
 
 
 ;; Appearance ------------------------------------------------------------------
 
 ;; Do this last so you get immediate visual feedback if something breaks
-;; Make emacs transparent
-;;(set-frame-parameter (selected-frame) 'alpha '(<active> . <inactive>))
-;;(set-frame-parameter (selected-frame) 'alpha <both>)
-;;(set-frame-parameter (selected-frame) 'alpha '(99 . 98))
-;; (add-to-list 'default-frame-alist '(alpha . (99 . 98)))
 
 
 ;; Your theme
-(require 'sanityinc-tomorrow-eighties-theme)
+(load-theme 'sanityinc-tomorrow-eighties t)
 (set-face-attribute 'fringe nil :background "#2d2d2d" :foreground "#2d2d2d")
 
 ;;(require 'sanityinc-tomorrow-bright-theme)
@@ -2071,3 +2099,141 @@ RECORD is a formatted record as expected by `biblio-insert-result'."
 ;; http://stackoverflow.com/a/8920373
 (setq system-uses-terminfo nil)
 (put 'downcase-region 'disabled nil)
+
+
+;; Vertico as an ivy replacement ----------------------------------------------
+;; For some reason this has to get at the end of the file
+;; Vertico, as an ivy replacement (you're getting errors in emacs-plus@29.1)
+;; Enable vertico
+(require 'vertico)
+(use-package vertico
+  :init
+  (vertico-mode)
+
+  ;; Different scroll margin
+  ;; (setq vertico-scroll-margin 0)
+
+  ;; Show more candidates
+  ;; (setq vertico-count 20)
+
+  ;; Grow and shrink the Vertico minibuffer
+  ;; (setq vertico-resize t)
+
+  ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
+  ;; (setq vertico-cycle t)
+  )
+
+;; Persist history over Emacs restarts. Vertico sorts by history position.
+(use-package savehist
+  :init
+  (savehist-mode))
+
+;; A few more useful configurations...
+(use-package emacs
+  :init
+  ;; Add prompt indicator to `completing-read-multiple'.
+  ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
+  (defun crm-indicator (args)
+    (cons (format "[CRM%s] %s"
+                  (replace-regexp-in-string
+                   "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+                   crm-separator)
+                  (car args))
+          (cdr args)))
+  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+
+  ;; Do not allow the cursor in the minibuffer prompt
+  (setq minibuffer-prompt-properties
+        '(read-only t cursor-intangible t face minibuffer-prompt))
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+
+  ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
+  ;; Vertico commands are hidden in normal buffers.
+  ;; (setq read-extended-command-predicate
+  ;;       #'command-completion-default-include-p)
+
+  ;; Enable recursive minibuffers
+  (setq enable-recursive-minibuffers t))
+
+;; Example configuration for Consult
+(use-package consult
+  ;; Replace bindings. Lazily loaded due by `use-package'.
+
+  ;; Enable automatic preview at point in the *Completions* buffer. This is
+  ;; relevant when you use the default completion UI.
+  :hook (completion-list-mode . consult-preview-at-point-mode)
+
+  ;; The :init configuration is always executed (Not lazy)
+  :init
+
+  ;; Optionally configure the register formatting. This improves the register
+  ;; preview for `consult-register', `consult-register-load',
+  ;; `consult-register-store' and the Emacs built-ins.
+  (setq register-preview-delay 0.5
+        register-preview-function #'consult-register-format)
+
+  ;; Optionally tweak the register preview window.
+  ;; This adds thin lines, sorting and hides the mode line of the window.
+  (advice-add #'register-preview :override #'consult-register-window)
+
+  ;; Use Consult to select xref locations with preview
+  (setq xref-show-xrefs-function #'consult-xref
+        xref-show-definitions-function #'consult-xref)
+
+  ;; Configure other variables and modes in the :config section,
+  ;; after lazily loading the package.
+  :config
+
+  ;; Optionally configure preview. The default value
+  ;; is 'any, such that any key triggers the preview.
+  ;; (setq consult-preview-key 'any)
+  ;; (setq consult-preview-key "M-.")
+  ;; (setq consult-preview-key '("S-<down>" "S-<up>"))
+  ;; For some commands and buffer sources it is useful to configure the
+  ;; :preview-key on a per-command basis using the `consult-customize' macro.
+  (consult-customize
+   consult-theme :preview-key '(:debounce 0.2 any)
+   consult-ripgrep consult-git-grep consult-grep
+   consult-bookmark consult-recent-file consult-xref
+   consult--source-bookmark consult--source-file-register
+   consult--source-recent-file consult--source-project-recent-file
+   ;; :preview-key "M-."
+   :preview-key '(:debounce 0.4 any))
+
+  ;; Optionally configure the narrowing key.
+  ;; Both < and C-+ work reasonably well.
+  (setq consult-narrow-key "<") ;; "C-+"
+
+  ;; Optionally make narrowing help available in the minibuffer.
+  ;; You may want to use `embark-prefix-help-command' or which-key instead.
+  ;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
+
+  ;; By default `consult-project-function' uses `project-root' from project.el.
+  ;; Optionally configure a different project root function.
+  ;;;; 1. project.el (the default)
+  ;; (setq consult-project-function #'consult--default-project--function)
+  ;;;; 2. vc.el (vc-root-dir)
+  ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
+  ;;;; 3. locate-dominating-file
+  ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
+  ;;;; 4. projectile.el (projectile-project-root)
+  ;; (autoload 'projectile-project-root "projectile")
+  ;; (setq consult-project-function (lambda (_) (projectile-project-root)))
+  ;;;; 5. No project support
+  ;; (setq consult-project-function nil)
+)
+
+;; Use orderless completion
+(use-package orderless
+  :ensure t
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-overrides '((file (styles basic partial-completion)))))
+
+(define-key isearch-mode-map (kbd "C-F") 'isearch-forward-symbol-at-point)
+(define-key isearch-mode-map (kbd "C-f") 'isearch-repeat-forward)
+(global-set-key (kbd "C-f") 'isearch-forward)
+(global-set-key (kbd "C-S-f") 'isearch-forward-symbol-at-point)
+
+
+(add-to-list 'default-frame-alist '(undecorated-round . t))

@@ -4,18 +4,26 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+        abbrev-prefix-mark
         backward-delete-word
+        cua-copy-handler
+        cua-copy-region
         cua-paste
         delete-word
         markdown-outdent-or-delete
         mwim-beginning
         mwim-end
+        olivetti-mode
         org-cycle
+        org-demote-subtree
         org-insert-heading-respect-content
+        org-meta-return
         org-metaleft
         org-metaright
+        org-return
         org-return-indent
         org-self-insert-command
+        org-shiftcontrolleft
         org-shiftcontrolright
         org-shiftmetaleft
         org-shiftmetaright
@@ -25,4 +33,5 @@
 (setq mc/cmds-to-run-once
       '(
         ivy-switch-buffer
+        switch-to-buffer
         ))
