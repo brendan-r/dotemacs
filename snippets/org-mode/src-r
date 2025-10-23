@@ -1,9 +1,0 @@
-
-# -*- mode: snippet -*-
-# name: rmd-block
-# key: rb
-# --
-
-#+begin_src R :session :results none
-
-#+end_src
