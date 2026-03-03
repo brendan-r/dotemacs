@@ -20,15 +20,19 @@
 
 ;; Allow packages to be installed ----------------------------------------------
 
+;; Load the package library
+(require 'package)
+
+;; Define archives calling
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                         ("gnu" . "https://elpa.gnu.org/packages/")
+                         ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
+
+;; Initialize the package system
+(package-initialize)
+
 (require 'use-package)
 (setq use-package-verbose t)
-
-;; Package archives/repos
-(add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/") t)
-(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
-
-(package-initialize)
 
 ;; Add the emacs package dirs to the loadpath
 (let ((default-directory "~/.emacs.d/"))
@@ -52,7 +56,6 @@
                         rainbow-delimiters
                         smartparens
                         web-mode
-                        magithub
                         company
                         olivetti
                         exec-path-from-shell
@@ -62,6 +65,7 @@
                         color-theme-sanityinc-tomorrow
                         polymode
                         poly-R
+			pygn-mode
                         poly-markdown
                         persp-mode
                         which-key
@@ -309,8 +313,8 @@ With argument, do this that many times."
   (interactive "p")
   (delete-word (- arg)))
 
-(global-set-key (kbd "<M-backspace>") 'backward-delete-word)
-(global-set-key (kbd "<M-delete>") 'delete-word)
+(global-set-key (kbd "<C-backspace>") 'backward-delete-word)
+(global-set-key (kbd "<C-delete>") 'delete-word)
 
 
 ;; Mouse bindings --------------------------------------------------------------
@@ -1253,35 +1257,6 @@ This is useful for marking habits or tasks as done on a day in the past."
 
 
 
-;; Elisp -----------------------------------------------------------------------
-;; Note: This is straight-up stolen from izahn's dotfiles at
-;; https://github.com/izahn/dotemacs/blob/496c502aad691deaed1076318e92035d229cfa40/init.el#L486
-
-(with-eval-after-load "elisp-mode"
-  (require 'company-elisp)
-  ;; ielm
-  (require 'eval-in-repl-ielm)
-  ;; For .el files
-  (define-key emacs-lisp-mode-map (kbd "C-c C-c") 'eir-eval-in-ielm)
-  (define-key emacs-lisp-mode-map (kbd "<C-return>") 'eir-eval-in-ielm)
-  (define-key emacs-lisp-mode-map (kbd "C-c C-b") 'eval-buffer)
-  ;; (define-key emacs-lisp-mode-map (kbd "<C-S-return>") 'eval-buffer)
-  ;; For *scratch*
-  (define-key lisp-interaction-mode-map "\C-c\C-c" 'eir-eval-in-ielm)
-  (define-key lisp-interaction-mode-map (kbd "<C-return>") 'eir-eval-in-ielm)
-  (define-key lisp-interaction-mode-map (kbd "C-c C-b") 'eval-buffer)
-  (define-key lisp-interaction-mode-map (kbd "<C-S-return>") 'eval-buffer)
-  ;; For M-x info
-  (define-key Info-mode-map (kbd "C-c C-c") 'eir-eval-in-ielm)
-  ;; Set up completions
-  (add-hook 'emacs-lisp-mode-hook
-            (lambda()
-              ;; make sure completion calls company-elisp first
-              (require 'company-elisp)
-              (setq-local company-backends
-                          (delete-dups (cons 'company-elisp (cons 'company-files company-backends)))))))
-
-
 
 ;; Node / JS -------------------------------------------------------------------
 
@@ -1467,9 +1442,9 @@ polymode and yas snippet"
 
 ;; Stan ------------------------------------------------------------------------
 
-(require 'stan-mode)
+;; (require 'stan-mode)
 ;; Note: If Stan isn't installed, this seems to break verything
-(require 'stan-snippets)
+;; (require 'stan-snippets)
 
 
 
@@ -1516,14 +1491,6 @@ polymode and yas snippet"
 (global-set-key (kbd "C-x C-g") 'magit-status)
 
 
-;; Try out magithub
-;;
-;; This may cause errors without an update of magit. It *shouldn't* do anything
-;; unless it can auth, so adding this line *should* be harmless on machines where
-;; you don't have an interest in GH stuff.
-
-;; (require 'magithub)
-;; (magithub-feature-autoinject t)
 
 ;; Misc ------------------------------------------------------------------------
 
@@ -1700,25 +1667,6 @@ polymode and yas snippet"
   (require 'frames-only-mode)
   (frames-only-mode t)
   )
-
-
-;; Sonic pi stuff --------------------------------------------------------------
-(require 'sonic-pi)
-(setq sonic-pi-path "/usr/lib/sonic-pi/")
-
-;; Optionally define a hook
-(add-hook 'sonic-pi-mode-hook
-          (lambda ()
-            ;; This setq can go here instead if you wish
-            (setq sonic-pi-path "/usr/lib/sonic-pi/")
-            (define-key ruby-mode-map (kbd "<C-return>") 'sonic-pi-send-region)
-            (define-key ruby-mode-map "C-c C-b" 'sonic-pi-stop-all))
-          )
-
-
-;; ranger-mode -----------------------------------------------------------------
-
-(setq ranger-cleanup-eagerly t)
 
 
 
