@@ -65,7 +65,6 @@
                         color-theme-sanityinc-tomorrow
                         polymode
                         poly-R
-			pygn-mode
                         poly-markdown
                         persp-mode
                         which-key
@@ -90,6 +89,7 @@
                         vertico
                         consult
                         jupyter
+                        pygn-mode
                         ))
 
 
@@ -313,8 +313,12 @@ With argument, do this that many times."
   (interactive "p")
   (delete-word (- arg)))
 
-(global-set-key (kbd "<C-backspace>") 'backward-delete-word)
-(global-set-key (kbd "<C-delete>") 'delete-word)
+(if (eq system-type 'darwin)
+    (progn
+      (global-set-key (kbd "<M-backspace>") 'backward-delete-word)
+      (global-set-key (kbd "<M-delete>") 'delete-word))
+  (global-set-key (kbd "<C-backspace>") 'backward-delete-word)
+  (global-set-key (kbd "<C-delete>") 'delete-word))
 
 
 ;; Mouse bindings --------------------------------------------------------------
@@ -498,6 +502,44 @@ With argument, do this that many times."
 (prefer-coding-system 'utf-8)
 
 
+;; vterm stuff ----------------
+
+
+(use-package vterm
+  :ensure t
+  :commands vterm
+  :config
+  (setq vterm-shell "/bin/zsh"))
+
+
+;; Attempt at stopping long-lines getting 'cut off'
+(add-hook 'vterm-mode-hook
+          (lambda ()
+            (setq-local truncate-lines nil)))
+
+
+;;;; vterm: fix TUI chart glyph spacing (braille/block elements)
+
+(with-eval-after-load 'vterm
+  ;; Keep vterm buffers on a strict grid
+  (add-hook 'vterm-mode-hook
+            (lambda ()
+              (setq-local line-spacing 0)
+              ;; ;; Disable composition (ligatures, etc.) which can introduce spacing artifacts
+              ;; (setq-local composition-function-table nil)
+	      ))
+
+  ;; Force a single font for the Unicode ranges commonly used by TUIs for charts.
+  ;; This avoids font fallback that can introduce inter-glyph spacing.
+  (let ((f (font-spec :family "Menlo")))
+    ;; Braille Patterns: U+2800–U+28FF (often used for high-res terminal graphs)
+    (set-fontset-font t '(#x2800 . #x28FF) f nil 'prepend)
+    ;; Block Elements: U+2580–U+259F (partial blocks / progress bars)
+    (set-fontset-font t '(#x2580 . #x259F) f nil 'prepend)
+    ;; Box Drawing: U+2500–U+257F (borders)
+    (set-fontset-font t '(#x2500 . #x257F) f nil 'prepend)))
+
+
 
 ;; ansi-term stuff -------------------------------------------------------------
 
@@ -510,11 +552,11 @@ With argument, do this that many times."
 ;;             (lambda () (linum-mode 0))
 ;;             :append :local))
 
-;; always use bash
-(defvar my-term-shell "/bin/bash")
-(defadvice ansi-term (before force-bash)
-  (interactive (list my-term-shell)))
-(ad-activate 'ansi-term)
+;; ;; always use bash
+;; (defvar my-term-shell "/bin/bash")
+;; (defadvice ansi-term (before force-bash)
+;;   (interactive (list my-term-shell)))
+;; (ad-activate 'ansi-term)
 
 ;; enable cua and transient mark modes in term-line-mode
 ;; Taken from https://www.emacswiki.org/emacs/AnsiTermHints
@@ -1255,9 +1297,6 @@ This is useful for marking habits or tasks as done on a day in the past."
 ;; (require 'virtualenvwrapper)
 ;; (venv-initialize-interactive-shells)
 
-
-
-
 ;; Node / JS -------------------------------------------------------------------
 
 (require 'nodejs-repl)
@@ -1443,7 +1482,7 @@ polymode and yas snippet"
 ;; Stan ------------------------------------------------------------------------
 
 ;; (require 'stan-mode)
-;; Note: If Stan isn't installed, this seems to break verything
+;; Note: If Stan isn't installed, this seems to break everything
 ;; (require 'stan-snippets)
 
 
@@ -1489,8 +1528,6 @@ polymode and yas snippet"
 
 ;; Set key for magit-status
 (global-set-key (kbd "C-x C-g") 'magit-status)
-
-
 
 ;; Misc ------------------------------------------------------------------------
 
@@ -2045,8 +2082,8 @@ RECORD is a formatted record as expected by `biblio-insert-result'."
 
 ;; Use Emacs terminfo, not system terminfo
 ;; http://stackoverflow.com/a/8920373
-(setq system-uses-terminfo nil)
-(put 'downcase-region 'disabled nil)
+;; (setq system-uses-terminfo nil)
+;; (put 'downcase-region 'disabled nil)
 
 
 ;; Vertico as an ivy replacement ----------------------------------------------

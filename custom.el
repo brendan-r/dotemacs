@@ -6,18 +6,18 @@
  '(org-agenda-files nil)
  '(org-support-shift-select 'always)
  '(package-selected-packages
-   '(pygn-mode org-super-agenda htmlize eat sqlformat org-ql jupyter
-               orderless hotfuzz consult yaml-mode which-key web-mode
-               vertico undo-tree stan-snippets spaceline sonic-pi smex
-               smartparens skewer-mode ranger rainbow-delimiters
-               projectile poly-R persp-mode pdf-tools org-ref org-gcal
-               org-caldav olivetti nodejs-repl mwim multiple-cursors
-               multi-term magithub leetcode ivy-bibtex
-               frames-only-mode fold-this flyspell-lazy
-               flyspell-correct-ivy flycheck fill-column-indicator
-               expand-region exec-path-from-shell eval-in-repl ess
-               elpy elfeed counsel color-theme-sanityinc-tomorrow
-               auto-complete anki-editor)))
+   '(anki-editor auto-complete color-theme-sanityinc-tomorrow consult counsel eat
+                 elfeed elpy ess eval-in-repl exec-path-from-shell expand-region
+                 fill-column-indicator flycheck flyspell-correct-ivy
+                 flyspell-lazy fold-this frames-only-mode hotfuzz htmlize
+                 ivy-bibtex jupyter leetcode magithub multi-term
+                 multiple-cursors mwim nodejs-repl olivetti orderless org-caldav
+                 org-gcal org-ql org-ref org-super-agenda pdf-tools persp-mode
+                 poly-R projectile pygn-mode rainbow-delimiters ranger
+                 skewer-mode smartparens smex sonic-pi spaceline sqlformat
+                 stan-snippets undo-tree vertico vterm web-mode which-key
+                 yaml-mode))
+ '(warning-suppress-log-types '((native-compiler))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
