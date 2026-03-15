@@ -12,12 +12,11 @@
                  flyspell-lazy fold-this frames-only-mode hotfuzz htmlize
                  ivy-bibtex jupyter leetcode magithub multi-term
                  multiple-cursors mwim nodejs-repl olivetti orderless org-caldav
-                 org-gcal org-ql org-ref org-super-agenda pdf-tools persp-mode
-                 poly-R projectile pygn-mode rainbow-delimiters ranger
-                 skewer-mode smartparens smex sonic-pi spaceline sqlformat
-                 stan-snippets undo-tree vertico vterm web-mode which-key
-                 yaml-mode))
- '(warning-suppress-log-types '((native-compiler))))
+                 org-gcal org-ql org-ref org-super-agenda org-transclusion
+                 pdf-tools persp-mode poly-R projectile pygn-mode
+                 rainbow-delimiters ranger skewer-mode smartparens smex sonic-pi
+                 spaceline sqlformat stan-snippets undo-tree vertico web-mode
+                 which-key yaml-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
