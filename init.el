@@ -963,6 +963,19 @@ This is useful for marking habits or tasks as done on a day in the past."
 ;; it
 (setq anki-editor-create-decks t)
 
+;; anki-editor treats an explicit `:ANKI_FORMAT: nil` like a missing property
+;; and falls back to the global default. Respect the local property so raw PGN
+;; fields can bypass HTML export cleanly.
+(with-eval-after-load 'anki-editor
+  (defun br/anki-editor-entry-format ()
+    "Respect a local `ANKI_FORMAT' property on the current entry."
+    (let ((value (org-entry-get nil anki-editor-prop-format nil t)))
+      (if value
+          (string= value "t")
+        anki-editor-export-note-fields-on-push)))
+
+  (advice-add 'anki-editor-entry-format :override #'br/anki-editor-entry-format))
+
 ;; LaTeX stuff  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 (plist-put org-format-latex-options :scale 1.5)
