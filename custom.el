@@ -15,8 +15,9 @@
                  org-gcal org-ql org-ref org-super-agenda org-transclusion
                  pdf-tools persp-mode poly-R projectile pygn-mode
                  rainbow-delimiters ranger skewer-mode smartparens smex sonic-pi
-                 spaceline sqlformat stan-snippets undo-tree vertico web-mode
-                 which-key yaml-mode)))
+                 spaceline sqlformat stan-snippets undo-tree vertico vterm
+                 web-mode which-key yaml-mode))
+ '(warning-suppress-log-types '((native-compiler))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
