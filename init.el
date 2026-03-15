@@ -82,6 +82,7 @@
                         ;; For reviewing papers
                         pdf-tools
                         org-ref
+                        org-transclusion
                         frames-only-mode
                         org-caldav
                         anki-editor
@@ -1064,6 +1065,18 @@ This is useful for marking habits or tasks as done on a day in the past."
 ;;                                    (looking-at-p "\n"))
 ;;                          (insert "\n")))))
 ;;     (org-map-entries #'fix t 'tree)))
+
+;; (define-key global-map (kbd "<f12>") #'org-transclusion-add)
+;; (define-key global-map (kbd "C-n t m") #'org-transclusion-transient-menu)
+;; (define-key global-map (kbd "C-n t t") #'org-transclusion-mode)
+
+;; An alternative with `use-package':
+
+(use-package org-transclusion
+  :bind (("S-<f12>" . org-transclusion-add)
+         ("C-c t m" . org-transclusion-transient-menu)
+         ;; ("C-n t t") . org-transclusion-mode)
+  ))
 
 ;; Ediff -----------------------------------------------------------------------
 
