@@ -696,6 +696,9 @@ With argument, do this that many times."
 
 ;; Org-mode --------------------------------------------------------------------
 
+;; Copy Org/Markdown conversions to the clipboard using Pandoc.
+(require 'my-pandoc-clipboard)
+
 ;; Basic keybindings
 (with-eval-after-load 'org
   (define-key org-mode-map (kbd "C-<return>") 'org-insert-heading))
