@@ -1,3 +1,8 @@
+#+TITLE: Emacs Configuration
+
+* Configuration
+
+#+begin_src emacs-lisp :tangle yes
 ;; TODO
 ;;
 ;; - Try out straight.el
@@ -2281,3 +2286,4 @@ RECORD is a formatted record as expected by `biblio-insert-result'."
 
 
 (add-to-list 'default-frame-alist '(undecorated-round . t))
+#+end_src
