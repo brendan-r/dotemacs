@@ -91,6 +91,8 @@
                         consult
                         jupyter
                         pygn-mode
+                        sqlformat
+                        graphviz-dot-mode
                         ))
 
 
@@ -166,6 +168,8 @@
 
 
 ;; Flyspell --------------------------------------------------------------------
+
+(setq ispell-program-name "aspell")
 
 ;; When using aspell, use this environment variable so that your personal
 ;; dictionary is synced across machines
@@ -704,6 +708,15 @@ With argument, do this that many times."
   (define-key org-mode-map (kbd "C-<return>") 'org-insert-heading))
 
 
+;; A function to make the selection monospace
+(defun my-org-monospace ()
+  "Apply Org monospace/code formatting to the active region."
+  (interactive)
+  (org-emphasize ?~))
+
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "C-c m") #'my-org-monospace))
+
 
 (require 'org-crypt)
 (org-crypt-use-before-save-magic)
@@ -783,7 +796,7 @@ With argument, do this that many times."
            (string-prefix-p "~/Nextcloud/org/personal/reviews" dirname))))
 
 (setq org-agenda-files
-      (directory-files-recursively "~/Nextcloud/org/personal/" "\\.org$" nil 'exclude-subdirectory))
+      (directory-files-recursively "~/Nextcloud/org/career/" "\\.org$" nil 'exclude-subdirectory))
 
 
 ;; A test of showing more details in the agenda view... You don't like how this looks!
@@ -991,10 +1004,13 @@ This is useful for marking habits or tasks as done on a day in the past."
                              (python . t)
                              (R . t)
                              (jupyter . t)
+                             (dot . t)
                              ))
 
 
-;; A line
+;; This should allow <s TAB for a source block, for example
+(require 'org-tempo)
+
 
 (setq org-babel-R-command "/usr/local/bin/R --no-save")
 
@@ -1213,21 +1229,35 @@ This is useful for marking habits or tasks as done on a day in the past."
 ;; ;; Automatically use the sqlind minor mode when editing SQL files
 ;; (setq sql-mode-hook (quote (sqlind-minor-mode)))
 
-(require 'sql)
+;; (require 'sql)
 
-;; Use sqlite3 (the standard on Ubuntu, it seems)
+;; ;; Use sqlite3 (the standard on Ubuntu, it seems)
+;; (setq sql-sqlite-program "sqlite3")
+
+;; ;; Make C-RET send code to REPL
+;; (define-key sql-mode-map (kbd "<C-return>") 'sql-send-region)
+;; ;; Don't focus the REPL after sending SQL to it
+;; (setq sql-pop-to-buffer-after-send-region nil)
+
+
+
+;; (setq sqlformat-command 'sql-formatter)
+;; ;; Optional additional args
+;; (setq sqlformat-args '("-s2" "-g"))
+
+(require 'sql)
+(require 'sqlformat)
+
 (setq sql-sqlite-program "sqlite3")
 
-;; Make C-RET send code to REPL
-(define-key sql-mode-map (kbd "<C-return>") 'sql-send-region)
-;; Don't focus the REPL after sending SQL to it
+(define-key sql-mode-map (kbd "<C-return>") #'sql-send-region)
 (setq sql-pop-to-buffer-after-send-region nil)
 
+(setq sqlformat-command 'pgformatter
+      sqlformat-args '("-s2" "-g" "-u1" "-L"))
 
+(define-key sql-mode-map (kbd "C-c C-f") #'sqlformat-buffer)
 
-(setq sqlformat-command 'sql-formatter)
-;; Optional additional args
-(setq sqlformat-args '("-s2" "-g"))
 
 
 ;; Web stuff -------------------------------------------------------------------
