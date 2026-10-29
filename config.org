@@ -1005,12 +1005,12 @@ This is useful for marking habits or tasks as done on a day in the past."
 ;; org-babel  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 (org-babel-do-load-languages
- 'org-babel-load-languages '(
-                             (python . t)
-                             (R . t)
-                             (jupyter . t)
-                             (dot . t)
-                             ))
+ 'org-babel-load-languages '((python . t) (R . t) (dot . t)))
+
+;; Check external prerequisites before installing Jupyter's Org hooks.
+;; On a new machine, the warning explains the one-time setup command.
+(require 'br-jupyter)
+(br/jupyter-initialize)
 
 
 ;; This should allow <s TAB for a source block, for example
@@ -1331,8 +1331,6 @@ This is useful for marking habits or tasks as done on a day in the past."
 
 
 
-(add-to-list 'load-path "~/path/to/jupyter")
-(require 'jupyter)
 
 
 

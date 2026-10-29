@@ -1,0 +1,53 @@
+#+TITLE: Local Jupyter kernels in Emacs
+
+The config installs the Emacs =jupyter= package and its =zmq= dependency through
+package.el. Python, a kernel, and a compiled native ZeroMQ module also need a
+one-time setup on each machine. Missing prerequisites produce a warning at
+startup; ordinary Org editing still works.
+
+* Machine prerequisites
+
+- Emacs built with dynamic module support (=module-file-suffix= must be non-nil).
+- Python 3.12 or later with =venv= and pip support.
+- A C/C++ compiler and make, plus internet access for downloads.
+
+On macOS, install Command Line Tools with =xcode-select --install=, and install
+Python 3.12+ (for example using Homebrew). On Debian, install =build-essential=
+and the =python3-venv= package matching your Python. Older Debian releases need
+a separately installed Python 3.12+. Set =EMACS_JUPYTER_PYTHON=/path/to/python3=
+when the desired interpreter is not the default =python3=.
+
+After the first Emacs startup has installed the packages, run in a terminal:
+
+#+begin_src sh
+sh ~/.emacs.d/scripts/jupyter/setup-jupyter.sh
+#+end_src
+
+This creates =~/.local/share/emacs/jupyter=, installs pinned Jupyter CLI and
+IPython kernel dependencies, and registers its =python3= kernel. It downloads
+checksum-verified libzmq 4.3.5, enables its draft APIs, and links it statically
+into the installed Emacs zmq package's native module. No system ZeroMQ library,
+Homebrew ZeroMQ installation, or global Python package changes are required.
+The build disables CURVE encryption; this setup is for local kernels.
+
+Then run =M-x br/jupyter-initialize=, or restart Emacs. The managed CLI takes
+precedence when it exists, so GUI Emacs does not depend on shell PATH setup.
+Without that environment, an existing Jupyter CLI on Emacs's PATH can be used
+with a working native module. Additional kernels must be installed separately.
+Try an Org block:
+
+#+begin_example
+#+begin_src jupyter-python :session example :kernel python3 :async no
+6 * 7
+#+end_src
+#+end_example
+
+Run setup again after updating the Emacs =zmq= package or moving to a different
+CPU architecture. If several zmq package versions are installed, remove obsolete
+versions through =M-x list-packages=, or pass the environment and chosen package
+paths as the first and second script arguments. Builds and downloaded sources
+stay under the private Python environment's =build/= directory. Use a fresh
+private environment after changing Python versions or machine architecture.
+
+Validated on Apple Silicon macOS with Emacs 30.2 and Python 3.14. Linux build
+support is included but has not been run on Debian.

@@ -11,3 +11,8 @@
 !/snippets/
 !/snippets/*
 !/.gitignore
+
+# Keep the Jupyter setup tools and guide in the repo.
+!/scripts/
+/scripts/*
+!/scripts/jupyter/
