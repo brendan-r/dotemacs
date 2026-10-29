@@ -1,0 +1,63 @@
+---
+title: "Python workflow: Quarto"
+format:
+  html:
+    embed-resources: true
+jupyter: python3
+execute:
+  daemon: false
+---
+
+[Back to the workflow guide](../python-workflow.org)
+
+## Interactive chunks in Emacs
+
+Place point **inside** a Python block, not on its fence. `C-c C-c` or `C-c C-b` sends that chunk to the selected Python/IPython REPL. `C-c C-z` visits it and returns. Selections, `C-M-x`, and `C-Return` work too. Run the chunks in order. The first send asks for a process; `C-c C-p` chooses again. Select the same existing process as `repl.py` to share its state. The render uses a separate Jupyter kernel and does not reuse REPL variables.
+
+```{python}
+#| label: setup
+import sys
+quarto_counter = globals().get("quarto_counter", 0) + 1
+
+
+def scaled(values, factor=2):
+    adjusted = [value * factor for value in values]
+
+    return adjusted
+
+
+values = scaled([1, 3, 2, 4])
+print("Run:", quarto_counter, "Values:", values)
+```
+
+## A plot, in the browser or a native window
+
+**This example uses the local same-window `ggplot` subclass in [plotnine_window.py](plotnine_window.py), tested with plotnine 0.15.8.** It overrides a private figure-creation method so Matplotlib reuses one named window; all plot rendering still comes from plotnine. Retest this adapter after upgrades. `plt.ion()` makes `p.show()` non-blocking in either REPL. Rerun with different values: the existing window is cleared and redrawn, including changed facets. Back/Forward navigates zoom/pan views, not previous plot contents.
+
+Quarto's separate Jupyter kernel still produces an inline image. Do not select a native backend in this document: rendering needs its inline backend.
+
+```{python}
+#| label: fig-demo
+#| fig-cap: "Values computed in the previous Python chunk."
+import matplotlib.pyplot as plt
+import pandas as pd
+from plotnine import aes, geom_line, geom_point, labs, theme, theme_minimal
+# Local same-window subclass; see plotnine_window.py (tested: plotnine 0.15.8).
+from plotnine_window import ggplot
+
+plt.ion()  # p.show() returns without waiting for native windows to close.
+data = pd.DataFrame({"sample": range(1, len(values) + 1), "value": values})
+p = (
+    ggplot(data, aes("sample", "value"))
+    + geom_line(color="#7c3aed")
+    + geom_point(color="#7c3aed", size=3)
+    + labs(title="Plotnine — same-window subclass", x="Sample", y="Value")
+    + theme_minimal()
+    + theme(figure_size=(6, 3))
+)
+p.show()
+```
+
+## Render the whole document
+
+Save, then `M-x compile` and enter `quarto render python.qmd --to html`. Open `python.html` in your browser (or use `M-x quarto-preview`). Rendering executes all chunks from scratch; sending a chunk executes only that chunk. In the prepared GUI the Jupyter environment is already supplied. In a normal project install the required kernel dependencies and select its kernelspec.

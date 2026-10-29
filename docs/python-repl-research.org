@@ -1,0 +1,40 @@
+#+TITLE: Python REPL choice: upstream research and decision
+#+DATE: 2026-10-29
+
+* Decision
+
+Use Emacs 30's built-in python.el and inferior-python-mode for both Python and IPython. The user approved this change from Ghostel on 2026-10-29, prioritizing reliable REPLs and minimal custom code. Ghostel remains the general terminal; emacs-jupyter remains the inline plotting/notebook integration.
+
+The old custom AST executor, temporary source-file manager, and generated termint schemas are removed from this candidate. Native python.el implements multiline evaluation, final expression results, encoding, file transfer for large inputs, shell history, completion, and traceback navigation.
+
+The small remaining configuration layer selects a project interpreter and a running/new process, remembers the choice per source buffer, waits for native initialization on first send, and keeps Quarto sends within Python chunks. It does not implement a Python execution protocol.
+
+* Configurations inspected
+
+| Source | Relevant convention | Use here |
+|--------+---------------------+----------|
+| [[https://github.com/doomemacs/modules/blob/main/modules/lang/python/config.el][Doom Python configuration]] and [[https://github.com/doomemacs/modules/blob/main/modules/lang/python/autoload/python.el][REPL commands]] | run-python, native region/buffer send commands; IPython --simple-prompt; PYTHON_BASIC_REPL=1 | Native transport and supported prompt modes |
+| [[https://github.com/syl20bnr/spacemacs/blob/develop/layers/+lang/python/funcs.el][Spacemacs Python functions]] | Built-in Python shell; IPython -i --simple-prompt; local interpreter settings | Same shell for both interpreter flavors |
+| [[https://github.com/bbatsov/prelude/blob/master/modules/prelude-python.el][Prelude Python module]] | Built-in editing/shell functionality with LSP; no replacement REPL transport | Avoid a separate REPL framework |
+| [[https://github.com/purcell/emacs.d/blob/master/lisp/init-python.el][Steve Purcell's configuration]] | python-shell-interpreter; external environment management; project markers | Use built-in shell/environment variables |
+| [[https://github.com/daviwil/emacs-from-scratch/blob/master/show-notes/Emacs-IDE-02.org][System Crafters Python setup]] | run-python and python-shell-send-* commands; optional pyvenv | Established source-to-shell commands |
+
+These sources do not supply the exact combined “existing / new Python / new IPython” first-use picker. Emacs 30 offers global, per-buffer and per-project shells, and prompts for a command/dedication with C-u M-x run-python. Its per-project naming uses the project's basename, which alone is insufficient for distinct repositories with the same basename. Our chooser associates actual process objects with the full canonical root and selected interpreter instead.
+
+This is a comparison of selected conventions, not an installation of any Emacs distribution. Existing Projectile, completion packages and Eglot remain.
+
+* Other packages considered
+
+- [[https://github.com/milanglacier/termint.el][termint]] already supports Ghostel and direct bracketed-paste sending. Direct sending passed with IPython, but standard Python 3.14 did not finish multiline submissions reliably in the probes. Its Python sourcing template uses visible exec/temporary-file commands. It does not supply this picker.
+- [[https://github.com/vale981/py-vterm-interaction.el][py-vterm-interaction]] offers named sessions and Python/IPython integration, but depends on vterm, with its own execution implementation. It would replace the preferred terminal backend and add another native terminal dependency.
+- [[https://gitlab.com/wavexx/python-x.el][python-x]] adds sections, folding, movement and interactive helpers to python.el. It does not provide the requested chooser. Emacs 30 already supplies the statement and expression-evaluation features needed here; its extra folding dependency and advice are not needed for this task.
+- [[https://github.com/wyuenho/emacs-pet][pet]] discovers Python tooling across several environment managers. Useful for a broader environment-management need; unnecessary for the requested project .venv plus explicit-path override. Built-in python-shell-virtualenv-root prepares the child environment here without global activation.
+- emacs-jupyter is retained for Org and inline images; using it as the only REPL would require an IPython kernel and remove the dependency-free Python fallback.
+
+* Platform details
+
+[[https://github.com/emacs-mirror/emacs/blob/emacs-30/lisp/progmodes/python.el][Emacs 30 python.el]] officially supports CPython and IPython. It uses its own __PYTHON_EL helpers internally; they should not be echoed as submitted commands, although a helper frame can appear in a Python exception traceback.
+
+IPython uses [[https://ipython.readthedocs.io/en/stable/config/options/][documented command-line options]] --simple-prompt and -i -c "import readline". The startup import is necessary with the tested macOS libedit build: importing readline after Emacs disables terminal echo can turn echo back on. Importing it before the first prompt fixed the observed echo in repeatable tests. This imports a standard-library module, not a project dependency or custom executor.
+
+Simple-prompt mode gives up prompt-toolkit terminal UI and its GUI input hooks. Do not promise all %matplotlib GUI modes work like a full-terminal IPython. Use the tested native backend recipe in the workflow guide, a blocking show() when needed, or Jupyter for inline results. Ghostel remains available for full terminal applications and full-terminal IPython when desired.

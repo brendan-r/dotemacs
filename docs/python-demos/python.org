@@ -1,0 +1,30 @@
+#+TITLE: Plain Python in Org — no IPython or Jupyter required
+#+PROPERTY: header-args:python :session org-python-demo :results output :python .venv/bin/python
+
+[[file:../python-workflow.org][Back to the workflow guide]]
+
+Put point inside each block and press C-c C-c; approve Org's execution prompt. This uses Org Babel's own persistent comint Python session, separate from Ghostel and Jupyter. C-c ' opens a Python editing buffer; C-c ' returns. The preview supplies .venv; outside it, create one or change the :python path.
+
+* Start the session
+#+begin_src python
+import sys
+org_counter = 10
+print("Starting counter:", org_counter)
+#+end_src
+
+#+RESULTS:
+: Starting counter: 10
+
+* Run this repeatedly: state persists
+#+begin_src python
+def bump(value):
+    step = 2
+
+    return value + step
+
+org_counter = bump(org_counter)
+print("Counter:", org_counter)
+#+end_src
+
+#+RESULTS:
+: Counter: 14

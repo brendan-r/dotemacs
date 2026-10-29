@@ -1,0 +1,230 @@
+#+TITLE: Python and IPython REPL test drive
+
+* Start here
+
+This configuration uses built-in Python shell buffers for source execution. Ghostel remains available for general terminals, and Org/Jupyter handles inline plots. The examples below are reference files; the configuration does not install Python dependencies or activate project environments globally.
+
+To run the examples as a standalone project, copy the demo directory outside the Emacs configuration repository. This keeps project.el from choosing the configuration repository as the working directory and makes the local Plotnine adapter importable:
+
+#+begin_src sh :eval never
+cp -R ~/.emacs.d/docs/python-demos ~/python-workflow-demo
+cd ~/python-workflow-demo
+python3 -m venv .venv
+# Optional: needed for IPython and the plotting examples, not standard Python.
+.venv/bin/python -m pip install ipython 'plotnine==0.15.8'
+#+end_src
+
+Open the copied files in Emacs. The comment-only pyproject.toml marks the standalone project. Python runs in its directory and uses its .venv. For code in your own repository, the normal Git project root applies. BasedPyright must be available on Emacs's executable path for language-server features; REPL execution also works without it.
+
+For Org/Jupyter, follow [[file:../scripts/jupyter/jupyter.org][the existing Jupyter setup guide]]. Select a kernelspec with Plotnine installed for the inline plot example; =:kernel python3= in jupyter.org and =jupyter: python3= in python.qmd are explicit examples, not automatic selections of .venv. Quarto rendering additionally needs the Quarto CLI and kernel dependencies described below.
+
+Follow these links with C-c C-o or click:
+- [[file:python-demos/repl.py][1. Python source: choose Python or IPython, then execute code]]
+- [[file:python-demos/python.org][2. Org Python blocks: persistent Babel session]]
+- [[file:python-demos/plotnine-repl.py][Native plotnine: non-blocking Python/IPython reference]]
+- [[file:python-demos/jupyter.org][3. Org Jupyter Python: inline plot]]
+- [[file:python-demos/python.qmd][4. Quarto: Python chunks and a plot]]
+- [[file:python-repl-research.org][Research: Doom, Spacemacs, Prelude, individual configs, and alternatives]]
+- [[file:../lisp/br-python.el][The remaining interpreter/process-picker configuration]]
+
+In repl.py, put point on =4 + 4= and press *C-Return*. The first execution asks which process to use. Choose *New IPython* or *New Python*: expect =8=. Use *C-c C-p* to choose again, start another process, or return to an existing one. Subsequent sends from this source remember the selection. New source files ask even if a compatible process is already running, so sharing state is explicit.
+
+Choose New Python to test the dependency-free fallback even in an environment that has IPython. New IPython is offered only if that exact selected Python can import IPython. Nothing is installed into your projects automatically.
+
+* Keys and execution
+
+| Key | Action |
+|-----+--------|
+| C-Return | Send selection or complete unit, then step to the next unit |
+| C-M-x | Send current function/class (native python.el) |
+| C-c C-r | Send selected region (native python.el) |
+| C-c C-c | Send selection, otherwise the buffer/current Quarto chunk |
+| C-c C-b | Send whole buffer/current Quarto chunk |
+| C-c C-z | Switch between source and selected REPL; first use offers picker |
+| C-c C-p | Choose an existing process or start another Python/IPython process |
+| C-u C-c C-z | Choose again and visit the selected REPL |
+| C-c C-c in REPL | Interrupt computation (standard comint binding) |
+| M-p / M-n in REPL | Previous/next input history |
+| C-c C-d | Eldoc documentation |
+| C-c C-e | Rename through Eglot (.py) or lsp-mode (Quarto) |
+| C-c C-o | Imenu |
+| C-c C-v | Flymake diagnostics |
+| C-c C-n | Next diagnostic; previous via M-x flymake-goto-prev-error |
+| M-. / M-, / M-? | Definition / return / references |
+
+*C-c C-p opens the process picker*. C-Return sends a selection first; otherwise it uses python.el navigation to select a complete statement or suite. Definitions include decorators and bodies; loops, if and try statements include their associated clauses. Point advances past that unit and skips blank/comment lines. It does not enter a function body after submitting the definition. Use C-M-x to send a definition from within its body.
+
+At EOF, C-Return stops without resending. In Quarto it skips prose and fences to the next Python chunk. Cancellation or a local send error leaves point unchanged. Stepping follows submission, not asynchronous execution success: it is not a debugger. A traceback does not rewind point. Other send commands keep point. Both python-mode and python-ts-mode have these bindings; tree-sitter is optional.
+
+Sending displays the REPL without selecting it, including on first use. Its display-buffer rule reuses frames and requests no focus on mapping. A built-in save-selected-window wrapper also counters ns-win’s new-frame selection hook. C-c C-z explicitly switches; frames-only-mode remains in effect elsewhere. Org's C-c C-c retains Babel behavior.
+
+Execution is handled by Emacs's python.el, including multiline code, indentation, blank lines, large-buffer transfer, and final expression values. There is no custom Python executor or source-file wrapper in this configuration. Sending =4 + 4= displays =8=; assignments and definitions are silent. The sent source is summarized in the echo area, rather than inserted into shell history as a command. Typed shell commands retain the normal comint history.
+
+The shell shows results, not transport commands or temporary paths. Exceptions can include a native __PYTHON_EL helper frame plus your source filename/line. IPython magics such as %timeit and %matplotlib belong at the REPL prompt; source sends are Python syntax. This is a comint shell, not a full terminal: use Ghostel for terminal applications, full-screen interfaces, or prompt-toolkit IPython.
+
+Variables persist until you exit or kill that REPL. Starting another process creates independent state even in the same project. C-c C-z returns to the most recent source associated with that process. Source sends preserve source focus. The picker manages its own processes; M-x run-python remains the native command and bypasses this picker. Prefer C-c C-p for selectable project sessions.
+
+* Working directory, projects and environments
+
+project.el identifies the project, normally the Git repository root. If there is no VC project, an ancestor with pyproject.toml, pyrightconfig.json or .venv is a Python project. Without a project, the source file's directory is used. A new REPL starts in that directory. Sending another file does not silently chdir an existing REPL. Inspect os.getcwd() at the prompt if you have changed it yourself.
+
+Interpreter order:
+1. br/python-executable, or the explicit Eglot :python (:pythonPath ...) setting.
+2. PROJECT/.venv/bin/python (a broken .venv produces an error).
+3. python3, then python, on Emacs's executable path.
+
+The picker prefers New IPython when available, but only within that interpreter; it never substitutes a global IPython for a project's Python. Existing processes are offered only for the same canonical project root and interpreter/environment identity. Different repositories with the same basename remain separate. Changing the interpreter or replacing environment files invalidates the remembered selection. A dead process causes a fresh picker on the next send.
+
+No global process-environment activation is used. Built-in python-shell-virtualenv-root prepares child PATH/VIRTUAL_ENV. PYTHON_BASIC_REPL=1 selects the supported standard-Python prompt, as in Doom's configuration. IPython runs through the selected Python with --simple-prompt and a startup readline import to prevent macOS libedit from re-enabling terminal command echo.
+
+An explicit project override in .dir-locals.el:
+
+#+begin_src emacs-lisp :tangle no
+((nil . ((br/python-executable . ".venv/bin/python"))))
+#+end_src
+
+After changing directory locals, reopen/re-read them and reconnect Eglot if needed. Conflicting explicit overrides are rejected. The old br/python-repl-kind variable is no longer used: choose the flavor in C-c C-p instead.
+
+Eglot sends =python.pythonPath= for the same selected interpreter. BasedPyright also discovers root =.venv= itself. Project analysis settings remain in =pyrightconfig.json= or =[tool.basedpyright]= in =pyproject.toml=, which take precedence over overlapping language-server analysis settings; JSON config takes precedence over pyproject. Legacy =venvPath= + =venv= settings can override the interpreter's import-search paths. If your project uses them (including via =extends=), align =br/python-executable= with that environment or remove the legacy override. This small config does not reimplement BasedPyright's config parser, inheritance, or execution-environment rules. Use =M-x eglot-show-workspace-configuration= and =M-x eglot-events-buffer= to inspect configuration/import diagnostics. If replacing =eglot-workspace-configuration= with a directory-local plist, include the matching =:python (:pythonPath "/absolute/path/to/python")=; otherwise you replace the shared detection function. For a terminal check:
+
+#+begin_src python :tangle no
+import sys
+print(sys.executable)
+print(sys.prefix)
+#+end_src
+
+Use the project's explicit Python for other tools, e.g. =M-x compile RET .venv/bin/python -m unittest discover= or =.venv/bin/python -m black .= when Black is already installed. Jupyter kernels have independent selection via their kernelspecs and are not silently retargeted. No global pyvenv/envrc activation is needed for this workflow. Remote/TRAMP REPLs are explicitly unsupported; they are not accidentally launched locally.
+
+* Quarto
+
+Inside a Python chunk, C-c C-c/C-c C-b send only that chunk. C-c C-r rejects a selection crossing a chunk boundary. C-Return, C-M-x, C-c C-p and C-c C-z work there too. Polymode's eval-chunk command calls native python-shell-send-region. All Python chunks in one document share its selected process. A .py file can explicitly select that same process in the picker.
+
+Rendering remains separate: M-x compile, then =quarto render python.qmd --to html=. Rendering starts a Jupyter kernel; it does not reuse interactive REPL variables. Quarto options such as #| eval: false affect rendering, not explicit source sends. Install the Quarto CLI plus ipykernel, nbformat, nbclient, PyYAML and the imported plotting packages in the render environment. Set QUARTO_PYTHON to its Python when needed, and select a matching kernelspec in the document; REPL selection does not select the render kernel.
+
+Eglot manages ordinary .py files. Quarto Python inner buffers use lsp-mode with lsp-pyright configured for BasedPyright; Corfu still displays CAPF completion and Flymake still displays diagnostics. There is no Flycheck or second formatting system. Both clients use the same interpreter resolver and respect BasedPyright's project configuration. M-., M-?, Eldoc and Flymake commands use the active client; C-c C-e dispatches rename.
+
+Polymode's existing lsp-mode adapter masks Markdown, YAML, fences and other languages while preserving line coordinates and including all Python chunks. Full-document synchronization is selected because its incremental path can leak newly inserted prose. Tests inspect the actual didOpen/didChange payloads, not just visible diagnostics. A narrowly scoped Eglot exclusion prevents automatic attachment when a .py server is already running.
+
+TODO: Replace Quarto’s lsp-mode exception with Eglot when https://github.com/polymode/polymode/issues/331 is fixed and chunk synchronization tests pass.
+
+The quarto-preview live server remains untested; HTML rendering is tested.
+
+* Native macOS plotting with plotnine in either REPL
+
+Open [[file:python-demos/plotnine-repl.py][plotnine-repl.py]] for a runnable source-file reference, or send the plot chunk in [[file:python-demos/python.qmd][python.qmd]]. Both explicitly import the local =ggplot= subclass from [[file:python-demos/plotnine_window.py][plotnine_window.py]] to reuse one native window in Python and IPython. No Emacs plotting wrapper or automatic backend override is involved.
+
+If the native backend is not already selected, run this *once in a fresh REPL*, before importing pyplot or plotnine. Do not put it in Org/Jupyter blocks or the Quarto document: their render kernels should retain their inline backend.
+
+#+begin_src python :tangle no
+import matplotlib
+matplotlib.use("MacOSX")
+#+end_src
+
+From the demo directory, use:
+
+#+begin_src python :tangle no
+values = [2, 6, 4, 8]
+import matplotlib.pyplot as plt
+import pandas as pd
+from plotnine import aes, geom_line, geom_point, labs, theme, theme_minimal
+# Local same-window subclass, not upstream ggplot.
+from plotnine_window import ggplot
+
+plt.ion()  # p.show() returns without waiting for native windows to close.
+data = pd.DataFrame({"sample": range(1, len(values) + 1), "value": values})
+p = (
+    ggplot(data, aes("sample", "value"))
+    + geom_line(color="#7c3aed")
+    + geom_point(color="#7c3aed", size=3)
+    + labs(title="Plotnine — same-window subclass", x="Sample", y="Value")
+    + theme_minimal()
+    + theme(figure_size=(6, 3))
+)
+p.show()
+#+end_src
+
+=plt.ion()= makes Matplotlib's default show non-blocking. Plotnine's =p.show()= uses that backend in a native REPL and rich inline display in Jupyter/Quarto. Drawing still takes time; non-blocking means it does not wait for a window to close. Both interpreters must also have working GUI input-hook integration.
+
+*The source and Quarto demos use a local subclass, not upstream ggplot.* The commented [[file:python-demos/plotnine_window.py][adapter]] overrides only figure creation: =plt.figure(..., clear=True)= keeps the named window/canvas and clears its contents; a new plotnine layout grid allows facets to change. Plotnine still renders the plot and handles =p.show()=. The module must be importable (the demos run from its directory). It is not installed globally and does not change ordinary =from plotnine import ggplot=.
+
+This relies on private =_create_figure= and =p9GridSpec= APIs, tested against plotnine 0.15.8. Retest after a plotnine upgrade. The reference covers individual ggplot objects, including facets; composed plots have separate figure creation and are not covered by this adapter.
+
+Each execution replaces the contents of the same window in that REPL. Separate Python processes have separate windows. To create a separate plot deliberately, use upstream =plotnine.ggplot= instead. Close the demo with =plt.close("Python workflow")=; its next execution reopens it. Toolbar Back/Forward navigates zoom/pan history, not previous plot contents. A replacement plot resets that history. Keep Org/Jupyter results for an inline plot history.
+
+Do not replace =p.show()= with =p.draw(); plt.show(block=False)=: plotnine's default =draw(show=False)= closes its figure manager after rendering. Use =p.draw(show=True)= only when you also need the returned Matplotlib Figure; with interactive mode enabled this is non-blocking in the tested native REPLs.
+
+References: [[https://plotnine.org/guide/export.html][plotnine display conventions]], [[https://plotnine.org/reference/ggplot.html][ggplot.show/draw]], and [[https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.show.html][Matplotlib show and interactive mode]].
+
+Tests check Python and IPython with three successive updates to the same window, changed data, a GUI timer and a subsequent expression. Plotting is backend/build dependent. This Homebrew Python's libedit readline stalled after the first figure, even with nonblocking show. GNU readline fixed that failure in both interpreters, without changing Emacs transport or installing an event-loop wrapper.
+
+The isolated tests used =gnureadline= 8.3.3 in a private environment, with a one-line site-packages =preview_gnureadline.pth= selecting that module at startup. That test environment is not installed by this configuration. This dependency is specific to reliable native plotting on the tested build; ordinary Python REPL execution does not require it. A Python build already using GNU readline needs no replacement. Check at a prompt:
+
+#+begin_src python :tangle no
+import readline
+print(readline.__doc__)
+#+end_src
+
+For an affected project environment, the optional package is =.venv/bin/python -m pip install gnureadline=. Its upstream instructions explain the module override: https://pypi.org/project/gnureadline/. Do not blindly run its =override_readline= script on Homebrew: testing showed that it can modify Homebrew's shared sitecustomize.py even from inside a venv. The preview confines the override to its own site-packages instead. No project environment is modified automatically by this Emacs config.
+
+IPython --simple-prompt does not provide prompt-toolkit GUI hooks. In particular, %matplotlib osx can report that it cannot install that hook; use the same explicit plotnine recipe above in both shells. Full-terminal IPython in Ghostel remains an option for that terminal-specific workflow. No backend is forced globally. For a build lacking suitable GUI integration, inline Jupyter is the tested alternative; plt.show(block=True) deliberately blocks until windows close, and plt.pause services events only for its requested interval.
+
+** Font cache and startup speed
+
+Normal use keeps Matplotlib’s persistent cache. During isolated testing, fresh HOME directories caused repeated font discovery; a test-only MPLCONFIGDIR reused one private writable cache across REPLs and kernels. That preview environment setting is not part of this repository configuration. Measured font-manager + pyplot import: cold *12.343 seconds*, warm *0.360 seconds*. The cold warning remains visible in the test log; warm starts did not rebuild. Normal installations keep Matplotlib's normal persistent cache. No fonts are excluded and no warning filter is installed.
+
+* Inline plotting in Org/Jupyter
+
+The existing br-jupyter.el and Babel integration remain intact. In jupyter.org, execute the jupyter-python blocks with C-c C-c; C-c C-x C-v toggles inline images. The plot is a static image in Emacs, not a native GUI window. Separate :session names isolate kernel state; :kernel selects the environment's kernelspec.
+
+For another project, install ipykernel in that environment and register it:
+
+#+begin_src sh :tangle no
+.venv/bin/python -m ipykernel install --user --name my-project --display-name 'Python (my-project)'
+#+end_src
+
+Then use :kernel my-project. Plain Org python blocks use their own Babel/comint session and :python interpreter setting, not the source-file picker. The demo sets :python .venv/bin/python explicitly. Ghostel graphics are unrelated to these Jupyter images.
+
+* Dependencies and preserved functionality
+
+Required: Python 3; BasedPyright on exec-path for LSP (the REPL works without it). Optional: IPython; plotnine (which depends on pandas and Matplotlib) for these plot examples, installed with =.venv/bin/python -m pip install plotnine=; Jupyter/kernel packages for notebook workflows; Quarto for document rendering. Ghostel's native module is needed only for general terminals, not for these REPLs. The migration tests used disposable environments; install optional dependencies explicitly in the environment where you intend to use them.
+
+Quarto adds lsp-mode and lsp-pyright (and their package dependencies); the REPL continues to use built-in python.el. termint is no longer loaded for Python. Existing package directories are retained. This configuration does not automatically install packages into Python projects.
+
+* Elpy migration accounting
+
+- Replaced Jedi/RPC completion, navigation, Eldoc and Flymake integration with Eglot/BasedPyright, retaining Corfu as the completion UI.
+- Retained the underlying built-in comint/python.el execution, replacing Elpy's REPL selection layer with the project-aware picker. Removed the custom termint/Ghostel Python execution wrapper from this preview.
+- Retained Python editing/syntax/indentation, 79-column fill, two-space inline comment offset, indentation guides, and existing Yasnippet/personal snippets.
+- Retained Org/Jupyter, Projectile, Corfu/Cape, Consult and unrelated Flycheck use. Python uses Eglot/Flymake in .py and lsp-mode/Flymake in Quarto; Flycheck is disabled in Python setup.
+- Removed the Company declaration needed only by Elpy and its Cape adapter. Old installed package directories are left alone; nothing is uninstalled live.
+- No explicit Python formatter or format-on-save hook existed. Elpy's optional formatter dispatcher (YAPF/autopep8/Black) and flake8 check command are dropped; BasedPyright is a type checker, not a formatter or complete flake8 replacement. Run a project's existing formatter/linter explicitly if needed.
+- Elpy-specific Django, importmagic, test-runner, extraction/refactoring helpers, bundled snippets and obsolete movement workaround are not carried forward. No corresponding custom configuration was present. Built-in compile, imenu, xref and Eglot rename/code actions cover common operations.
+
+* Feedback and acceptance record
+
+| Report | Cause | Change and acceptance |
+|--------+-------+-----------------------|
+| Interpreter paths in Org/Jupyter output | Explicit demo print statements | Removed prints; regenerated normal output and inline image; tests reject path clutter |
+| Quarto warnings over prose | Eglot sends whole mixed document; Polymode incremental LSP edits also leak prose | Quarto-only lsp-mode with full-document masking; actual server payloads, edits, chunk insertion/deletion and both file-opening orders tested |
+| Slow first plot | Fresh preview HOME meant a cold font cache | Prewarm one private cache; cold/warm timings above |
+| Second plot blocks | Demo's blocking show; additional Homebrew libedit/native input-hook stall | Interactive plotnine show with local same-window subclass; maintained GNU readline package in private preview; repeated plots and GUI timers tested in both shells |
+| Execution steals source focus | REPL display could create/select a frame | REPL-specific display rule plus save-selected-window for ns-win hook; GUI command-loop tests pass |
+| C-Return does not step | Previous wrapper only chose header/statement | Native statement/block navigation now bounds and advances units; Python/IPython compound cases and Quarto transitions tested |
+
+See [[file:python-repl-tests.org][the test record]] for exact runs, GUI checks and remaining limitations. Prepared results are examples; rerun blocks in order to create a fresh session's variables. Existing Emacs sessions, unsaved user edits and results are untouched.
+
+The environment is macOS, Emacs 30.2, Python 3.14.7, IPython 9.17.1 and Matplotlib 3.11.2, with plotnine 0.15.8 for the revised examples. Linux and python-ts-mode with an installed grammar remain unverified. Actual desktop keypress/focus and mouse pan/zoom remain manual checks because Computer Use permissions were unavailable. GUI tests used Emacs keyboard macros and asserted its selected frame/window/buffer, including asynchronous output. The pre-existing Magithub insertion warning is unrelated to Python. Python 3.14 can emit a codecs.open deprecation warning from Emacs 30's native large-input helper; real warnings and tracebacks are preserved.
+
+Manual test drive:
+1. Open repl.py; C-Return on 4 + 4, choose New IPython; expect 8 and EOF. Another C-Return at EOF should do nothing.
+2. Move back to import sys. Repeat C-Return through the file, staying in source. C-c C-c, C-c C-b, C-c C-r and C-M-x should keep point.
+3. Use C-c C-p to choose New Python; repeat. Switch back to existing processes and confirm their independent counters. C-c C-z explicitly visits the REPL.
+4. Open python.qmd. Edit prose, add a Python type error, and check its location. Use completion across chunks. Step through chunk endings without sending fences.
+5. Send the setup and plot chunks. Change values and resend the plot three times. Each execution should reuse the same native window. Pan/zoom, then use the toolbar's Back/Forward controls; the REPL must still accept commands.
+6. Run the linked Org/Jupyter examples and render Quarto to HTML. The saved inline image and normal counter output should contain no interpreter prints.
+
+* Quarto first-use latency
+
+The first visit to a Python chunk can synchronously load lsp-mode and its client. The configuration restricts lsp-client-packages to lsp-pyright; Eglot remains responsible for ordinary Python files. The temporary preview launcher preloaded lsp-pyright before presenting its guide, but that launcher is deliberately not included here. Normal Emacs therefore still incurs the remaining first-use library load. BasedPyright starts when a Python chunk is visible. No per-command warm-up wrapper or performance package is used.
+
+On October 29, profiling and an isolated reproduction found a 1.6-second initial client load plus 0.7 seconds loading unrelated language clients. The user confirmed cursor movement became smooth after initial loading. This is evidence for a first-use delay, not proof against every possible intermittent freeze. See the test record for measurements. The running preview and its REPL state were preserved; it already has these libraries loaded.
