@@ -67,8 +67,7 @@
                         ghostel
                         ;; virtualenvwrapper
                         flycheck
-                        flyspell
-                        flyspell-lazy
+                        jinx
                         rainbow-delimiters
                         smartparens
                         web-mode
@@ -212,37 +211,26 @@
 
 #+end_src
 
-** Spell checking: Flyspell and Aspell
+** Spell checking: Jinx
+
+Jinx uses Enchant and a native Emacs module. Install =enchant= and =pkgconf=
+with Homebrew on macOS, or =libenchant-2-dev= and =pkgconf= on Debian, plus a
+C compiler and dictionaries for the languages you use.
+
+=M-$= corrects a word, =C-u M-$= checks the buffer, and =C-M-$= selects languages.
+Text buffers are checked throughout; programming buffers (including ESS) check
+comments and strings. English personal word lists live in
+=~/Nextcloud/dictionary/enchant/=, linked from =~/.config/enchant/= on each
+machine as a one-time setup.
 
 #+begin_src emacs-lisp
 
-(setq ispell-program-name "aspell")
-
-;; When using aspell, use this environment variable so that your personal
-;; dictionary is synced across machines
-(setenv "ASPELL_CONF" (concat "home-dir " (expand-file-name
-                                           "~/Nextcloud/dictionary/")))
-
-;; Try to calm Flyspell down a little, to reduce typing latency on slower
-;; machines
-;; (require 'flyspell-lazy)
-;; (flyspell-lazy-mode 1)
-
-;; Do spell checking in normal text!
-(add-hook 'text-mode-hook #'flyspell-mode)
-
-;; Do spell checking in your comments!
-(add-hook 'prog-mode-hook #'flyspell-prog-mode)
-
-;; Spell checking in ESSmode (doesn't seem to work)
-(add-hook 'ess-mode-hook #'flyspell-prog-mode)
-
-;; For some reason flyspell needs to be enabled for ESS specifically
-(add-hook 'ess-mode-hook
-          (lambda ()
-            (flyspell-prog-mode)
-            (run-hooks 'prog-mode-hook)
-            ))
+(use-package jinx
+  :custom (jinx-languages "en_US")
+  :hook ((text-mode . jinx-mode)
+         (prog-mode . jinx-mode))
+  :bind (("M-$" . jinx-correct)
+         ("C-M-$" . jinx-languages)))
 
 
 
