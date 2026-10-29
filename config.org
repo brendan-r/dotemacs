@@ -1373,7 +1373,8 @@ This is useful for marking habits or tasks as done on a day in the past."
 
 ;; R and ESS -------------------------------------------------------------------
 
-(require 'ess-site)
+;; Package autoloads cover other ESS dialects; load R for the keybindings below.
+(require 'ess-r-mode)
 
 ;; Don't write everything out to a history file
 (setq ess-history-file nil)
