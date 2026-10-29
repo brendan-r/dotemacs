@@ -6,8 +6,6 @@
 #+begin_src emacs-lisp
 ;; TODO
 ;;
-;; - Try out straight.el
-;;
 ;; - Add a .csv mode (toggle-truncate-lines and csv-align-fields on a mode hook
 ;;   are probably sufficient)
 ;;
@@ -27,104 +25,25 @@
 #+end_src
 
 * Package setup and environment
-** Package archives and initialization
+** Elpaca and use-package
+
+Packages are declared beside their configuration with =use-package=. External
+packages use =:ensure t=; built-in and local libraries use =:ensure nil=.
+Org and use-package come with Emacs (29 or newer). Elpaca owns external packages;
+the old =elpa/= directory can remain on disk but is not activated.
+
+Use =M-x elpaca-manager= to inspect packages and =M-x elpaca-fetch-all= to
+fetch updates for review. Apply chosen updates with =M-x elpaca-merge=.
+New declarations install missing packages; ordinary startup does not upgrade them.
 
 #+begin_src emacs-lisp
-
-;; Load the package library
-(require 'package)
-
-;; Define archives calling
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                         ("gnu" . "https://elpa.gnu.org/packages/")
-                         ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
-
-;; Initialize the package system
-(package-initialize)
-
-(require 'use-package)
-(setq use-package-verbose t)
-
-;; Add the emacs package dirs to the loadpath
-(let ((default-directory "~/.emacs.d/"))
-  (normal-top-level-add-subdirs-to-load-path))
-
-#+end_src
-
-** Package list and installation
-
-#+begin_src emacs-lisp
-;; Make a list of the packages you want
-(setq my-package-list '(
-                        magit
-                        ess
-                        projectile
-                        yasnippet
-                        eval-in-repl
-                        expand-region
-                        fill-column-indicator
-                        spaceline
-                        ghostel
-                        ;; virtualenvwrapper
-                        flycheck
-                        jinx
-                        rainbow-delimiters
-                        smartparens
-                        web-mode
-                        company
-                        olivetti
-                        exec-path-from-shell
-                        multiple-cursors
-                        markdown-mode
-                        auto-complete
-                        color-theme-sanityinc-tomorrow
-                        polymode
-                        poly-R
-                        poly-markdown
-                        persp-mode
-                        which-key
-                        mwim
-                        fold-this
-                        nodejs-repl
-                        use-package
-                        undo-tree
-                        smex
-                        elpy
-                        skewer-mode
-                        simple-httpd
-                        elfeed
-                        yaml-mode
-                        ;; For reviewing papers
-                        pdf-tools
-                        org-ref
-                        org-transclusion
-                        frames-only-mode
-                        org-caldav
-                        anki-editor
-                        leetcode
-                        vertico
-                        consult
-                        jupyter
-                        pygn-mode
-                        sqlformat
-                        graphviz-dot-mode
-                        ))
-
-
-
-;; Activate package autoloads
-(setq package-initialize nil)
-
-;; make sure stale packages don't get loaded
-(dolist (package my-package-list)
-  (if (featurep package)
-      (unload-feature package t)))
-
-;; Install packages in package-list if they are not already installed
-(unless (cl-every #'package-installed-p my-package-list)
-  (package-refresh-contents) (dolist (package my-package-list)
-                               (when (not (package-installed-p package))
-                                 (package-install package))))
+(unless (>= emacs-major-version 29)
+  (error "This configuration requires Emacs 29 or newer"))
+(add-to-list 'load-path (expand-file-name "lisp/" user-emacs-directory))
+(require 'br-elpaca)
+(use-package use-package
+  :ensure nil
+  :custom (use-package-verbose t))
 #+end_src
 
 ** Local Lisp directories
@@ -145,39 +64,34 @@
 ** macOS shell environment
 
 #+begin_src emacs-lisp
-
-;; on OSX Emacs needs help setting up the system paths
-(when (memq window-system '(mac ns))
-  (exec-path-from-shell-initialize))
-
-
-;; (setenv "PATH" (concat "/opt/homebrew/bin/:" (getenv "PATH")))
-;; (setq exec-path (append '("/opt/homebrew/bin/") exec-path))
-
-
-
+(use-package exec-path-from-shell
+  :ensure (:wait t)
+  :demand t
+  :config
+  (when (memq window-system '(mac ns))
+    (exec-path-from-shell-initialize)))
 #+end_src
 
 * Command discovery: which-key
 
 #+begin_src emacs-lisp
-;; Which key provides a little menu for if you get a brain-freeze in the middle
-;; of typing out command
-(which-key-mode t)
-
-
-
+(use-package which-key
+  ;; Its GNU recipe uses the Emacs repository; omit the full Git history.
+  :ensure (:depth 1)
+  :demand t
+  :config
+  (which-key-mode 1))
 #+end_src
 
 * LeetCode
 
 #+begin_src emacs-lisp
-
-(require 'leetcode)
-(setq leetcode-prefer-language "python3")
-(setq leetcode-prefer-sql "mysql")
-
-
+(use-package leetcode
+  :ensure t
+  :demand t
+  :custom
+  (leetcode-prefer-language "python3")
+  (leetcode-prefer-sql "mysql"))
 #+end_src
 
 * Editing and interaction
@@ -203,12 +117,12 @@
 ** Syntax checking: Flycheck
 
 #+begin_src emacs-lisp
-
-;; Provide some settings to chill flycheck out a little
-(setq flycheck-check-syntax-automatically (quote (save idle-change mode-enabled)))
-(setq flycheck-idle-change-delay 3)
-
-
+(use-package flycheck
+  :ensure t
+  :defer t
+  :custom
+  (flycheck-check-syntax-automatically '(save idle-change mode-enabled))
+  (flycheck-idle-change-delay 3))
 #+end_src
 
 ** Spell checking: Jinx
@@ -226,6 +140,7 @@ machine as a one-time setup.
 #+begin_src emacs-lisp
 
 (use-package jinx
+  :ensure t
   :custom (jinx-languages "en_US")
   :hook ((text-mode . jinx-mode)
          (prog-mode . jinx-mode))
@@ -247,11 +162,14 @@ machine as a one-time setup.
 
 
 ;; Use move-where-i-mean to arrive at the beginning/end of indented lines
-(setq mwim-beginning-of-line-function 'beginning-of-visual-line
-      mwim-end-of-line-function 'end-of-visual-line)
-
-(define-key cua-global-keymap (kbd "<home>") 'mwim-beginning)
-(define-key cua-global-keymap (kbd "<end>") 'mwim-end)
+(use-package mwim
+  :ensure t
+  :custom
+  (mwim-beginning-of-line-function 'beginning-of-visual-line)
+  (mwim-end-of-line-function 'end-of-visual-line)
+  :bind (:map cua-global-keymap
+              ("<home>" . mwim-beginning)
+              ("<end>" . mwim-end)))
 
 ;; Don't tabify after rect' commands
 (setq cua-auto-tabify-rectangles nil)
@@ -282,13 +200,11 @@ machine as a one-time setup.
   '(lambda () (interactive) (kill-buffer (current-buffer))))
 
 ;; Multiple cursors
-(require 'multiple-cursors)
-
-;; Where you have a selection, put a cursor on each line
-(define-key cua-global-keymap (kbd "C-S-l") 'mc/edit-lines)
-
-;; Use the current point as an anchor to create multiple cursors
-(define-key cua-global-keymap (kbd "C-S-k") 'set-rectangular-region-anchor)
+(use-package multiple-cursors
+  :ensure t
+  :bind (:map cua-global-keymap
+              ("C-S-l" . mc/edit-lines)
+              ("C-S-k" . set-rectangular-region-anchor)))
 
 (define-key cua-global-keymap (kbd "C-/") 'comment-line)
 
@@ -348,13 +264,15 @@ machine as a one-time setup.
 ** Undo and redo
 
 #+begin_src emacs-lisp
-(global-undo-tree-mode 1)            ;; Turn on everywhere
-(global-set-key (kbd "C-z") 'undo)   ;; Make ctrl-z undo
-(defalias 'redo 'undo-tree-redo)
-(global-set-key (kbd "C-S-z") 'redo) ;; Make ctrl-Z redo
-
-
-
+(use-package undo-tree
+  :ensure t
+  :demand t
+  :config
+  (global-undo-tree-mode 1)            ;; Turn on everywhere
+  (global-set-key (kbd "C-z") 'undo)   ;; Make ctrl-z undo
+  (defalias 'redo 'undo-tree-redo)
+  (global-set-key (kbd "C-S-z") 'redo) ;; Make ctrl-Z redo
+)
 #+end_src
 
 ** Word deletion
@@ -405,9 +323,9 @@ With argument, do this that many times."
 ** Command launcher: Smex
 
 #+begin_src emacs-lisp
-(require 'smex)
-
-
+(use-package smex
+  :ensure t
+  :demand t)
 #+end_src
 
 ** General editing behavior and file reloading
@@ -422,10 +340,10 @@ With argument, do this that many times."
 ;; (require 'smartparens)
 ;; (add-hook 'prog-mode-hook #'smartparens-mode)
 
-(add-hook 'ess-mode-hook #'rainbow-delimiters-mode)
-
-;; Use rainbow delimiters when programming
-(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+(use-package rainbow-delimiters
+  :ensure t
+  :hook ((ess-mode . rainbow-delimiters-mode)
+         (prog-mode . rainbow-delimiters-mode)))
 
 ;; Load the new version of a file when it changes
 (global-auto-revert-mode t)
@@ -434,38 +352,59 @@ With argument, do this that many times."
 
 #+end_src
 
+** Additional editing packages
+
+#+begin_src emacs-lisp
+(use-package expand-region
+  :ensure t
+  :defer t)
+
+(use-package smartparens
+  :ensure t
+  :defer t)
+
+(use-package auto-complete
+  :ensure t
+  :defer t)
+
+(use-package company
+  :ensure t
+  :defer t)
+#+end_src
+
 ** Comment filling
 
 #+begin_src emacs-lisp
-
-(require 'newcomment)
-
-;; Activate auto-fill-mode globally for programming modes
- (add-hook 'prog-mode-hook 'turn-on-auto-fill)
-;; But, make it so that it only runs when you're in a comment (e.g. not for
-;; prose like markdown, and not for code)
-(setq comment-auto-fill-only-comments 1)
-
-
-
+(use-package newcomment
+  :ensure nil
+  :demand t
+  :config
+  ;; Activate auto-fill-mode globally for programming modes
+   (add-hook 'prog-mode-hook 'turn-on-auto-fill)
+  ;; But, make it so that it only runs when you're in a comment (e.g. not for
+  ;; prose like markdown, and not for code)
+  (setq comment-auto-fill-only-comments 1)
+)
 #+end_src
 
 ** Snippets: Yasnippet
 
 #+begin_src emacs-lisp
+(use-package yasnippet
+  :ensure t
+  :demand t
+  :config
+  (setq yas-snippet-dirs
+        '("~/.emacs.d/snippets"))
 
-(require 'yasnippet)
-(setq yas-snippet-dirs
-      '("~/.emacs.d/snippets"))
+  (yas-global-mode 1)
 
-(yas-global-mode 1)
-
-;; It seems like it's faster/easier to select snippets using good names, and to
-;; keep tab free for auto-complete/company
-(define-key yas-minor-mode-map [(tab)] nil)
-(define-key yas-minor-mode-map (kbd "TAB") nil)
-(global-set-key (kbd "C-'") 'yas-insert-snippet)
-
+  ;; It seems like it's faster/easier to select snippets using good names, and to
+  ;; keep tab free for auto-complete/company
+  (define-key yas-minor-mode-map [(tab)] nil)
+  (define-key yas-minor-mode-map (kbd "TAB") nil)
+  (global-set-key (kbd "C-'") 'yas-insert-snippet)
+)
 #+end_src
 
 * Language REPLs: shared Comint behavior
@@ -474,31 +413,32 @@ These settings support language REPLs such as Python, R/ESS, and SQL.
 Interactive terminals and shell-script evaluation use Ghostel.
 
 #+begin_src emacs-lisp
+(use-package comint
+  :ensure nil
+  :demand t
+  :config
+  ;; Use up and down to scroll through command history
+  (define-key comint-mode-map (kbd "<up>")
+    'comint-previous-matching-input-from-input)
 
-(require 'comint)
+  (define-key comint-mode-map (kbd "<down>")
+    'comint-next-matching-input-from-input)
 
-;; Use up and down to scroll through command history
-(define-key comint-mode-map (kbd "<up>")
-  'comint-previous-matching-input-from-input)
-
-(define-key comint-mode-map (kbd "<down>")
-  'comint-next-matching-input-from-input)
-
-;; Possibly make comint buffers more well-behaved when throwing text around
-(setq comint-scroll-to-bottom-on-input t)
-(setq comint-scroll-to-bottom-on-output t)
-(setq comint-move-point-for-output t)
+  ;; Possibly make comint buffers more well-behaved when throwing text around
+  (setq comint-scroll-to-bottom-on-input t)
+  (setq comint-scroll-to-bottom-on-output t)
+  (setq comint-move-point-for-output t)
 
 
-;; Automatically adjust output width in commint buffers
-;; from http://stackoverflow.com/a/11255996/7237812
-(defun comint-fix-window-size ()
-  "Change process window size."
-  (when (derived-mode-p 'comint-mode)
-    (let ((process (get-buffer-process (current-buffer))))
-      (unless (eq nil process)
-        (set-process-window-size process (window-height) (window-width))))))
-
+  ;; Automatically adjust output width in commint buffers
+  ;; from http://stackoverflow.com/a/11255996/7237812
+  (defun comint-fix-window-size ()
+    "Change process window size."
+    (when (derived-mode-p 'comint-mode)
+      (let ((process (get-buffer-process (current-buffer))))
+        (unless (eq nil process)
+          (set-process-window-size process (window-height) (window-width))))))
+)
 #+end_src
 
 * Interface and text display
@@ -606,6 +546,22 @@ Interactive terminals and shell-script evaluation use Ghostel.
 
 #+end_src
 
+* Additional terminal packages
+
+#+begin_src emacs-lisp
+(use-package eat
+  :ensure t
+  :defer t)
+
+(use-package multi-term
+  :ensure t
+  :defer t)
+
+(use-package vterm
+  :ensure t
+  :defer t)
+#+end_src
+
 * Terminals: Ghostel
 
 Use =M-x ghostel= to open or return to a terminal, and =M-x ghostel-new= to
@@ -624,6 +580,7 @@ buffers so control keys reach the shell.
               cua-inhibit-cua-keys t))
 
 (use-package ghostel
+  :ensure t
   :commands (ghostel ghostel-new)
   :hook (ghostel-mode . br/ghostel-mode-setup)
   :custom
@@ -659,12 +616,10 @@ buffers so control keys reach the shell.
 * Fill-column indicator
 
 #+begin_src emacs-lisp
-
-(require 'fill-column-indicator)
-(setq fci-rule-column 80)
-
-
-
+(use-package fill-column-indicator
+  :ensure t
+  :demand t
+  :custom (fci-rule-column 80))
 #+end_src
 
 * Window splitting
@@ -706,45 +661,53 @@ buffers so control keys reach the shell.
 * Markdown
 
 #+begin_src emacs-lisp
+(use-package markdown-mode
+  :ensure t
+  :mode ("\\.text\\'" "\\.markdown\\'" "\\.md\\'" "\\.page\\'")
+  :custom
+  (markdown-use-pandoc-style-yaml-metadata t)
+  (markdown-enable-math t))
 
-;; Use markdown mode for the following file types
-(autoload 'markdown-mode "markdown-mode"
-  "Major mode for editing Markdown files" t)
-(add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.page\\'" . markdown-mode))
+(use-package olivetti
+  :ensure t
+  :hook ((markdown-mode . olivetti-mode)
+         (org-mode . olivetti-mode)
+         (poly-markdown+r-mode . olivetti-mode)))
+#+end_src
 
-;; Allow pandoc yaml metadata
-(setq markdown-use-pandoc-style-yaml-metadata t)
+* Additional file modes
 
-;; Unbind tab so it's possible to use yasnippets from
-;; http://wiki.dreamrunner.org/public_html/Emacs/markdown.html
-;; ;; (add-hook 'markdown-mode-hook
-;;           '(lambda ()
-;;              (auto-complete-mode t)
-;;              (local-unset-key [tab])
-;;              (setq-local yas-fallback-behavior '(apply auto-complete))))
+#+begin_src emacs-lisp
+(use-package web-mode
+  :ensure t
+  :defer t)
 
-;; Allow math mode for stuff in-between $..$ or $$..$$
-(setq markdown-enable-math t)
+(use-package yaml-mode
+  :ensure t
+  :defer t)
 
-;; Use Olivetti mode whenever the mode loads (and disable linum-mode)
-(require 'olivetti)
-;; (add-hook 'markdown-mode-hook (lambda() (linum-mode -1)))
-(add-hook 'markdown-mode-hook (lambda() (olivetti-mode t)))
-
-
-
+(use-package graphviz-dot-mode
+  :ensure t
+  :defer t)
 #+end_src
 
 * Org mode
+** Bundled Org
+
+#+begin_src emacs-lisp
+(use-package org
+  :ensure nil
+  :demand t)
+#+end_src
+
 ** Clipboard conversion and formatting commands
 
 #+begin_src emacs-lisp
 
 ;; Copy Org/Markdown conversions to the clipboard using Pandoc.
-(require 'my-pandoc-clipboard)
+(use-package my-pandoc-clipboard
+  :ensure nil
+  :demand t)
 
 ;; Basic keybindings
 (with-eval-after-load 'org
@@ -766,7 +729,9 @@ buffers so control keys reach the shell.
 ** Encryption and auto-save
 
 #+begin_src emacs-lisp
-(require 'org-crypt)
+(use-package org-crypt
+  :ensure nil
+  :demand t)
 (org-crypt-use-before-save-magic)
 (setq org-tags-exclude-from-inheritance '("crypt"))
 
@@ -791,7 +756,9 @@ buffers so control keys reach the shell.
 ** Basic behavior, appearance, and keybindings
 
 #+begin_src emacs-lisp
-(require 'org-habit)
+(use-package org-habit
+  :ensure nil
+  :demand t)
 
 ;; TODO
 ;; Add some decent capture templates, especially for research / things to review
@@ -802,6 +769,9 @@ buffers so control keys reach the shell.
 
 ;; Stops org-mode messing with indentation
 (setq org-src-preserve-indentation t)
+
+;; Prefer Shift-arrow text selection, including Org-specific contexts.
+(setq org-support-shift-select 'always)
 
 ;; Allow Control-Shift-Up to select wrapped paragraphs
 (setq org-disputed-keys t)
@@ -814,7 +784,7 @@ buffers so control keys reach the shell.
 
 
 ;; (add-hook 'org-mode-hook (lambda() (linum-mode -1)))
-(add-hook 'org-mode-hook (lambda() (olivetti-mode t)))
+
 
 ;; In ediff, expand all the headings
 (add-hook 'ediff-prepare-buffer-hook #'outline-show-all)
@@ -829,7 +799,6 @@ buffers so control keys reach the shell.
 ;; Use the indented-mode / clean-view by default
 (setq org-startup-indented t)
 
-(setq org-agenda-files '("~/Nextcloud/org/personal"))
 (setq org-agenda-skip-archived-trees t)
 ;; (defun my/org-agenda-files-exclude-archives (dir)
 ;;   "Set `org-agenda-files` to .org files in DIR, excluding .org_archive files."
@@ -849,12 +818,8 @@ buffers so control keys reach the shell.
 
 
 
-(defun exclude-subdirectory (dirname)
-  (not (or (string-prefix-p "~/Nextcloud/org/personal/archive" dirname)
-           (string-prefix-p "~/Nextcloud/org/personal/reviews" dirname))))
-
-(setq org-agenda-files
-      (directory-files-recursively "~/Nextcloud/org/career/" "\\.org$" nil 'exclude-subdirectory))
+;; No agenda files selected; this was previously saved by Customize.
+(setq org-agenda-files nil)
 
 
 ;; A test of showing more details in the agenda view... You don't like how this looks!
@@ -1063,12 +1028,15 @@ This is useful for marking habits or tasks as done on a day in the past."
 
 ;; If you're making cards for a deck that doesn't exist yet, go ahead and create
 ;; it
-(setq anki-editor-create-decks t)
+(use-package anki-editor
+  :ensure t
+  :defer t
+  :custom (anki-editor-create-decks t)
+  :config
 
-;; anki-editor treats an explicit `:ANKI_FORMAT: nil` like a missing property
-;; and falls back to the global default. Respect the local property so raw PGN
-;; fields can bypass HTML export cleanly.
-(with-eval-after-load 'anki-editor
+  ;; anki-editor treats an explicit `:ANKI_FORMAT: nil` like a missing property
+  ;; and falls back to the global default. Respect the local property so raw PGN
+  ;; fields can bypass HTML export cleanly.
   (defun br/anki-editor-entry-format ()
     "Respect a local `ANKI_FORMAT' property on the current entry."
     (let ((value (org-entry-get nil anki-editor-prop-format nil t)))
@@ -1078,6 +1046,26 @@ This is useful for marking habits or tasks as done on a day in the past."
 
   (advice-add 'anki-editor-entry-format :override #'br/anki-editor-entry-format))
 
+#+end_src
+
+** Additional Org extensions
+
+#+begin_src emacs-lisp
+(use-package org-caldav
+  :ensure t
+  :defer t)
+
+(use-package org-gcal
+  :ensure t
+  :defer t)
+
+(use-package org-ql
+  :ensure t
+  :defer t)
+
+(use-package org-super-agenda
+  :ensure t
+  :defer t)
 #+end_src
 
 ** LaTeX previews
@@ -1098,12 +1086,25 @@ This is useful for marking habits or tasks as done on a day in the past."
 
 ;; Check external prerequisites before installing Jupyter's Org hooks.
 ;; On a new machine, the warning explains the one-time setup command.
-(require 'br-jupyter)
-(br/jupyter-initialize)
+(use-package zmq
+  :ensure (:files (:defaults "src"))
+  :defer t)
+
+(use-package jupyter
+  :ensure t
+  :defer t
+  :init
+  ;; Run the preflight after installation, before loading Jupyter itself.
+  (use-package br-jupyter
+    :ensure nil
+    :demand t
+    :config (br/jupyter-initialize)))
 
 
 ;; This should allow <s TAB for a source block, for example
-(require 'org-tempo)
+(use-package org-tempo
+  :ensure nil
+  :demand t)
 
 
 (setq org-babel-R-command "/usr/local/bin/R --no-save")
@@ -1208,6 +1209,7 @@ This is useful for marking habits or tasks as done on a day in the past."
 ;; An alternative with `use-package':
 
 (use-package org-transclusion
+  :ensure t
   :bind (("S-<f12>" . org-transclusion-add)
          ("C-c t m" . org-transclusion-transient-menu)
          ;; ("C-n t t") . org-transclusion-mode)
@@ -1243,14 +1245,20 @@ This is useful for marking habits or tasks as done on a day in the past."
 * Chess: PGN editing
 
 #+begin_src emacs-lisp
+;; Grammar modules are data, not Emacs Lisp libraries. Keep them out of the
+;; recursive load-path used by Elpaca's byte compiler (json.dylib, xml.dylib, etc.).
+(use-package tree-sitter-langs
+  :ensure (:build (:after elpaca-build-link
+                         (lambda (e)
+                           (let ((bin (expand-file-name "bin/" (elpaca<-build-dir e))))
+                             (make-directory bin t)
+                             (with-temp-file (expand-file-name ".nosearch" bin)))
+                           (elpaca-continue e))))
+  :defer t)
 
-(require 'pygn-mode)
-
-
-
-
-
-
+(use-package pygn-mode
+  :ensure t
+  :demand t)
 #+end_src
 
 * Startup screen, scratch buffer, and initial windows
@@ -1368,18 +1376,21 @@ This is useful for marking habits or tasks as done on a day in the past."
 ;; ;; Optional additional args
 ;; (setq sqlformat-args '("-s2" "-g"))
 
-(require 'sql)
-(require 'sqlformat)
+(use-package sql
+  :ensure nil
+  :demand t)
 
 (setq sql-sqlite-program "sqlite3")
 
 (define-key sql-mode-map (kbd "<C-return>") #'sql-send-region)
 (setq sql-pop-to-buffer-after-send-region nil)
 
-(setq sqlformat-command 'pgformatter
-      sqlformat-args '("-s2" "-g" "-u1" "-L"))
-
-(define-key sql-mode-map (kbd "C-c C-f") #'sqlformat-buffer)
+(use-package sqlformat
+  :ensure t
+  :custom
+  (sqlformat-command 'pgformatter)
+  (sqlformat-args '("-s2" "-g" "-u1" "-L"))
+  :bind (:map sql-mode-map ("C-c C-f" . sqlformat-buffer)))
 
 
 
@@ -1388,26 +1399,23 @@ This is useful for marking habits or tasks as done on a day in the past."
 ** HTML, CSS, and browser JavaScript
 
 #+begin_src emacs-lisp
+(use-package js2-mode
+  :ensure t
+  :mode "\\.js?\\'")
 
-;; Note: For HTML and CSS, you could use web-mode (spacemacs does, for example),
-;; but using independent modes for now, mainly for testing out skewer
-(require 'js2-mode)
-(require 'skewer-mode)
-(require 'simple-httpd)
+(use-package skewer-mode
+  :ensure t
+  :hook ((js2-mode . skewer-mode)
+         (css-mode . skewer-css-mode)
+         (html-mode . skewer-html-mode)))
+
+(use-package simple-httpd
+  :ensure t
+  :defer t
+  :custom (httpd-root "~/projects/forecast_site"))
 
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . html-mode))
 (add-to-list 'auto-mode-alist '("\\.css?\\'" . css-mode))
-(add-to-list 'auto-mode-alist '("\\.js?\\'" . js2-mode))
-
-(add-hook 'js2-mode-hook 'skewer-mode)
-(add-hook 'css-mode-hook 'skewer-css-mode)
-(add-hook 'html-mode-hook 'skewer-html-mode)
-
-
-;; set root folder for httpd server
-(setq httpd-root "~/projects/forecast_site")
-
-
 #+end_src
 
 ** Shell-script evaluation
@@ -1417,203 +1425,214 @@ using the existing eval-in-repl movement and window behavior.  This shell is
 separate from terminals opened with =M-x ghostel=.
 
 #+begin_src emacs-lisp
-(require 'eval-in-repl)
-(require 'eval-in-repl-shell)
+(use-package eval-in-repl-shell
+  :ensure eval-in-repl
+  :demand t
+  :config
+  (setq eir-shell-type 'ghostel
+        eir-shell-buffer-name "*ghostel-shell*")
 
-(setq eir-shell-type 'ghostel
-      eir-shell-buffer-name "*ghostel-shell*")
+  (cl-defmethod eir-create-shell (shell-name &context (eir-shell-type (eql ghostel)))
+    (require 'ghostel)
+    (ghostel-create shell-name))
 
-(cl-defmethod eir-create-shell (shell-name &context (eir-shell-type (eql ghostel)))
-  (require 'ghostel)
-  (ghostel-create shell-name))
+  (cl-defmethod eir-insert (string &context (major-mode ghostel-mode))
+    (ghostel-paste-string string))
 
-(cl-defmethod eir-insert (string &context (major-mode ghostel-mode))
-  (ghostel-paste-string string))
+  (cl-defmethod eir-shell-execute (&context (major-mode ghostel-mode))
+    (ghostel-send-key "return"))
 
-(cl-defmethod eir-shell-execute (&context (major-mode ghostel-mode))
-  (ghostel-send-key "return"))
-
-(add-hook 'sh-mode-hook
-          (lambda ()
-            (local-set-key (kbd "C-<return>") #'eir-eval-in-shell)))
+  (add-hook 'sh-mode-hook
+            (lambda ()
+              (local-set-key (kbd "C-<return>") #'eir-eval-in-shell)))
+)
 #+end_src
 
 ** Python and Elpy
 
 #+begin_src emacs-lisp
+(use-package elpy
+  :ensure t
+  :demand t
+  :config
+  (elpy-enable)
 
-(require 'elpy)
+  ;; Elpy should use Python3 for RPC
+  (setq elpy-rpc-python-command "python3")
 
-(elpy-enable)
+  ;; Use a standard REPL
+  (setq python-shell-interpreter "python3")
 
-;; Elpy should use Python3 for RPC
-(setq elpy-rpc-python-command "python3")
-
-;; Use a standard REPL
-(setq python-shell-interpreter "python3")
-
-;; Note: This seemed to cause some warning
-;; (setq python-shell-interpreter "python3"
-;;       python-shell-interpreter-args "-i")
-
-
-
-;; ;; Use Jupyter
-;; (setq python-shell-interpreter "jupyter"
-;;       python-shell-interpreter-args "console --simple-prompt")
-
-;; ;; Use iPython
-;; (setq python-shell-interpreter "ipython"
-;;       python-shell-interpreter-args "-i --simple-prompt")
-
-
-;; Use 79 chars for width (PEP-8)
-(add-hook 'elpy-mode-hook
-          (lambda ()
-            (set-fill-column 79)))
+  ;; Note: This seemed to cause some warning
+  ;; (setq python-shell-interpreter "python3"
+  ;;       python-shell-interpreter-args "-i")
 
 
 
+  ;; ;; Use Jupyter
+  ;; (setq python-shell-interpreter "jupyter"
+  ;;       python-shell-interpreter-args "console --simple-prompt")
+
+  ;; ;; Use iPython
+  ;; (setq python-shell-interpreter "ipython"
+  ;;       python-shell-interpreter-args "-i --simple-prompt")
+
+
+  ;; Use 79 chars for width (PEP-8)
+  (add-hook 'elpy-mode-hook
+            (lambda ()
+              (set-fill-column 79)))
 
 
 
 
-;; (with-eval-after-load "python"
-;;   ;; try to get indent/completion working nicely
-;;   ;; (setq python-indent-trigger-commands '(my-company-indent-or-complete-common
-;;   ;;                                        indent-for-tab-command
-;;   ;;                                        ;;yas-expand
-;;   ;;                                        ;;yas/expand
-;;   ;;                                        ))
 
-;;   ;; readline support is wonky at the moment
-;;   (setq python-shell-completion-native-enable nil)
-;;   ;; simple evaluation with C-ret
-;;   (require 'eval-in-repl-python)
-;;   (define-key python-mode-map "\C-c\C-c" 'eir-eval-in-python)
-;;   (define-key python-mode-map (kbd "<C-return>") 'eir-eval-in-python))
 
-;; (add-hook 'inferior-python-mode-hook (lambda () (linum-mode -1)))
 
-;; ;; Use Python 3 via Anaconda -- this doesn't work
-;; (setq python-python-command "$HOME/anaconda3/bin/python")
+  ;; (with-eval-after-load "python"
+  ;;   ;; try to get indent/completion working nicely
+  ;;   ;; (setq python-indent-trigger-commands '(my-company-indent-or-complete-common
+  ;;   ;;                                        indent-for-tab-command
+  ;;   ;;                                        ;;yas-expand
+  ;;   ;;                                        ;;yas/expand
+  ;;   ;;                                        ))
 
-;; This should make the virtual env stuff work in a repl
-;; (require 'virtualenvwrapper)
-;; (venv-initialize-interactive-shells)
+  ;;   ;; readline support is wonky at the moment
+  ;;   (setq python-shell-completion-native-enable nil)
+  ;;   ;; simple evaluation with C-ret
+  ;;   (require 'eval-in-repl-python)
+  ;;   (define-key python-mode-map "\C-c\C-c" 'eir-eval-in-python)
+  ;;   (define-key python-mode-map (kbd "<C-return>") 'eir-eval-in-python))
 
+  ;; (add-hook 'inferior-python-mode-hook (lambda () (linum-mode -1)))
+
+  ;; ;; Use Python 3 via Anaconda -- this doesn't work
+  ;; (setq python-python-command "$HOME/anaconda3/bin/python")
+
+  ;; This should make the virtual env stuff work in a repl
+  ;; (require 'virtualenvwrapper)
+  ;; (venv-initialize-interactive-shells)
+)
 #+end_src
 
 ** Node.js REPL
 
 #+begin_src emacs-lisp
-
-(require 'nodejs-repl)
-
-(add-hook 'js-mode-hook
-          (lambda ()
-            (define-key js-mode-map (kbd "<C-return>") 'nodejs-repl-send-region)))
-
-
-
+(use-package nodejs-repl
+  :ensure t
+  :demand t
+  :config
+  (add-hook 'js-mode-hook
+            (lambda ()
+              (define-key js-mode-map (kbd "<C-return>") 'nodejs-repl-send-region)))
+)
 #+end_src
 
 ** R and ESS
 
 #+begin_src emacs-lisp
-
-;; Package autoloads cover other ESS dialects; load R for the keybindings below.
-(require 'ess-r-mode)
-
-;; Don't write everything out to a history file
-(setq ess-history-file nil)
-
-;; Start R in the working directory by default
-(setq ess-ask-for-ess-directory nil)
+(use-package ess-r-mode
+  :ensure ess
+  :demand t
+  :config
+  ;; Package autoloads cover other ESS dialects; load R for the keybindings below.
 
 
-;; Possibly make it do Rstudio style things...?
-(setq ess-default-style (quote RStudio))
+  ;; Don't write everything out to a history file
+  (setq ess-history-file nil)
 
-;; Allow autocompletion in script files (not just the shell)
-(setq ess-tab-complete-in-script t)
-
-;; Try to make the default 'send to REPL' command C-RET
-(define-key ess-mode-map (kbd "C-RET")
-  'ess-eval-region-or-function-or-paragraph-and-step)
-
-;; Remove line-numbers in the R REPL
-;; (add-hook 'inferior-ess-mode-hook (lambda () (linum-mode -1)))
-
-;; This should make things not freeze, I think
-(setq ess-eval-visibly-p 'nowait)
-
-;; Shortcut for the %>% operator
-(defun then_R_operator ()
-  "R - %>% operator pipe operator"
-  (interactive)
-  (just-one-space 1)
-  (insert "%>%")
-  (reindent-then-newline-and-indent))
-
-(define-key ess-mode-map (kbd "C-<") 'then_R_operator)
-(define-key inferior-ess-mode-map (kbd "C-<") 'then_R_operator)
-
-;; Make C-l clear the iESS comit buffer
-(define-key ess-mode-map (kbd "C-l") 'comint-clear-buffer)
-(define-key inferior-ess-mode-map (kbd "C-l") 'comint-clear-buffer)
+  ;; Start R in the working directory by default
+  (setq ess-ask-for-ess-directory nil)
 
 
-;; The iESS R buffer only seems to be able to cycle through things directly
-;; typed into it (e.g. not sent from and R buffer), which makes it pretty
-;; useless. The commands below are an attempt to get the keybindings working for
-;; commands *either* typed or sent from and R buffer
-;;
-;; From: https://stackoverflow.com/a/27440051
+  ;; Possibly make it do Rstudio style things...?
+  (setq ess-default-style (quote RStudio))
 
-;; (defun ess-readline ()
-;;   "Move to previous command entered from script *or* R-process and copy
-;;    to prompt for execution or editing"
-;;   (interactive)
-;;   ;; See how many times function was called
-;;   (if (eq last-command 'ess-readline)
-;;       (setq ess-readline-count (1+ ess-readline-count))
-;;     (setq ess-readline-count 1))
-;;   ;; Move to prompt and delete current input
-;;   (comint-goto-process-mark)
-;;   (end-of-buffer nil) ;; tweak here
-;;   (comint-kill-input)
-;;   ;; Copy n'th command in history where n = ess-readline-count
-;;   (comint-previous-prompt ess-readline-count)
-;;   (comint-copy-old-input)
-;;   ;; Below is needed to update counter for sequential calls
-;;   (setq this-command 'ess-readline)
-;; )
+  ;; Allow autocompletion in script files (not just the shell)
+  (setq ess-tab-complete-in-script t)
 
+  ;; Try to make the default 'send to REPL' command C-RET
+  (define-key ess-mode-map (kbd "C-RET")
+    'ess-eval-region-or-function-or-paragraph-and-step)
 
-;; (defun ess-readnextline ()
-;;   "Move to next command after the one currently copied to prompt and copy
-;;    to prompt for execution or editing"
-;;   (interactive)
-;;   ;; Move to prompt and delete current input
-;;   (comint-goto-process-mark)
-;;   (end-of-buffer nil)
-;;   (comint-kill-input)
-;;   ;; Copy (n - 1)'th command in history where n = ess-readline-count
-;;   (setq ess-readline-count (max 0 (1- ess-readline-count)))
-;;   (when (> ess-readline-count 0)
-;;       (comint-previous-prompt ess-readline-count)
-;;   (comint-copy-old-input))
-;;   ;; Update counter for sequential calls
-;;   (setq this-command 'ess-readline)
-;;   )
+  ;; Remove line-numbers in the R REPL
+  ;; (add-hook 'inferior-ess-mode-hook (lambda () (linum-mode -1)))
 
-;; ;; Define them in the ESS REPL only
-;; (define-key inferior-ess-mode-map (kbd "<up>") 'ess-readline)
-;; (define-key inferior-ess-mode-map (kbd "<down>") 'ess-readnextline)
+  ;; This should make things not freeze, I think
+  (setq ess-eval-visibly-p 'nowait)
+
+  ;; Shortcut for the %>% operator
+  (defun then_R_operator ()
+    "R - %>% operator pipe operator"
+    (interactive)
+    (just-one-space 1)
+    (insert "%>%")
+    (reindent-then-newline-and-indent))
+
+  (define-key ess-mode-map (kbd "C-<") 'then_R_operator)
+  (define-key inferior-ess-mode-map (kbd "C-<") 'then_R_operator)
+
+  ;; Make C-l clear the iESS comit buffer
+  (define-key ess-mode-map (kbd "C-l") 'comint-clear-buffer)
+  (define-key inferior-ess-mode-map (kbd "C-l") 'comint-clear-buffer)
 
 
+  ;; The iESS R buffer only seems to be able to cycle through things directly
+  ;; typed into it (e.g. not sent from and R buffer), which makes it pretty
+  ;; useless. The commands below are an attempt to get the keybindings working for
+  ;; commands *either* typed or sent from and R buffer
+  ;;
+  ;; From: https://stackoverflow.com/a/27440051
 
+  ;; (defun ess-readline ()
+  ;;   "Move to previous command entered from script *or* R-process and copy
+  ;;    to prompt for execution or editing"
+  ;;   (interactive)
+  ;;   ;; See how many times function was called
+  ;;   (if (eq last-command 'ess-readline)
+  ;;       (setq ess-readline-count (1+ ess-readline-count))
+  ;;     (setq ess-readline-count 1))
+  ;;   ;; Move to prompt and delete current input
+  ;;   (comint-goto-process-mark)
+  ;;   (end-of-buffer nil) ;; tweak here
+  ;;   (comint-kill-input)
+  ;;   ;; Copy n'th command in history where n = ess-readline-count
+  ;;   (comint-previous-prompt ess-readline-count)
+  ;;   (comint-copy-old-input)
+  ;;   ;; Below is needed to update counter for sequential calls
+  ;;   (setq this-command 'ess-readline)
+  ;; )
+
+
+  ;; (defun ess-readnextline ()
+  ;;   "Move to next command after the one currently copied to prompt and copy
+  ;;    to prompt for execution or editing"
+  ;;   (interactive)
+  ;;   ;; Move to prompt and delete current input
+  ;;   (comint-goto-process-mark)
+  ;;   (end-of-buffer nil)
+  ;;   (comint-kill-input)
+  ;;   ;; Copy (n - 1)'th command in history where n = ess-readline-count
+  ;;   (setq ess-readline-count (max 0 (1- ess-readline-count)))
+  ;;   (when (> ess-readline-count 0)
+  ;;       (comint-previous-prompt ess-readline-count)
+  ;;   (comint-copy-old-input))
+  ;;   ;; Update counter for sequential calls
+  ;;   (setq this-command 'ess-readline)
+  ;;   )
+
+  ;; ;; Define them in the ESS REPL only
+  ;; (define-key inferior-ess-mode-map (kbd "<up>") 'ess-readline)
+  ;; (define-key inferior-ess-mode-map (kbd "<down>") 'ess-readnextline)
+)
+#+end_src
+
+** Folding helpers
+
+#+begin_src emacs-lisp
+(use-package fold-this
+  :ensure t
+  :defer t)
 #+end_src
 
 ** Knitr and R Markdown helpers
@@ -1716,42 +1735,53 @@ polymode and yas snippet"
 
 #+end_src
 
+** Stan snippets
+
+#+begin_src emacs-lisp
+(use-package stan-snippets
+  :ensure t
+  :defer t)
+#+end_src
+
 ** Polymode
 
 #+begin_src emacs-lisp
+(use-package polymode
+  :ensure t
+  :defer t)
 
-;; (require 'polymode)
-;; (require 'poly-markdown)
-(require 'poly-R)
+(use-package poly-markdown
+  :ensure t
+  :mode (("\\.md" . poly-markdown-mode)
+         ("\\.page" . poly-markdown-mode)))
 
-;;; Markdown
-(add-to-list 'auto-mode-alist '("\\.md"   . poly-markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.page" . poly-markdown-mode))
-
-;;; R modes
-(add-to-list 'auto-mode-alist '("\\.Snw" . poly-noweb+R-mode))
-(add-to-list 'auto-mode-alist '("\\.Rnw" . poly-noweb+R-mode))
-(add-to-list 'auto-mode-alist '("\\.Rmd" . poly-markdown+R-mode))
-
-
-;; Big Rmarkdown buffers get slow af. See if this helps.
-;; (add-hook 'poly-markdown+r-mode-hook (lambda() (linum-mode -1)))
-(add-hook 'poly-markdown+r-mode-hook (lambda() (olivetti-mode t)))
-
-
-
+(use-package poly-R
+  :ensure t
+  :demand t
+  :mode (("\\.Snw" . poly-noweb+R-mode)
+         ("\\.Rnw" . poly-noweb+R-mode)
+         ("\\.Rmd" . poly-markdown+R-mode)))
 #+end_src
 
 * Git: Magit and commit messages
 
 #+begin_src emacs-lisp
 
-(require 'magit)
+;; Current Magit requires a newer Transient than the bundled version.
+(use-package transient
+  :ensure t
+  :demand t)
+
+(use-package magit
+  :ensure t
+  :demand t
+  :bind ("C-x C-g" . magit-status))
 
 ;; Note, this taken from https://emacs.stackexchange.com/a/32610
 ;; Owing to a problem you were experiencing with wrapping commit messages,
 ;; caused by comment-auto-fill-only-comments, set to t, above
 (use-package git-commit
+             :after magit
              :ensure nil
              :preface
              (defun me/git-commit-set-fill-column ()
@@ -1761,18 +1791,50 @@ polymode and yas snippet"
              (advice-add 'git-commit-turn-on-auto-fill :before #'me/git-commit-set-fill-column))
 
 
-;; Set key for magit-status
-(global-set-key (kbd "C-x C-g") 'magit-status)
 
+
+#+end_src
+
+* Additional project and navigation packages
+
+#+begin_src emacs-lisp
+(use-package projectile
+  :ensure t
+  :defer t)
+
+(use-package persp-mode
+  :ensure t
+  :defer t)
+
+(use-package ranger
+  :ensure t
+  :defer t)
+
+(use-package ghub+
+  :ensure (:host github :repo "vermiculus/ghub-plus")
+  :defer t)
+
+;; Magithub was removed from MELPA; preserve it from its original repository.
+(use-package magithub
+  :ensure (:host github :repo "vermiculus/magithub"
+           ;; Upstream requires dash but omits it from Package-Requires.
+           :build (:before elpaca-queue-dependencies
+                           (lambda (e)
+                             (setf (elpaca<-dependencies e)
+                                   (cons '(dash "2.13.0")
+                                         (elpaca--dependencies e)))
+                             (elpaca-continue e))))
+  :defer t)
 #+end_src
 
 * Emacs server
 
 #+begin_src emacs-lisp
 
-;; Run emacs as a server with clients
-;; (setq server-use-tcp t)
-(server-start)
+;; Accept clients after Elpaca has finished installing and configuring packages.
+(use-package server
+  :ensure nil
+  :hook (elpaca-after-init . server-start))
 
 #+end_src
 
@@ -1798,7 +1860,9 @@ polymode and yas snippet"
       (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
 
       ;; make sure mu4e is in your load-path
-      (require 'mu4e)
+      (use-package mu4e
+        :ensure nil
+        :demand t)
 
       ;; If you get your mail without an explicit command,
       ;; use "true" for the command (this is the default)
@@ -1874,7 +1938,9 @@ polymode and yas snippet"
       ;; Default identity
       (setq user-mail-address "brendan@brendanrocks.com" user-full-name "Brendan Rocks")
 
-      (require 'smtpmail-async)
+      (use-package smtpmail-async
+        :ensure (:wait t)
+        :demand t)
 
       ;; An alternative to this would be to use sendmail and something like
       ;; https://wiki.archlinux.org/index.php/Msmtp#GNOME_Keyring
@@ -1922,16 +1988,24 @@ polymode and yas snippet"
 
 #+end_src
 
+* Warning preferences
+
+#+begin_src emacs-lisp
+;; Preserve the existing preference to omit native-compiler warning logs.
+(setq warning-suppress-log-types '((native-compiler)))
+#+end_src
+
 * Customize settings
 
 #+begin_src emacs-lisp
 
-;; When making changes via M-x customize-group, save the settings to a separate
-;; file
+;; Keep future Customize and Package Menu writes in a separate file.
+;; Maintained settings belong in the relevant sections of config.org.
 (setq custom-file (concat user-emacs-directory "custom.el"))
 (unless (file-exists-p custom-file)
   (write-region ";; Put user configuration here" nil custom-file))
-(load custom-file 'noerror)
+(add-hook 'elpaca-after-init-hook
+          (lambda () (load custom-file 'noerror)))
 
 
 
@@ -1960,17 +2034,10 @@ polymode and yas snippet"
 * Tiling window manager integration
 
 #+begin_src emacs-lisp
-;;
-;; Re:i3/yabai: No checking if a specific tiling WM is being used, the code
-;; below will have to be manually disabled if you're back to floating windows.
-
-(progn
-  (require 'frames-only-mode)
-  (frames-only-mode t)
-  )
-
-
-
+(use-package frames-only-mode
+  :ensure t
+  :demand t
+  :config (frames-only-mode 1))
 #+end_src
 
 * Papers and bibliography
@@ -1981,8 +2048,9 @@ polymode and yas snippet"
 ;; Experimenting with the system described at:
 ;; https://codearsonist.com/reading-for-programmers
 
-(require 'pdf-tools)
-(require 'org-ref)
+(use-package pdf-tools
+  :ensure t
+  :demand t)
 
 (setq reading-list-file (file-truename "~/Nextcloud/org/reading-list.org"))
 
@@ -1996,22 +2064,25 @@ polymode and yas snippet"
 ** Org-ref
 
 #+begin_src emacs-lisp
+(use-package org-ref
+  :ensure t
+  :demand t
+  :config
+  ;; For some reason you get an error about this, which goes away if you set it,
+  ;; as per https://github.com/jkitchin/org-ref/blob/master/org-ref.org
+  (setq org-latex-prefer-user-labels t)
 
-;; For some reason you get an error about this, which goes away if you set it,
-;; as per https://github.com/jkitchin/org-ref/blob/master/org-ref.org
-(setq org-latex-prefer-user-labels t)
+  ;; Use this to make references to bibtex entries in documents that you're
+  ;; writing. It can also do loads of other cool shit, like extract references
+  ;; from pdfs which you click and drag into the .bib file. Sometimes it can even
+  ;; download the pdf! A demo here: https://www.youtube.com/watch?v=2t925KRBbFc
 
-;; Use this to make references to bibtex entries in documents that you're
-;; writing. It can also do loads of other cool shit, like extract references
-;; from pdfs which you click and drag into the .bib file. Sometimes it can even
-;; download the pdf! A demo here: https://www.youtube.com/watch?v=2t925KRBbFc
-(require 'org-ref)
 
-(setq org-ref-notes-directory "~/Nextcloud/org/"
-      org-ref-bibliography-notes reading-list-file
-      org-ref-default-bibliography '("~/Nextcloud/org/index.bib")
-      org-ref-pdf-directory "~/Nextcloud/papers/")
-
+  (setq org-ref-notes-directory "~/Nextcloud/org/"
+        org-ref-bibliography-notes reading-list-file
+        org-ref-default-bibliography '("~/Nextcloud/org/index.bib")
+        org-ref-pdf-directory "~/Nextcloud/papers/")
+)
 #+end_src
 
 ** Ivy-bibtex notes
@@ -2029,6 +2100,18 @@ polymode and yas snippet"
 ;; ivy-bibtex, M-o f, Crossref
 
 
+#+end_src
+
+** Bibliography and export packages
+
+#+begin_src emacs-lisp
+(use-package ivy-bibtex
+  :ensure t
+  :defer t)
+
+(use-package htmlize
+  :ensure t
+  :defer t)
 #+end_src
 
 ** Biblio lookup, downloading, and reading-list helpers
@@ -2139,6 +2222,18 @@ RECORD is a formatted record as expected by `biblio-insert-result'."
 #+end_src
 
 * Feeds and media
+** Feed and music packages
+
+#+begin_src emacs-lisp
+(use-package elfeed
+  :ensure t
+  :defer t)
+
+(use-package sonic-pi
+  :ensure t
+  :defer t)
+#+end_src
+
 ** Elfeed setup and feed lists
 
 #+begin_src emacs-lisp
@@ -2362,28 +2457,38 @@ RECORD is a formatted record as expected by `biblio-insert-result'."
 * Theme and mode-line appearance
 
 #+begin_src emacs-lisp
-
-;; Do this last so you get immediate visual feedback if something breaks
-
-
-;; Your theme
-(load-theme 'sanityinc-tomorrow-eighties t)
-(set-face-attribute 'fringe nil :background "#2d2d2d" :foreground "#2d2d2d")
-
-;;(require 'sanityinc-tomorrow-bright-theme)
-
-;; Hipster modeline
-;; Note: This uses up a notable amount of CPU on your little x200t!
-;; (require 'spaceline-config)
-;; (spaceline-spacemacs-theme)
+(use-package color-theme-sanityinc-tomorrow
+  :ensure t
+  :demand t
+  :config
+  ;; Do this last so you get immediate visual feedback if something breaks
 
 
-;; Use Emacs terminfo, not system terminfo
-;; http://stackoverflow.com/a/8920373
-;; (setq system-uses-terminfo nil)
-;; (put 'downcase-region 'disabled nil)
+  ;; Your theme
+  (load-theme 'sanityinc-tomorrow-eighties t)
+  (set-face-attribute 'fringe nil :background "#2d2d2d" :foreground "#2d2d2d")
+
+  ;;(require 'sanityinc-tomorrow-bright-theme)
+
+  ;; Hipster modeline
+  ;; Note: This uses up a notable amount of CPU on your little x200t!
+  ;; (require 'spaceline-config)
+  ;; (spaceline-spacemacs-theme)
 
 
+  ;; Use Emacs terminfo, not system terminfo
+  ;; http://stackoverflow.com/a/8920373
+  ;; (setq system-uses-terminfo nil)
+  ;; (put 'downcase-region 'disabled nil)
+)
+#+end_src
+
+* Additional mode-line packages
+
+#+begin_src emacs-lisp
+(use-package spaceline
+  :ensure t
+  :defer t)
 #+end_src
 
 * Completion and search
@@ -2393,9 +2498,10 @@ RECORD is a formatted record as expected by `biblio-insert-result'."
 ;; For some reason this has to get at the end of the file
 ;; Vertico, as an ivy replacement (you're getting errors in emacs-plus@29.1)
 ;; Enable vertico
-(require 'vertico)
 (use-package vertico
-  :init
+  :ensure t
+  :demand t
+  :config
   (vertico-mode)
 
   ;; Different scroll margin
@@ -2418,6 +2524,7 @@ RECORD is a formatted record as expected by `biblio-insert-result'."
 #+begin_src emacs-lisp
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
 (use-package savehist
+  :ensure nil
   :init
   (savehist-mode))
 
@@ -2428,6 +2535,7 @@ RECORD is a formatted record as expected by `biblio-insert-result'."
 #+begin_src emacs-lisp
 ;; A few more useful configurations...
 (use-package emacs
+  :ensure nil
   :init
   ;; Add prompt indicator to `completing-read-multiple'.
   ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
@@ -2460,6 +2568,7 @@ RECORD is a formatted record as expected by `biblio-insert-result'."
 #+begin_src emacs-lisp
 ;; Example configuration for Consult
 (use-package consult
+  :ensure t
   ;; Replace bindings. Lazily loaded due by `use-package'.
 
   ;; Enable automatic preview at point in the *Completions* buffer. This is
@@ -2538,6 +2647,22 @@ RECORD is a formatted record as expected by `biblio-insert-result'."
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
 
+#+end_src
+
+** Additional completion and checking packages
+
+#+begin_src emacs-lisp
+(use-package counsel
+  :ensure t
+  :defer t)
+
+(use-package hotfuzz
+  :ensure t
+  :defer t)
+
+(use-package flymake-harper
+  :ensure t
+  :defer t)
 #+end_src
 
 ** Search keybindings

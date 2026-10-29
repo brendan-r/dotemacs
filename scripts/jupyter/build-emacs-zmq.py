@@ -24,7 +24,12 @@ if sys.platform not in ("darwin", "linux"):
 if args.package_dir:
     package = args.package_dir.resolve()
 else:
-    packages = list((Path(__file__).resolve().parents[2] / "elpa").glob("zmq-*/zmq.el"))
+    config = Path(__file__).resolve().parents[2]
+    # Prefer the active Elpaca build over any retained package.el installation.
+    elpaca_package = config / "elpaca/builds/zmq"
+    packages = ([elpaca_package / "zmq.el"]
+                if (elpaca_package / "zmq.el").is_file()
+                else list((config / "elpa").glob("zmq-*/zmq.el")))
     if len(packages) != 1:
         parser.error("Select the installed zmq package with --package-dir")
     package = packages[0].parent

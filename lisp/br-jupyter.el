@@ -39,7 +39,7 @@ modules are reported before zmq can attempt its automatic download/build."
           (delq nil (list (unless cli "Jupyter CLI is missing")
                           (unless module-file-suffix
                             "this Emacs was built without dynamic module support; install a module-enabled Emacs")
-                          (unless library "the Emacs zmq package is missing; install the jupyter package with M-x package-install")
+                          (unless library "the Emacs zmq package is missing; check the jupyter and zmq declarations with M-x elpaca-manager")
                           (when (and module (not (file-exists-p module)))
                             "the Emacs ZeroMQ native module has not been built")))))
     (if missing
