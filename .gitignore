@@ -3,6 +3,7 @@
 # except
 !/README.org
 !/README.md
+!/AGENTS.md
 !/init.el
 !/early-init.el
 !/config.org
@@ -18,3 +19,24 @@
 !/scripts/
 /scripts/*
 !/scripts/jupyter/
+
+# Keep the Python workflow guide with its configuration.
+!/docs/
+/docs/*
+!/docs/python-workflow.org
+
+!/docs/python-demos/
+/docs/python-demos/*
+!/docs/python-demos/repl.py
+!/docs/python-demos/python.org
+!/docs/python-demos/jupyter.org
+!/docs/python-demos/python.qmd
+!/docs/python-demos/pyproject.toml
+
+!/docs/python-repl-research.org
+!/docs/python-repl-tests.org
+!/docs/python-demos/plotnine-repl.py
+!/docs/python-demos/plotnine_window.py
+!/docs/python-demos/.ob-jupyter/
+/docs/python-demos/.ob-jupyter/*
+!/docs/python-demos/.ob-jupyter/*.png
