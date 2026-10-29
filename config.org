@@ -64,7 +64,7 @@
                         expand-region
                         fill-column-indicator
                         spaceline
-                        multi-term
+                        ghostel
                         ;; virtualenvwrapper
                         flycheck
                         flyspell
@@ -480,7 +480,10 @@ With argument, do this that many times."
 
 #+end_src
 
-* Shells and REPLs: shared Comint behavior
+* Language REPLs: shared Comint behavior
+
+These settings support language REPLs such as Python, R/ESS, and SQL.
+Interactive terminals and shell-script evaluation use Ghostel.
 
 #+begin_src emacs-lisp
 
@@ -507,17 +510,6 @@ With argument, do this that many times."
     (let ((process (get-buffer-process (current-buffer))))
       (unless (eq nil process)
         (set-process-window-size process (window-height) (window-width))))))
-
-(defun my-shell-mode-hook ()
-  ;; add this hook as buffer local, so it runs once per window.
-  (add-hook 'window-configuration-change-hook 'comint-fix-window-size nil t))
-
-(add-hook 'shell-mode-hook
-          (lambda()
-            ;; add this hook as buffer local, so it runs once per window.
-            (add-hook 'window-configuration-change-hook 'comint-fix-window-size nil t)))
-
-
 
 #+end_src
 
@@ -626,113 +618,29 @@ With argument, do this that many times."
 
 #+end_src
 
-* Terminal emulators
-** Vterm setup and rendering
+* Terminals: Ghostel
+
+Use =M-x ghostel= to open or return to a terminal, and =M-x ghostel-new= to
+start another.  =C-c C-t= enters copy mode; =C-c C-j= returns to terminal
+input.  =C-c C-l= switches to line mode for editing input with Emacs commands.
+
+Ghostel handles terminal resizing, wrapping, and rendering.  It replaces the
+Vterm and ANSI-term setup here.  The shell remains zsh, and terminal buffers
+close when their shell exits.  CUA overrides are disabled only in terminal
+buffers so control keys reach the shell.
 
 #+begin_src emacs-lisp
+(defun br/ghostel-mode-setup ()
+  "Let Ghostel handle terminal keys without the global CUA overrides."
+  (setq-local cua-mode nil
+              cua-inhibit-cua-keys t))
 
-
-(use-package vterm
-  :ensure t
-  :commands vterm
-  :config
-  (setq vterm-shell "/bin/zsh"))
-
-
-;; Attempt at stopping long-lines getting 'cut off'
-(add-hook 'vterm-mode-hook
-          (lambda ()
-            (setq-local truncate-lines nil)))
-
-
-;;;; vterm: fix TUI chart glyph spacing (braille/block elements)
-
-(with-eval-after-load 'vterm
-  ;; Keep vterm buffers on a strict grid
-  (add-hook 'vterm-mode-hook
-            (lambda ()
-              (setq-local line-spacing 0)
-              ;; ;; Disable composition (ligatures, etc.) which can introduce spacing artifacts
-              ;; (setq-local composition-function-table nil)
-	      ))
-
-  ;; Force a single font for the Unicode ranges commonly used by TUIs for charts.
-  ;; This avoids font fallback that can introduce inter-glyph spacing.
-  (let ((f (font-spec :family "Menlo")))
-    ;; Braille Patterns: U+2800–U+28FF (often used for high-res terminal graphs)
-    (set-fontset-font t '(#x2800 . #x28FF) f nil 'prepend)
-    ;; Block Elements: U+2580–U+259F (partial blocks / progress bars)
-    (set-fontset-font t '(#x2580 . #x259F) f nil 'prepend)
-    ;; Box Drawing: U+2500–U+257F (borders)
-    (set-fontset-font t '(#x2500 . #x257F) f nil 'prepend)))
-
-
-
-#+end_src
-
-** ANSI term settings and hooks
-
-#+begin_src emacs-lisp
-
-;; ;; Remove line numbers in term-mode
-;; (add-hook 'term-mode-hook 'my-inhibit-global-linum-mode)
-
-;; (defun my-inhibit-global-linum-mode ()
-;;   "Counter-act `global-linum-mode'."
-;;   (add-hook 'after-change-major-mode-hook
-;;             (lambda () (linum-mode 0))
-;;             :append :local))
-
-;; ;; always use bash
-;; (defvar my-term-shell "/bin/bash")
-;; (defadvice ansi-term (before force-bash)
-;;   (interactive (list my-term-shell)))
-;; (ad-activate 'ansi-term)
-
-;; enable cua and transient mark modes in term-line-mode
-;; Taken from https://www.emacswiki.org/emacs/AnsiTermHints
-;; (defadvice term-line-mode (after term-line-mode-fixes ())
-;;   (set (make-local-variable 'cua-mode) t)
-;;   (set (make-local-variable 'transient-mark-mode) t))
-;; (ad-activate 'term-line-mode)
-
-
-;; disable cua and transient mark modes in term-char-mode
-;; Turning this off to see if you can copy and paste
-;;(defadvice term-char-mode (after term-char-mode-fixes ())
-;;  (set (make-local-variable 'cua-mode) nil)
-;;  (set (make-local-variable 'transient-mark-mode) nil))
-;;(ad-activate 'term-char-mode)
-
-;; (defadvice term-char-mode (after term-char-mode-fixes ())
-;;  (set (make-local-variable 'cua-mode) t)
-;;  (set (make-local-variable 'transient-mark-mode) t))
-;;(ad-activate 'term-char-mode)
-
-;; From https://www.reddit.com/r/emacs/comments/f0ypy/tmux_in_emacs_shell/?st=iym0z24b&sh=43afbdd8
-
-
-;; Close dead term buffers
-;; http://oremacs.com/2015/01/01/three-ansi-term-tips/
-(defun oleh-term-exec-hook ()
-  (let* ((buff (current-buffer))
-         (proc (get-buffer-process buff)))
-    (set-process-sentinel
-     proc
-     `(lambda (process event)
-        (if (string= event "finished\n")
-            (kill-buffer ,buff))))))
-
-(add-hook 'term-exec-hook 'oleh-term-exec-hook)
-
-;; Always use UTF8
-;; https://echosa.github.io/blog/2012/06/06/improving-ansi-term/
-(defun my-term-use-utf8 ()
-  (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))
-(add-hook 'term-exec-hook 'my-term-use-utf8)
-
-
-
+(use-package ghostel
+  :commands (ghostel ghostel-new)
+  :hook (ghostel-mode . br/ghostel-mode-setup)
+  :custom
+  (ghostel-shell "/bin/zsh")
+  (ghostel-kill-buffer-on-exit t))
 #+end_src
 
 * Scrolling
@@ -1516,17 +1424,30 @@ This is useful for marking habits or tasks as done on a day in the past."
 
 ** Shell-script evaluation
 
-#+begin_src emacs-lisp
+=C-Return= sends the selection (or current line) to a dedicated Ghostel shell,
+using the existing eval-in-repl movement and window behavior.  This shell is
+separate from terminals opened with =M-x ghostel=.
 
-(require 'essh) ; if not done elsewhere; essh is in the local lisp folder
+#+begin_src emacs-lisp
 (require 'eval-in-repl)
 (require 'eval-in-repl-shell)
+
+(setq eir-shell-type 'ghostel
+      eir-shell-buffer-name "*ghostel-shell*")
+
+(cl-defmethod eir-create-shell (shell-name &context (eir-shell-type (eql ghostel)))
+  (require 'ghostel)
+  (ghostel-create shell-name))
+
+(cl-defmethod eir-insert (string &context (major-mode ghostel-mode))
+  (ghostel-paste-string string))
+
+(cl-defmethod eir-shell-execute (&context (major-mode ghostel-mode))
+  (ghostel-send-key "return"))
+
 (add-hook 'sh-mode-hook
-          '(lambda()
-             (local-set-key (kbd "C-<return>") 'eir-eval-in-shell)))
-
-
-
+          (lambda ()
+            (local-set-key (kbd "C-<return>") #'eir-eval-in-shell)))
 #+end_src
 
 ** Python and Elpy
