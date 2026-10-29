@@ -15,3 +15,5 @@
 - Source of truth: edit `config.org`; `config.el` is generated and should not be edited directly. `init.el`, `early-init.el`, and local Lisp modules are separately maintained sources.
 
 - Package conventions: use Elpaca through existing `use-package` declarations. External packages normally use `:ensure t`; built-in and local libraries use `:ensure nil`.
+
+- Config should work on Emacs 30+, on the latest MacOS on a Macbook Pro, and Debian Trixie on ThinkPad
