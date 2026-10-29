@@ -27,14 +27,9 @@
 * Package setup and environment
 ** Elpaca and use-package
 
-Packages are declared beside their configuration with =use-package=. External
-packages use =:ensure t=; built-in and local libraries use =:ensure nil=.
-Org and use-package come with Emacs (29 or newer). Elpaca owns external packages;
-the old =elpa/= directory can remain on disk but is not activated.
+Packages are declared beside their configuration with =use-package=. External packages use =:ensure t=; built-in and local libraries use =:ensure nil=. Org and use-package come with Emacs (29 or newer). Elpaca owns external packages; the old =elpa/= directory can remain on disk but is not activated.
 
-Use =M-x elpaca-manager= to inspect packages and =M-x elpaca-fetch-all= to
-fetch updates for review. Apply chosen updates with =M-x elpaca-merge=.
-New declarations install missing packages; ordinary startup does not upgrade them.
+Use =M-x elpaca-manager= to inspect packages and =M-x elpaca-fetch-all= to fetch updates for review. Apply chosen updates with =M-x elpaca-merge=. New declarations install missing packages; ordinary startup does not upgrade them.
 
 #+begin_src emacs-lisp
 (unless (>= emacs-major-version 29)
@@ -127,15 +122,9 @@ New declarations install missing packages; ordinary startup does not upgrade the
 
 ** Spell checking: Jinx
 
-Jinx uses Enchant and a native Emacs module. Install =enchant= and =pkgconf=
-with Homebrew on macOS, or =libenchant-2-dev= and =pkgconf= on Debian, plus a
-C compiler and dictionaries for the languages you use.
+Jinx uses Enchant and a native Emacs module. Install =enchant= and =pkgconf= with Homebrew on macOS, or =libenchant-2-dev= and =pkgconf= on Debian, plus a C compiler and dictionaries for the languages you use.
 
-=M-$= corrects a word, =C-u M-$= checks the buffer, and =C-M-$= selects languages.
-Text buffers are checked throughout; programming buffers (including ESS) check
-comments and strings. English personal word lists live in
-=~/Nextcloud/dictionary/enchant/=, linked from =~/.config/enchant/= on each
-machine as a one-time setup.
+=M-$= corrects a word, =C-u M-$= checks the buffer, and =C-M-$= selects languages. Text buffers are checked throughout; programming buffers (including ESS) check comments and strings. English personal word lists live in =~/Nextcloud/dictionary/enchant/=, linked from =~/.config/enchant/= on each machine as a one-time setup.
 
 #+begin_src emacs-lisp
 
@@ -406,8 +395,7 @@ With argument, do this that many times."
 
 * Language REPLs: shared Comint behavior
 
-These settings support language REPLs such as Python, R/ESS, and SQL.
-Interactive terminals and shell-script evaluation use Ghostel.
+These settings support language REPLs such as Python, R/ESS, and SQL. Interactive terminals and shell-script evaluation use Ghostel.
 
 #+begin_src emacs-lisp
 (use-package comint
@@ -561,14 +549,9 @@ Interactive terminals and shell-script evaluation use Ghostel.
 
 * Terminals: Ghostel
 
-Use =M-x ghostel= to open or return to a terminal, and =M-x ghostel-new= to
-start another.  =C-c C-t= enters copy mode; =C-c C-j= returns to terminal
-input.  =C-c C-l= switches to line mode for editing input with Emacs commands.
+Use =M-x ghostel= to open or return to a terminal, and =M-x ghostel-new= to start another.  =C-c C-t= enters copy mode; =C-c C-j= returns to terminal input.  =C-c C-l= switches to line mode for editing input with Emacs commands.
 
-Ghostel handles terminal resizing, wrapping, and rendering.  It replaces the
-Vterm and ANSI-term setup here.  The shell remains zsh, and terminal buffers
-close when their shell exits.  CUA overrides are disabled only in terminal
-buffers so control keys reach the shell.
+Ghostel handles terminal resizing, wrapping, and rendering.  It replaces the Vterm and ANSI-term setup here.  The shell remains zsh, and terminal buffers close when their shell exits.  CUA overrides are disabled only in terminal buffers so control keys reach the shell.
 
 #+begin_src emacs-lisp
 (defun br/ghostel-mode-setup ()
@@ -1417,9 +1400,7 @@ This is useful for marking habits or tasks as done on a day in the past."
 
 ** Shell-script evaluation
 
-=C-Return= sends the selection (or current line) to a dedicated Ghostel shell,
-using the existing eval-in-repl movement and window behavior.  This shell is
-separate from terminals opened with =M-x ghostel=.
+=C-Return= sends the selection (or current line) to a dedicated Ghostel shell, using the existing eval-in-repl movement and window behavior.  This shell is separate from terminals opened with =M-x ghostel=.
 
 #+begin_src emacs-lisp
 (use-package eval-in-repl-shell
@@ -2516,13 +2497,9 @@ The pieces share Emacs's standard completion API:
 | Marginalia | Add descriptions and file information to candidates  |
 | Embark     | Actions on a candidate or the thing at point          |
 
-Cape supplies file/word fallbacks and adapts Elpy's backend; Embark-Consult
-connects search results to export/collect buffers. Company remains installed
-for Elpy's backend helpers, but its completion UI is not enabled.
+Cape supplies file/word fallbacks; Embark-Consult connects search results to export/collect buffers. Python completion comes from Eglot through Corfu.
 
-Conventions adapted from [[https://github.com/bbatsov/prelude/blob/master/modules/prelude-vertico.el][Prelude's minibuffer setup]],
-[[https://github.com/bbatsov/prelude/blob/master/modules/prelude-corfu.el][Prelude's Corfu setup]], and [[https://github.com/purcell/emacs.d/blob/master/lisp/init-minibuffer.el][Purcell's minibuffer setup]].
-The [[https://github.com/minad/cape#company-adapter][Cape adapter]] preserves Elpy's Python completion backend.
+Conventions adapted from [[https://github.com/bbatsov/prelude/blob/master/modules/prelude-vertico.el][Prelude's minibuffer setup]], [[https://github.com/bbatsov/prelude/blob/master/modules/prelude-corfu.el][Prelude's Corfu setup]], and [[https://github.com/purcell/emacs.d/blob/master/lisp/init-minibuffer.el][Purcell's minibuffer setup]].
 
 ** Matching and minibuffer behavior
 
@@ -2597,10 +2574,7 @@ The [[https://github.com/minad/cape#company-adapter][Cape adapter]] preserves El
 
 ** Consult: search and navigation
 
-Keep the existing C-s save binding and C-f incremental search. M-s l adds a searchable
-list of lines. M-s r searches the project with ripgrep; M-s g is the grep
-alternative. C-x b (and the existing C-b shortcut) includes buffers, recent
-files and bookmarks.
+Keep the existing C-s save binding and C-f incremental search. M-s l adds a searchable list of lines. M-s r searches the project with ripgrep; M-s g is the grep alternative. C-x b (and the existing C-b shortcut) includes buffers, recent files and bookmarks.
 
 #+begin_src emacs-lisp
 (use-package consult
@@ -2649,11 +2623,7 @@ files and bookmarks.
 
 ** Corfu: completion while editing
 
-Suggestions appear after two characters and a short pause. TAB indents first,
-then completes; C-M-i explicitly requests completion. Arrow keys select a
-candidate, RET accepts it, M-SPC separates Orderless words, and C-g cancels.
-With no selection, RET keeps its normal behavior. Shells use manual completion
-so typing a command does not start an automatic completion request.
+Suggestions appear after two characters and a short pause. TAB indents first, then completes; C-M-i explicitly requests completion. Arrow keys select a candidate, RET accepts it, M-SPC separates Orderless words, and C-g cancels. With no selection, RET keeps its normal behavior. Shells use manual completion so typing a command does not start an automatic completion request.
 
 #+begin_src emacs-lisp
 (use-package corfu
@@ -2696,11 +2666,7 @@ so typing a command does not start an automatic completion request.
 
 ** Embark: actions and result buffers
 
-C-. opens actions for the current candidate or thing at point; C-; runs its
-default action. C-h B browses bindings. In a prompt, C-c C-o exports results
-(e.g. Consult lines to Occur, ripgrep results to Grep), and C-c C-l collects
-them. In an exported Grep buffer, C-c C-p enables wgrep editing; C-c C-c applies
-edits and C-c C-k cancels them. Existing which-key prefix help stays enabled.
+C-. opens actions for the current candidate or thing at point; C-; runs its default action. C-h B browses bindings. In a prompt, C-c C-o exports results (e.g. Consult lines to Occur, ripgrep results to Grep), and C-c C-l collects them. In an exported Grep buffer, C-c C-p enables wgrep editing; C-c C-c applies edits and C-c C-k cancels them. Existing which-key prefix help stays enabled.
 
 #+begin_src emacs-lisp
 (use-package embark
