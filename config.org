@@ -193,7 +193,7 @@ machine as a one-time setup.
 (define-key cua-global-keymap (kbd "C-w") 'delete-frame)
 
 ;; Switch buffer
-(define-key cua-global-keymap (kbd "C-b") 'switch-to-buffer)
+(define-key cua-global-keymap (kbd "C-b") 'consult-buffer)
 
 ;; Kill the current buffer
 (define-key cua-global-keymap (kbd "C-k")
@@ -363,13 +363,10 @@ With argument, do this that many times."
   :ensure t
   :defer t)
 
-(use-package auto-complete
-  :ensure t
-  :defer t)
-
+;; Elpy needs Company helpers and variables, but Corfu owns the UI.
 (use-package company
   :ensure t
-  :defer t)
+  :demand t)
 #+end_src
 
 ** Comment filling
@@ -400,7 +397,7 @@ With argument, do this that many times."
   (yas-global-mode 1)
 
   ;; It seems like it's faster/easier to select snippets using good names, and to
-  ;; keep tab free for auto-complete/company
+  ;; keep TAB free for indentation and Corfu completion
   (define-key yas-minor-mode-map [(tab)] nil)
   (define-key yas-minor-mode-map (kbd "TAB") nil)
   (global-set-key (kbd "C-'") 'yas-insert-snippet)
@@ -1453,8 +1450,22 @@ separate from terminals opened with =M-x ghostel=.
 #+begin_src emacs-lisp
 (use-package elpy
   :ensure t
+  :after (company cape)
   :demand t
   :config
+  ;; Keep Elpy's backend, but let Corfu handle the completion interface.
+  (setq elpy-modules (remq 'elpy-module-company elpy-modules))
+
+  (defun br/elpy-completion-setup ()
+    "Expose Elpy's Python completions through the standard completion API."
+    (when elpy-mode
+      (require 'company-dabbrev-code)
+      (require 'cape)
+      (setq-local completion-at-point-functions
+                  (cons (cape-company-to-capf #'elpy-company-backend)
+                        (remq #'python-completion-at-point
+                              completion-at-point-functions)))))
+  (add-hook 'elpy-mode-hook #'br/elpy-completion-setup)
   (elpy-enable)
 
   ;; Elpy should use Python3 for RPC
@@ -1534,6 +1545,7 @@ separate from terminals opened with =M-x ghostel=.
 (use-package ess-r-mode
   :ensure ess
   :demand t
+  :init (setq ess-use-company nil) ; ESS already supplies standard completion functions.
   :config
   ;; Package autoloads cover other ESS dialects; load R for the keybindings below.
 
@@ -2492,161 +2504,225 @@ RECORD is a formatted record as expected by `biblio-insert-result'."
 #+end_src
 
 * Completion and search
-** Vertico
+
+The pieces share Emacs's standard completion API:
+
+| Package    | Responsibility                                      |
+|------------+-----------------------------------------------------|
+| Vertico    | Candidate list in prompts such as M-x and C-x C-f    |
+| Consult    | Search/navigation commands with previews             |
+| Corfu      | Completion popup beside the text being edited        |
+| Orderless  | Match space-separated words in any order             |
+| Marginalia | Add descriptions and file information to candidates  |
+| Embark     | Actions on a candidate or the thing at point          |
+
+Cape supplies file/word fallbacks and adapts Elpy's backend; Embark-Consult
+connects search results to export/collect buffers. Company remains installed
+for Elpy's backend helpers, but its completion UI is not enabled.
+
+Conventions adapted from [[https://github.com/bbatsov/prelude/blob/master/modules/prelude-vertico.el][Prelude's minibuffer setup]],
+[[https://github.com/bbatsov/prelude/blob/master/modules/prelude-corfu.el][Prelude's Corfu setup]], and [[https://github.com/purcell/emacs.d/blob/master/lisp/init-minibuffer.el][Purcell's minibuffer setup]].
+The [[https://github.com/minad/cape#company-adapter][Cape adapter]] preserves Elpy's Python completion backend.
+
+** Matching and minibuffer behavior
 
 #+begin_src emacs-lisp
-;; For some reason this has to get at the end of the file
-;; Vertico, as an ivy replacement (you're getting errors in emacs-plus@29.1)
-;; Enable vertico
-(use-package vertico
+(use-package orderless
   :ensure t
   :demand t
-  :config
-  (vertico-mode)
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-defaults nil)
+  ;; Keep file paths, wildcards and remote path completion working normally.
+  (completion-category-overrides '((file (styles basic partial-completion)))))
 
-  ;; Different scroll margin
-  ;; (setq vertico-scroll-margin 0)
-
-  ;; Show more candidates
-  ;; (setq vertico-count 20)
-
-  ;; Grow and shrink the Vertico minibuffer
-  ;; (setq vertico-resize t)
-
-  ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
-  ;; (setq vertico-cycle t)
-  )
-
-#+end_src
-
-** Persistent minibuffer history
-
-#+begin_src emacs-lisp
-;; Persist history over Emacs restarts. Vertico sorts by history position.
-(use-package savehist
-  :ensure nil
-  :init
-  (savehist-mode))
-
-#+end_src
-
-** Minibuffer behavior
-
-#+begin_src emacs-lisp
-;; A few more useful configurations...
 (use-package emacs
   :ensure nil
   :init
-  ;; Add prompt indicator to `completing-read-multiple'.
-  ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
   (defun crm-indicator (args)
+    "Indicate multiple selections and their separator in ARGS."
     (cons (format "[CRM%s] %s"
                   (replace-regexp-in-string
                    "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
                    crm-separator)
                   (car args))
           (cdr args)))
-  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
-
-  ;; Do not allow the cursor in the minibuffer prompt
+  ;; Emacs 31 supplies its own multiple-selection prompt.
+  (when (< emacs-major-version 31)
+    (advice-add #'completing-read-multiple :filter-args #'crm-indicator))
   (setq minibuffer-prompt-properties
-        '(read-only t cursor-intangible t face minibuffer-prompt))
-  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+        '(read-only t cursor-intangible t face minibuffer-prompt)
+        enable-recursive-minibuffers t
+        tab-always-indent 'complete
+        completion-cycle-threshold nil
+        text-mode-ispell-word-completion nil)
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode))
 
-  ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
-  ;; Vertico commands are hidden in normal buffers.
-  ;; (setq read-extended-command-predicate
-  ;;       #'command-completion-default-include-p)
+(use-package savehist
+  :ensure nil
+  :init (savehist-mode 1))
 
-  ;; Enable recursive minibuffers
-  (setq enable-recursive-minibuffers t))
-
+(use-package recentf
+  :ensure nil
+  :custom (recentf-max-saved-items 200)
+  :init (recentf-mode 1))
 #+end_src
 
-** Consult
+** Vertico and Marginalia
 
 #+begin_src emacs-lisp
-;; Example configuration for Consult
+(use-package vertico
+  :ensure t
+  :demand t
+  :custom
+  (vertico-cycle t)
+  :config (vertico-mode 1))
+
+(use-package vertico-directory
+  :ensure nil
+  :after vertico
+  :bind (:map vertico-map
+              ("RET" . vertico-directory-enter)
+              ("DEL" . vertico-directory-delete-char)
+              ("M-DEL" . vertico-directory-delete-word))
+  :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
+
+(use-package marginalia
+  :ensure t
+  :demand t
+  :bind (:map minibuffer-local-map
+              ("M-A" . marginalia-cycle))
+  :config (marginalia-mode 1))
+#+end_src
+
+** Consult: search and navigation
+
+Keep the existing C-s save binding and C-f incremental search. M-s l adds a searchable
+list of lines. M-s r searches the project with ripgrep; M-s g is the grep
+alternative. C-x b (and the existing C-b shortcut) includes buffers, recent
+files and bookmarks.
+
+#+begin_src emacs-lisp
 (use-package consult
   :ensure t
-  ;; Replace bindings. Lazily loaded due by `use-package'.
-
-  ;; Enable automatic preview at point in the *Completions* buffer. This is
-  ;; relevant when you use the default completion UI.
+  :bind (("C-x b" . consult-buffer)
+         ("C-x 4 b" . consult-buffer-other-window)
+         ("C-x 5 b" . consult-buffer-other-frame)
+         ("C-x r b" . consult-bookmark)
+         ("C-x M-:" . consult-complex-command)
+         ("M-y" . consult-yank-pop)
+         ("M-g g" . consult-goto-line)
+         ("M-g M-g" . consult-goto-line)
+         ("M-g i" . consult-imenu)
+         ("M-g o" . consult-outline)
+         ("M-g m" . consult-mark)
+         ("M-g k" . consult-global-mark)
+         ("M-s l" . consult-line)
+         ("M-s L" . consult-line-multi)
+         ("M-s r" . consult-ripgrep)
+         ("M-s g" . consult-grep)
+         ("M-s G" . consult-git-grep)
+         ("M-s e" . consult-isearch-history)
+         :map isearch-mode-map
+         ("M-s l" . consult-line)
+         ("M-s e" . consult-isearch-history)
+         :map minibuffer-local-map
+         ("M-s" . consult-history)
+         ("M-r" . consult-history))
   :hook (completion-list-mode . consult-preview-at-point-mode)
-
-  ;; The :init configuration is always executed (Not lazy)
   :init
-
-  ;; Optionally configure the register formatting. This improves the register
-  ;; preview for `consult-register', `consult-register-load',
-  ;; `consult-register-store' and the Emacs built-ins.
   (setq register-preview-delay 0.5
-        register-preview-function #'consult-register-format)
-
-  ;; Optionally tweak the register preview window.
-  ;; This adds thin lines, sorting and hides the mode line of the window.
-  (advice-add #'register-preview :override #'consult-register-window)
-
-  ;; Use Consult to select xref locations with preview
-  (setq xref-show-xrefs-function #'consult-xref
+        register-preview-function #'consult-register-format
+        xref-show-xrefs-function #'consult-xref
         xref-show-definitions-function #'consult-xref)
-
-  ;; Configure other variables and modes in the :config section,
-  ;; after lazily loading the package.
+  (advice-add #'register-preview :override #'consult-register-window)
   :config
-
-  ;; Optionally configure preview. The default value
-  ;; is 'any, such that any key triggers the preview.
-  ;; (setq consult-preview-key 'any)
-  ;; (setq consult-preview-key "M-.")
-  ;; (setq consult-preview-key '("S-<down>" "S-<up>"))
-  ;; For some commands and buffer sources it is useful to configure the
-  ;; :preview-key on a per-command basis using the `consult-customize' macro.
+  (setq consult-narrow-key "<")
+  ;; Delay file previews to avoid opening a file on every navigation keystroke.
   (consult-customize
-   consult-theme :preview-key '(:debounce 0.2 any)
    consult-ripgrep consult-git-grep consult-grep
    consult-bookmark consult-recent-file consult-xref
-   consult--source-bookmark consult--source-file-register
-   consult--source-recent-file consult--source-project-recent-file
-   ;; :preview-key "M-."
-   :preview-key '(:debounce 0.4 any))
-
-  ;; Optionally configure the narrowing key.
-  ;; Both < and C-+ work reasonably well.
-  (setq consult-narrow-key "<") ;; "C-+"
-
-  ;; Optionally make narrowing help available in the minibuffer.
-  ;; You may want to use `embark-prefix-help-command' or which-key instead.
-  ;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
-
-  ;; By default `consult-project-function' uses `project-root' from project.el.
-  ;; Optionally configure a different project root function.
-  ;;;; 1. project.el (the default)
-  ;; (setq consult-project-function #'consult--default-project--function)
-  ;;;; 2. vc.el (vc-root-dir)
-  ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
-  ;;;; 3. locate-dominating-file
-  ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
-  ;;;; 4. projectile.el (projectile-project-root)
-  ;; (autoload 'projectile-project-root "projectile")
-  ;; (setq consult-project-function (lambda (_) (projectile-project-root)))
-  ;;;; 5. No project support
-  ;; (setq consult-project-function nil)
-)
-
+   consult-source-bookmark consult-source-file-register
+   consult-source-recent-file consult-source-project-recent-file
+   :preview-key '(:debounce 0.4 any)))
 #+end_src
 
-** Orderless
+** Corfu: completion while editing
+
+Suggestions appear after two characters and a short pause. TAB indents first,
+then completes; C-M-i explicitly requests completion. Arrow keys select a
+candidate, RET accepts it, M-SPC separates Orderless words, and C-g cancels.
+With no selection, RET keeps its normal behavior. Shells use manual completion
+so typing a command does not start an automatic completion request.
 
 #+begin_src emacs-lisp
-;; Use orderless completion
-(use-package orderless
+(use-package corfu
   :ensure t
+  :demand t
   :custom
-  (completion-styles '(orderless basic))
-  (completion-category-overrides '((file (styles basic partial-completion)))))
+  (corfu-auto t)
+  (corfu-auto-delay 0.2)
+  (corfu-auto-prefix 2)
+  (corfu-cycle t)
+  (corfu-preselect 'prompt)
+  (corfu-preview-current nil)
+  :config
+  (global-corfu-mode 1)
+  (corfu-popupinfo-mode 1)
+  (corfu-history-mode 1)
+  (add-to-list 'savehist-additional-variables 'corfu-history))
 
+;; Emacs 30 and older need this extension for terminal popups.
+(use-package corfu-terminal
+  :ensure t
+  :if (< emacs-major-version 31)
+  :after corfu
+  :config (corfu-terminal-mode 1))
+
+(defun br/corfu-manual-in-shell ()
+  "Use explicit completion in interactive shells."
+  (setq-local corfu-auto nil))
+(add-hook 'comint-mode-hook #'br/corfu-manual-in-shell)
+(add-hook 'eshell-mode-hook #'br/corfu-manual-in-shell)
+
+(use-package cape
+  :ensure t
+  :demand t
+  :config
+  ;; Major-mode completions (Elpy, ESS, Lisp, etc.) retain priority.
+  (add-hook 'completion-at-point-functions #'cape-file 90)
+  (add-hook 'completion-at-point-functions #'cape-dabbrev 95))
+#+end_src
+
+** Embark: actions and result buffers
+
+C-. opens actions for the current candidate or thing at point; C-; runs its
+default action. C-h B browses bindings. In a prompt, C-c C-o exports results
+(e.g. Consult lines to Occur, ripgrep results to Grep), and C-c C-l collects
+them. In an exported Grep buffer, C-c C-p enables wgrep editing; C-c C-c applies
+edits and C-c C-k cancels them. Existing which-key prefix help stays enabled.
+
+#+begin_src emacs-lisp
+(use-package embark
+  :ensure t
+  :bind (("C-." . embark-act)
+         ("C-;" . embark-dwim)
+         ("C-h B" . embark-bindings)
+         :map minibuffer-local-map
+         ("C-c C-o" . embark-export)
+         ("C-c C-l" . embark-collect)))
+
+(use-package embark-consult
+  :ensure t
+  :after (embark consult)
+  :demand t
+  :hook (embark-collect-mode . consult-preview-at-point-mode))
+
+(use-package wgrep
+  :ensure t
+  :commands wgrep-change-to-wgrep-mode
+  :bind (:map grep-mode-map
+              ("C-c C-p" . wgrep-change-to-wgrep-mode)))
 #+end_src
 
 ** Additional completion and checking packages
