@@ -1,8 +1,9 @@
 #+TITLE: Emacs Configuration
+#+PROPERTY: header-args:emacs-lisp :tangle yes
 
-* Configuration
+* Notes and outstanding ideas
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 ;; TODO
 ;;
 ;; - Try out straight.el
@@ -23,7 +24,12 @@
 ;;   character(s) back into the shell, which is very annoying
 ;;
 
-;; Allow packages to be installed ----------------------------------------------
+#+end_src
+
+* Package setup and environment
+** Package archives and initialization
+
+#+begin_src emacs-lisp
 
 ;; Load the package library
 (require 'package)
@@ -43,6 +49,11 @@
 (let ((default-directory "~/.emacs.d/"))
   (normal-top-level-add-subdirs-to-load-path))
 
+#+end_src
+
+** Package list and installation
+
+#+begin_src emacs-lisp
 ;; Make a list of the packages you want
 (setq my-package-list '(
                         magit
@@ -115,6 +126,11 @@
   (package-refresh-contents) (dolist (package my-package-list)
                                (when (not (package-installed-p package))
                                  (package-install package))))
+#+end_src
+
+** Local Lisp directories
+
+#+begin_src emacs-lisp
 
 ;; add custom lisp directory to path
 (let ((default-directory (concat user-emacs-directory "lisp/")))
@@ -125,6 +141,11 @@
             (copy-sequence (normal-top-level-add-to-load-path '(".")))
             (normal-top-level-add-subdirs-to-load-path)))
          load-path)))
+#+end_src
+
+** macOS shell environment
+
+#+begin_src emacs-lisp
 
 ;; on OSX Emacs needs help setting up the system paths
 (when (memq window-system '(mac ns))
@@ -136,21 +157,34 @@
 
 
 
-;; which-key -------------------------------------------------------------------
+#+end_src
+
+* Command discovery: which-key
+
+#+begin_src emacs-lisp
 ;; Which key provides a little menu for if you get a brain-freeze in the middle
 ;; of typing out command
 (which-key-mode t)
 
 
 
-;; LeetCode Client - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#+end_src
+
+* LeetCode
+
+#+begin_src emacs-lisp
 
 (require 'leetcode)
 (setq leetcode-prefer-language "python3")
 (setq leetcode-prefer-sql "mysql")
 
 
-;; Functions for prose --------------------------------------------------------
+#+end_src
+
+* Editing and interaction
+** Paragraph unwrapping
+
+#+begin_src emacs-lisp
 ;; Wrap paragraph to a single line: https://emacs.stackexchange.com/a/2608
 ;; It is the opposite of fill-paragraph
 (defun unfill-paragraph ()
@@ -165,14 +199,22 @@
 
 
 
-;; Flycheck --------------------------------------------------------------------
+#+end_src
+
+** Syntax checking: Flycheck
+
+#+begin_src emacs-lisp
 
 ;; Provide some settings to chill flycheck out a little
 (setq flycheck-check-syntax-automatically (quote (save idle-change mode-enabled)))
 (setq flycheck-idle-change-delay 3)
 
 
-;; Flyspell --------------------------------------------------------------------
+#+end_src
+
+** Spell checking: Flyspell and Aspell
+
+#+begin_src emacs-lisp
 
 (setq ispell-program-name "aspell")
 
@@ -204,7 +246,11 @@
 
 
 
-;; Key bindings ----------------------------------------------------------------
+#+end_src
+
+** Keyboard bindings, selection, and multiple cursors
+
+#+begin_src emacs-lisp
 
 ;; Turn on easy mode (you have OS level keybindings!)
 (cua-mode t)
@@ -271,6 +317,11 @@
 (define-key cua-global-keymap (kbd "<C-S-SPC>") 'cua-rectangle-mark-mode)
 
 
+#+end_src
+
+** Window and buffer navigation
+
+#+begin_src emacs-lisp
 ;; Shortcuts for changing the size of the windows
 (global-set-key (kbd "C-M-{") 'shrink-window)             ;; Vertically
 (global-set-key (kbd "C-M-}") 'enlarge-window)            ;; Vertically
@@ -294,12 +345,21 @@
 (global-set-key (kbd "<C-tab>") 'next-buffer)
 (global-set-key (kbd "<C-S-iso-lefttab>") 'previous-buffer)
 
+#+end_src
+
+** macOS modifiers
+
+#+begin_src emacs-lisp
 ;; Stuff if you're using a Mac
 (setq mac-command-modifier 'control)
 (setq mac-control-modifier 'meta)
 
 
-;; Undo / redo
+#+end_src
+
+** Undo and redo
+
+#+begin_src emacs-lisp
 (global-undo-tree-mode 1)            ;; Turn on everywhere
 (global-set-key (kbd "C-z") 'undo)   ;; Make ctrl-z undo
 (defalias 'redo 'undo-tree-redo)
@@ -307,7 +367,11 @@
 
 
 
-;; Editing text
+#+end_src
+
+** Word deletion
+
+#+begin_src emacs-lisp
 
 (defun delete-word (arg)
   "Delete characters forward until encountering the end of a word.
@@ -331,9 +395,12 @@ With argument, do this that many times."
   (global-set-key (kbd "<C-delete>") 'delete-word))
 
 
-;; Mouse bindings --------------------------------------------------------------
+#+end_src
 
-;; Mouse bindings
+** Mouse bindings
+
+#+begin_src emacs-lisp
+
 ;; Make right-click do something close to what people expect
 (global-set-key (kbd "<mouse-3>") 'mouse3-popup-menu)
 
@@ -345,10 +412,19 @@ With argument, do this that many times."
 
 
 
+#+end_src
+
+** Command launcher: Smex
+
+#+begin_src emacs-lisp
 (require 'smex)
 
 
-;; General behavior ------------------------------------------------------------
+#+end_src
+
+** General editing behavior and file reloading
+
+#+begin_src emacs-lisp
 
 ;; Control-arrow over a whole word, e.g. from |long_word to long_word|, not
 ;; long|_word
@@ -368,7 +444,11 @@ With argument, do this that many times."
 
 
 
-;; Code editing ----------------------------------------------------------------
+#+end_src
+
+** Comment filling
+
+#+begin_src emacs-lisp
 
 (require 'newcomment)
 
@@ -380,7 +460,11 @@ With argument, do this that many times."
 
 
 
-;; Yasnippets ------------------------------------------------------------------
+#+end_src
+
+** Snippets: Yasnippet
+
+#+begin_src emacs-lisp
 
 (require 'yasnippet)
 (setq yas-snippet-dirs
@@ -394,7 +478,11 @@ With argument, do this that many times."
 (define-key yas-minor-mode-map (kbd "TAB") nil)
 (global-set-key (kbd "C-'") 'yas-insert-snippet)
 
-;; REPL / comint settings ------------------------------------------------------
+#+end_src
+
+* Shells and REPLs: shared Comint behavior
+
+#+begin_src emacs-lisp
 
 (require 'comint)
 
@@ -431,7 +519,12 @@ With argument, do this that many times."
 
 
 
-;; GUI stuff -------------------------------------------------------------------
+#+end_src
+
+* Interface and text display
+** Toolbars, cursor, and bells
+
+#+begin_src emacs-lisp
 
 ;; Remove the scroll bars
 (scroll-bar-mode -1)
@@ -451,25 +544,36 @@ With argument, do this that many times."
 
 
 
-;; General text display --------------------------------------------------------
+#+end_src
+
+** Visual wrapping and fonts
+
+#+begin_src emacs-lisp
 
 ;; Make wrapping at the end of a line use whole words
 (global-visual-line-mode t)
 
 
 
-;; Fonts -----------------------------------------------------------------------
 ;; 10pt (in 1/10pt units)
 (set-face-attribute 'default nil :height 110)
 
 
-;; Menu / minbuffer navigation -------------------------------------------------
+#+end_src
+
+** Confirmation prompts
+
+#+begin_src emacs-lisp
 
 ;; No more typing the whole yes or no. Just y or n will do.
 (fset 'yes-or-no-p 'y-or-n-p)
 
 
-;; Text wrapping ---------------------------------------------------------------
+#+end_src
+
+** Fill columns
+
+#+begin_src emacs-lisp
 
 ;; Emacs' default is to wrap at 70 columns. This works really well for git
 ;; commit messages (and potentially emails), but not so well when programming,
@@ -500,19 +604,32 @@ With argument, do this that many times."
 
 
 
-;; Line numbers ----------------------------------------------------------------
+#+end_src
+
+** Line-number notes
+
+#+begin_src emacs-lisp
 
 ;; Investigate display-line-numbers-mode
 
 
-;; Encoding --------------------------------------------------------------------
+#+end_src
+
+** UTF-8 encoding
+
+#+begin_src emacs-lisp
 
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
 
 
-;; vterm stuff ----------------
+#+end_src
+
+* Terminal emulators
+** Vterm setup and rendering
+
+#+begin_src emacs-lisp
 
 
 (use-package vterm
@@ -551,7 +668,11 @@ With argument, do this that many times."
 
 
 
-;; ansi-term stuff -------------------------------------------------------------
+#+end_src
+
+** ANSI term settings and hooks
+
+#+begin_src emacs-lisp
 
 ;; ;; Remove line numbers in term-mode
 ;; (add-hook 'term-mode-hook 'my-inhibit-global-linum-mode)
@@ -612,7 +733,11 @@ With argument, do this that many times."
 
 
 
-;; Scrolling -------------------------------------------------------------------
+#+end_src
+
+* Scrolling
+
+#+begin_src emacs-lisp
 
 ;; nice scrolling
 (setq scroll-margin 0)
@@ -633,14 +758,22 @@ With argument, do this that many times."
 
 
 
-;; 80 col rule -----------------------------------------------------------------
+#+end_src
+
+* Fill-column indicator
+
+#+begin_src emacs-lisp
 
 (require 'fill-column-indicator)
 (setq fci-rule-column 80)
 
 
 
-;; Windows ---------------------------------------------------------------------
+#+end_src
+
+* Window splitting
+
+#+begin_src emacs-lisp
 
 ;; If you have two windows, swap between a horizontal and vertical split
 (defun toggle-window-split ()
@@ -672,7 +805,11 @@ With argument, do this that many times."
 
 
 
-;; Markdown --------------------------------------------------------------------
+#+end_src
+
+* Markdown
+
+#+begin_src emacs-lisp
 
 ;; Use markdown mode for the following file types
 (autoload 'markdown-mode "markdown-mode"
@@ -703,7 +840,12 @@ With argument, do this that many times."
 
 
 
-;; Org-mode --------------------------------------------------------------------
+#+end_src
+
+* Org mode
+** Clipboard conversion and formatting commands
+
+#+begin_src emacs-lisp
 
 ;; Copy Org/Markdown conversions to the clipboard using Pandoc.
 (require 'my-pandoc-clipboard)
@@ -723,6 +865,11 @@ With argument, do this that many times."
   (define-key org-mode-map (kbd "C-c m") #'my-org-monospace))
 
 
+#+end_src
+
+** Encryption and auto-save
+
+#+begin_src emacs-lisp
 (require 'org-crypt)
 (org-crypt-use-before-save-magic)
 (setq org-tags-exclude-from-inheritance '("crypt"))
@@ -743,6 +890,11 @@ With argument, do this that many times."
 
 
 
+#+end_src
+
+** Basic behavior, appearance, and keybindings
+
+#+begin_src emacs-lisp
 (require 'org-habit)
 
 ;; TODO
@@ -771,6 +923,11 @@ With argument, do this that many times."
 ;; In ediff, expand all the headings
 (add-hook 'ediff-prepare-buffer-hook #'outline-show-all)
 
+#+end_src
+
+** Notes and agenda file selection
+
+#+begin_src emacs-lisp
 (setq org-default-notes-file (concat "~/Nextcloud/org/inbox.org"))
 
 ;; Use the indented-mode / clean-view by default
@@ -812,6 +969,11 @@ With argument, do this that many times."
 ;;         (search . " %i %-12:c")))
 
 
+#+end_src
+
+** Logging, display, and Ediff settings
+
+#+begin_src emacs-lisp
 ;; Put state-changes into the :LOGBOOK: drawer
 (setq org-log-into-drawer "LOGBOOK")
 
@@ -847,7 +1009,11 @@ With argument, do this that many times."
 ;;          (search . " %i %-12:c"))
 ;;       )
 
-;; Agenda-views  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#+end_src
+
+** Agenda debugging and backdated task completion
+
+#+begin_src emacs-lisp
 
 (defun debug-agenda-marker ()
   "Debug function to check agenda marker info"
@@ -904,7 +1070,11 @@ This is useful for marking habits or tasks as done on a day in the past."
 ;; Include archive files in the agenda
 (setq org-agenda-archives-mode t)
 
-;; Capture templates  - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#+end_src
+
+** Capture templates
+
+#+begin_src emacs-lisp
 
 (setq org-capture-templates
  '(("t" "Todo" entry (file+headline "~/Nextcloud/org/inbox.org" "Tasks")
@@ -916,7 +1086,11 @@ This is useful for marking habits or tasks as done on a day in the past."
 (setq org-agenda-log-mode-items '(closed clock state))
 
 
-;; Time stamping  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#+end_src
+
+** Task timestamps and logging
+
+#+begin_src emacs-lisp
 
 ;; Taken from https://github.com/sk8ingdom/.emacs.d/blob/9d2f40c261864533df59be452117941a7f9b3e3f/org-mode-config/org-todo-states.el
 
@@ -941,7 +1115,11 @@ This is useful for marking habits or tasks as done on a day in the past."
 (setq org-trest-insert-todo-heading-as-state-change t)
 
 
-;; Agenda views  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#+end_src
+
+** Custom agenda views and filtering
+
+#+begin_src emacs-lisp
 
 ;; Display high priority items
 ;; See: https://orgmode.org/worg/org-tutorials/org-custom-agenda-commands.html
@@ -963,7 +1141,11 @@ This is useful for marking habits or tasks as done on a day in the past."
 
 
 
-;; Google Calendar integration - - - - - - - - - - - - - - - - - - - - - - - - -
+#+end_src
+
+** Google Calendar and CalDAV
+
+#+begin_src emacs-lisp
 ;;
 ;; Shouldn't cause a problem if the file is missing. Possibly best to make it
 ;; machine specific.
@@ -974,11 +1156,14 @@ This is useful for marking habits or tasks as done on a day in the past."
 (load "~/.emacs.d/org-gcal.el" 'missing-ok nil)
 
 
-;; CalDAV integration - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (load "~/.emacs.d/caldav.el" 'missing-ok nil)
 
 
-;; Anki integration - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#+end_src
+
+** Anki
+
+#+begin_src emacs-lisp
 
 ;; If you're making cards for a deck that doesn't exist yet, go ahead and create
 ;; it
@@ -997,12 +1182,20 @@ This is useful for marking habits or tasks as done on a day in the past."
 
   (advice-add 'anki-editor-entry-format :override #'br/anki-editor-entry-format))
 
-;; LaTeX stuff  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#+end_src
+
+** LaTeX previews
+
+#+begin_src emacs-lisp
 
 (plist-put org-format-latex-options :scale 1.5)
 (setq org-preview-latex-image-directory "media/latex-cache")
 
-;; org-babel  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#+end_src
+
+** Babel, Jupyter, and source editing
+
+#+begin_src emacs-lisp
 
 (org-babel-do-load-languages
  'org-babel-load-languages '((python . t) (R . t) (dot . t)))
@@ -1033,7 +1226,11 @@ This is useful for marking habits or tasks as done on a day in the past."
 ;; When editing a code snippet, use the current window rather than popping open a new one (which shows the same information).
 (setq org-src-window-setup 'reorganize-frame)
 
-;; Little commands  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#+end_src
+
+** Heading-spacing helpers
+
+#+begin_src emacs-lisp
 ;;
 ;; Pinched from https://github.com/alphapapa/unpackaged.el#ensure-blank-lines-between-headings-and-before-contents
 
@@ -1103,6 +1300,11 @@ This is useful for marking habits or tasks as done on a day in the past."
 ;;                          (insert "\n")))))
 ;;     (org-map-entries #'fix t 'tree)))
 
+#+end_src
+
+** Transclusion
+
+#+begin_src emacs-lisp
 ;; (define-key global-map (kbd "<f12>") #'org-transclusion-add)
 ;; (define-key global-map (kbd "C-n t m") #'org-transclusion-transient-menu)
 ;; (define-key global-map (kbd "C-n t t") #'org-transclusion-mode)
@@ -1115,9 +1317,12 @@ This is useful for marking habits or tasks as done on a day in the past."
          ;; ("C-n t t") . org-transclusion-mode)
   ))
 
-;; Ediff -----------------------------------------------------------------------
+#+end_src
 
-;; Windows  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+* Ediff window restoration
+
+#+begin_src emacs-lisp
+
 
 ;; Make Ediff take you back to your old window configuration when you quit
 ;; Taken from: https://emacs.stackexchange.com/a/7486
@@ -1137,7 +1342,11 @@ This is useful for marking habits or tasks as done on a day in the past."
   ad-do-it)
 
 
-;; Chess -----------------------------------------------------------------------
+#+end_src
+
+* Chess: PGN editing
+
+#+begin_src emacs-lisp
 
 (require 'pygn-mode)
 
@@ -1146,7 +1355,11 @@ This is useful for marking habits or tasks as done on a day in the past."
 
 
 
-;; Start-up --------------------------------------------------------------------
+#+end_src
+
+* Startup screen, scratch buffer, and initial windows
+
+#+begin_src emacs-lisp
 
 ;; Remove the splash-screen
 (setq inhibit-splash-screen t)
@@ -1198,7 +1411,11 @@ This is useful for marking habits or tasks as done on a day in the past."
 
 
 
-;; General code editing --------------------------------------------------------
+#+end_src
+
+* Default indentation
+
+#+begin_src emacs-lisp
 
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 2)
@@ -1206,7 +1423,12 @@ This is useful for marking habits or tasks as done on a day in the past."
 
 
 
-;; SQL -------------------------------------------------------------------------
+#+end_src
+
+* Programming languages and literate programming
+** SQL
+
+#+begin_src emacs-lisp
 
 ;; Indentation  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -1265,7 +1487,11 @@ This is useful for marking habits or tasks as done on a day in the past."
 
 
 
-;; Web stuff -------------------------------------------------------------------
+#+end_src
+
+** HTML, CSS, and browser JavaScript
+
+#+begin_src emacs-lisp
 
 ;; Note: For HTML and CSS, you could use web-mode (spacemacs does, for example),
 ;; but using independent modes for now, mainly for testing out skewer
@@ -1286,7 +1512,11 @@ This is useful for marking habits or tasks as done on a day in the past."
 (setq httpd-root "~/projects/forecast_site")
 
 
-;; Bash scripts / terminal repl ------------------------------------------------
+#+end_src
+
+** Shell-script evaluation
+
+#+begin_src emacs-lisp
 
 (require 'essh) ; if not done elsewhere; essh is in the local lisp folder
 (require 'eval-in-repl)
@@ -1297,7 +1527,11 @@ This is useful for marking habits or tasks as done on a day in the past."
 
 
 
-;; Python ----------------------------------------------------------------------
+#+end_src
+
+** Python and Elpy
+
+#+begin_src emacs-lisp
 
 (require 'elpy)
 
@@ -1359,7 +1593,11 @@ This is useful for marking habits or tasks as done on a day in the past."
 ;; (require 'virtualenvwrapper)
 ;; (venv-initialize-interactive-shells)
 
-;; Node / JS -------------------------------------------------------------------
+#+end_src
+
+** Node.js REPL
+
+#+begin_src emacs-lisp
 
 (require 'nodejs-repl)
 
@@ -1369,7 +1607,11 @@ This is useful for marking habits or tasks as done on a day in the past."
 
 
 
-;; R and ESS -------------------------------------------------------------------
+#+end_src
+
+** R and ESS
+
+#+begin_src emacs-lisp
 
 ;; Package autoloads cover other ESS dialects; load R for the keybindings below.
 (require 'ess-r-mode)
@@ -1463,7 +1705,11 @@ This is useful for marking habits or tasks as done on a day in the past."
 
 
 
-;; Knitr / Rmarkdown -----------------------------------------------------------
+#+end_src
+
+** Knitr and R Markdown helpers
+
+#+begin_src emacs-lisp
 
 (defun rmd-fold-block ()
   "Fold the contents of the current R block, in an Rmarkdown file (can be undone
@@ -1531,6 +1777,11 @@ polymode and yas snippet"
 
 
 
+#+end_src
+
+** Comint window-size helper
+
+#+begin_src emacs-lisp
 ;; When the R/ESS shell resizes, let have access to that information for printing
 ;; http://stackoverflow.com/a/20015336/7237812
 (defun comint-fix-window-size ()
@@ -1542,7 +1793,11 @@ polymode and yas snippet"
 
 
 
-;; Stan ------------------------------------------------------------------------
+#+end_src
+
+** Stan
+
+#+begin_src emacs-lisp
 
 ;; (require 'stan-mode)
 ;; Note: If Stan isn't installed, this seems to break everything
@@ -1550,7 +1805,11 @@ polymode and yas snippet"
 
 
 
-;; Polymode --------------------------------------------------------------------
+#+end_src
+
+** Polymode
+
+#+begin_src emacs-lisp
 
 ;; (require 'polymode)
 ;; (require 'poly-markdown)
@@ -1572,7 +1831,11 @@ polymode and yas snippet"
 
 
 
-;; Git -------------------------------------------------------------------------
+#+end_src
+
+* Git: Magit and commit messages
+
+#+begin_src emacs-lisp
 
 (require 'magit)
 
@@ -1592,17 +1855,30 @@ polymode and yas snippet"
 ;; Set key for magit-status
 (global-set-key (kbd "C-x C-g") 'magit-status)
 
-;; Misc ------------------------------------------------------------------------
+#+end_src
+
+* Emacs server
+
+#+begin_src emacs-lisp
 
 ;; Run emacs as a server with clients
 ;; (setq server-use-tcp t)
 (server-start)
 
+#+end_src
+
+* Whitespace cleanup on save
+
+#+begin_src emacs-lisp
 ;; Strip trailing whitespace from files on save
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 
-;; Mail ------------------------------------------------------------------------
+#+end_src
+
+* Mail: mu4e
+
+#+begin_src emacs-lisp
 
 (if (load "~/.emacs.d/mail.el" 'missing-ok nil)
     ;; If there is a file called mail.el (where you should keep machine
@@ -1724,14 +2000,22 @@ polymode and yas snippet"
 
 
 
-;; Databases -------------------------------------------------------------------
+#+end_src
+
+* Machine-specific database configuration
+
+#+begin_src emacs-lisp
 
 ;; Put mail stuff in another config, load it in if you actually use it!
 (load "~/.emacs.d/databases.el" 'missing-ok nil)
 
 
 
-;; Customization ---------------------------------------------------------------
+#+end_src
+
+* Customize settings
+
+#+begin_src emacs-lisp
 
 ;; When making changes via M-x customize-group, save the settings to a separate
 ;; file
@@ -1742,7 +2026,11 @@ polymode and yas snippet"
 
 
 
-;; Extra files -----------------------------------------------------------------
+#+end_src
+
+* Lockfiles, backups, and auto-save locations
+
+#+begin_src emacs-lisp
 
 ;; You don't have a particular use for the file-lock files (your current
 ;; understanding is that they only work if another Unix user on the same system
@@ -1758,7 +2046,11 @@ polymode and yas snippet"
 
 
 
-;; Tiling WM integration -------------------------------------------------------
+#+end_src
+
+* Tiling window manager integration
+
+#+begin_src emacs-lisp
 ;;
 ;; Re:i3/yabai: No checking if a specific tiling WM is being used, the code
 ;; below will have to be manually disabled if you're back to floating windows.
@@ -1770,7 +2062,12 @@ polymode and yas snippet"
 
 
 
-;; Reviewing papers ------------------------------------------------------------
+#+end_src
+
+* Papers and bibliography
+** PDF tools and reading-list setup
+
+#+begin_src emacs-lisp
 ;;
 ;; Experimenting with the system described at:
 ;; https://codearsonist.com/reading-for-programmers
@@ -1780,13 +2077,16 @@ polymode and yas snippet"
 
 (setq reading-list-file (file-truename "~/Nextcloud/org/reading-list.org"))
 
-;; pdf-tools - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ;; apparently nothing required. This is a replacement for docview
 ;; (the built-in emacs pdf viewer)
 
 
-;; org-ref - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#+end_src
+
+** Org-ref
+
+#+begin_src emacs-lisp
 
 ;; For some reason you get an error about this, which goes away if you set it,
 ;; as per https://github.com/jkitchin/org-ref/blob/master/org-ref.org
@@ -1803,7 +2103,11 @@ polymode and yas snippet"
       org-ref-default-bibliography '("~/Nextcloud/org/index.bib")
       org-ref-pdf-directory "~/Nextcloud/papers/")
 
-;; ivy-bibtex - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#+end_src
+
+** Ivy-bibtex notes
+
+#+begin_src emacs-lisp
 
 ;; Use this to track down local bibtex references, and e.g. pull up the paper
 
@@ -1816,7 +2120,11 @@ polymode and yas snippet"
 ;; ivy-bibtex, M-o f, Crossref
 
 
-;; biblio.el - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#+end_src
+
+** Biblio lookup, downloading, and reading-list helpers
+
+#+begin_src emacs-lisp
 
 
 ;; Get a list of the exit code and the output from the function
@@ -1919,7 +2227,12 @@ RECORD is a formatted record as expected by `biblio-insert-result'."
 
 
 
-;; Elfeed ----------------------------------------------------------------------
+#+end_src
+
+* Feeds and media
+** Elfeed setup and feed lists
+
+#+begin_src emacs-lisp
 
 ;; (require 'cl-lib)
 ;; (require 'elfeed)
@@ -2031,6 +2344,11 @@ RECORD is a formatted record as expected by `biblio-insert-result'."
 
 
 
+#+end_src
+
+** YouTube downloads
+
+#+begin_src emacs-lisp
 ;; ;; youtube-dl config (yoinked straight from
 ;; ;; https://github.com/skeeto/.emacs.d/blob/master/etc/feed-setup.el)
 
@@ -2119,14 +2437,22 @@ RECORD is a formatted record as expected by `biblio-insert-result'."
 
 
 
-;; ;; VLC ------------------------------------------------------------------------
+#+end_src
+
+** VLC notes
+
+#+begin_src emacs-lisp
 
 ;; ;; So, now you've downloaded all this crap to watch, you have to watch it
 
 ;; (require 'vlc)
 
 
-;; Appearance ------------------------------------------------------------------
+#+end_src
+
+* Theme and mode-line appearance
+
+#+begin_src emacs-lisp
 
 ;; Do this last so you get immediate visual feedback if something breaks
 
@@ -2149,7 +2475,12 @@ RECORD is a formatted record as expected by `biblio-insert-result'."
 ;; (put 'downcase-region 'disabled nil)
 
 
-;; Vertico as an ivy replacement ----------------------------------------------
+#+end_src
+
+* Completion and search
+** Vertico
+
+#+begin_src emacs-lisp
 ;; For some reason this has to get at the end of the file
 ;; Vertico, as an ivy replacement (you're getting errors in emacs-plus@29.1)
 ;; Enable vertico
@@ -2171,11 +2502,21 @@ RECORD is a formatted record as expected by `biblio-insert-result'."
   ;; (setq vertico-cycle t)
   )
 
+#+end_src
+
+** Persistent minibuffer history
+
+#+begin_src emacs-lisp
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
 (use-package savehist
   :init
   (savehist-mode))
 
+#+end_src
+
+** Minibuffer behavior
+
+#+begin_src emacs-lisp
 ;; A few more useful configurations...
 (use-package emacs
   :init
@@ -2203,6 +2544,11 @@ RECORD is a formatted record as expected by `biblio-insert-result'."
   ;; Enable recursive minibuffers
   (setq enable-recursive-minibuffers t))
 
+#+end_src
+
+** Consult
+
+#+begin_src emacs-lisp
 ;; Example configuration for Consult
 (use-package consult
   ;; Replace bindings. Lazily loaded due by `use-package'.
@@ -2271,6 +2617,11 @@ RECORD is a formatted record as expected by `biblio-insert-result'."
   ;; (setq consult-project-function nil)
 )
 
+#+end_src
+
+** Orderless
+
+#+begin_src emacs-lisp
 ;; Use orderless completion
 (use-package orderless
   :ensure t
@@ -2278,11 +2629,21 @@ RECORD is a formatted record as expected by `biblio-insert-result'."
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
 
+#+end_src
+
+** Search keybindings
+
+#+begin_src emacs-lisp
 (define-key isearch-mode-map (kbd "C-F") 'isearch-forward-symbol-at-point)
 (define-key isearch-mode-map (kbd "C-f") 'isearch-repeat-forward)
 (global-set-key (kbd "C-f") 'isearch-forward)
 (global-set-key (kbd "C-S-f") 'isearch-forward-symbol-at-point)
 
 
+#+end_src
+
+* Frame decorations
+
+#+begin_src emacs-lisp
 (add-to-list 'default-frame-alist '(undecorated-round . t))
 #+end_src
