@@ -1242,7 +1242,7 @@ This is useful for marking habits or tasks as done on a day in the past."
 
 (use-package pygn-mode
   :ensure t
-  :demand t)
+  :mode ("\\.[pP][gG][nN]\\'" . pygn-mode))
 #+end_src
 
 * Startup screen, scratch buffer, and initial windows
