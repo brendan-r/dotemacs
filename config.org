@@ -130,7 +130,7 @@ Use =M-x elpaca-manager= to inspect packages and =M-x elpaca-fetch-all= to fetch
 
 Jinx uses Enchant and a native Emacs module. Install =enchant= and =pkgconf= with Homebrew on macOS, or =libenchant-2-dev= and =pkgconf= on Debian, plus a C compiler and dictionaries for the languages you use.
 
-=M-$= corrects a word, =C-u M-$= checks the buffer, and =C-M-$= selects languages. Text buffers are checked throughout; programming buffers (including ESS) check comments and strings. English personal word lists live in =~/Nextcloud/dictionary/enchant/=, linked from =~/.config/enchant/= on each machine as a one-time setup.
+=C-;= (while Jinx is active) and =M-$= offer corrections for the nearby misspelled word while preserving your typing position. =C-u C-;= or =C-u M-$= checks the buffer, an active region limits correction to that region, and =C-M-$= selects languages. Text buffers are checked throughout; programming buffers (including ESS) check comments and strings. English personal word lists live in =~/Nextcloud/dictionary/enchant/=, linked from =~/.config/enchant/= on each machine as a one-time setup.
 
 #+begin_src emacs-lisp
 
@@ -140,7 +140,9 @@ Jinx uses Enchant and a native Emacs module. Install =enchant= and =pkgconf= wit
   :hook ((text-mode . jinx-mode)
          (prog-mode . jinx-mode))
   :bind (("M-$" . jinx-correct)
-         ("C-M-$" . jinx-languages)))
+         ("C-M-$" . jinx-languages)
+         :map jinx-mode-map
+         ("C-;" . jinx-correct)))
 
 
 
@@ -2685,7 +2687,7 @@ Suggestions appear after two characters and a short pause. TAB indents first, th
 
 ** Embark: actions and result buffers
 
-C-. opens actions for the current candidate or thing at point; C-; runs its default action. C-h B browses bindings. In a prompt, C-c C-o exports results (e.g. Consult lines to Occur, ripgrep results to Grep), and C-c C-l collects them. In an exported Grep buffer, C-c C-p enables wgrep editing; C-c C-c applies edits and C-c C-k cancels them. Existing which-key prefix help stays enabled.
+C-. opens actions for the current candidate or thing at point; C-; runs its default action when Jinx is inactive (with Jinx active, C-; corrects spelling). C-h B browses bindings. In a prompt, C-c C-o exports results (e.g. Consult lines to Occur, ripgrep results to Grep), and C-c C-l collects them. In an exported Grep buffer, C-c C-p enables wgrep editing; C-c C-c applies edits and C-c C-k cancels them. Existing which-key prefix help stays enabled.
 
 #+begin_src emacs-lisp
 (use-package embark
