@@ -2644,7 +2644,7 @@ Keep the existing C-s save binding and C-f incremental search. M-s l adds a sear
 
 ** Corfu: completion while editing
 
-Suggestions appear after two characters and a short pause. TAB indents first, then completes; C-M-i explicitly requests completion. Arrow keys select a candidate, RET accepts it, M-SPC separates Orderless words, and C-g cancels. With no selection, RET keeps its normal behavior. Shells use manual completion so typing a command does not start an automatic completion request.
+Suggestions appear after two characters and a short pause. TAB indents first, then completes; C-M-i explicitly requests completion. Arrow keys select a candidate, RET accepts it, M-SPC separates Orderless words, and C-g cancels. With no selection, RET keeps its normal behavior. Shells use manual completion so typing a command does not start an automatic completion request. Org and Markdown buffers omit the word-from-buffer fallback; filename and mode-specific suggestions remain available.
 
 #+begin_src emacs-lisp
 (use-package corfu
@@ -2676,13 +2676,18 @@ Suggestions appear after two characters and a short pause. TAB indents first, th
 (add-hook 'comint-mode-hook #'br/corfu-manual-in-shell)
 (add-hook 'eshell-mode-hook #'br/corfu-manual-in-shell)
 
+(defun br/cape-dabbrev-outside-prose ()
+  "Complete buffer words outside Org and Markdown modes."
+  (unless (derived-mode-p 'org-mode 'markdown-mode)
+    (cape-dabbrev)))
+
 (use-package cape
   :ensure t
   :demand t
   :config
   ;; Major-mode completions (Eglot, ESS, Lisp, etc.) retain priority.
   (add-hook 'completion-at-point-functions #'cape-file 90)
-  (add-hook 'completion-at-point-functions #'cape-dabbrev 95))
+  (add-hook 'completion-at-point-functions #'br/cape-dabbrev-outside-prose 95))
 #+end_src
 
 ** Embark: actions and result buffers
