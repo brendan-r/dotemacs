@@ -3,6 +3,16 @@
 (require 'cl-lib)
 (require 'ob)
 
+(defun br/jupyter-org-buffer-p (&rest _)
+  "Return non-nil when Jupyter key filters may inspect Org context."
+  (derived-mode-p 'org-mode))
+
+;; Help/docstring expansion evaluates keymap filters in a temporary buffer.
+;; In particular, Marginalia expands org-mode's keymap while annotating M-x.
+(with-eval-after-load 'jupyter-org-client
+  (advice-add 'jupyter-org--define-key-filter :before-while
+              #'br/jupyter-org-buffer-p))
+
 (defun br/jupyter-setup-warning (reason)
   "Explain how to repair local Jupyter support after REASON."
   (let ((text
