@@ -654,6 +654,7 @@ Ghostel handles terminal resizing, wrapping, and rendering.  It replaces the Vte
 
 (use-package olivetti
   :ensure t
+  :custom (olivetti-body-width 85)
   :hook ((markdown-mode . olivetti-mode)
          (org-mode . olivetti-mode)
          (poly-markdown+r-mode . olivetti-mode)))
