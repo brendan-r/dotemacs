@@ -452,7 +452,7 @@ These settings support language REPLs such as Python, R/ESS, and SQL. Interactiv
 
 
 ;; 10pt (in 1/10pt units)
-(set-face-attribute 'default nil :height 110)
+(set-face-attribute 'default nil :height 140)
 
 
 #+end_src
