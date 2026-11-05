@@ -1092,9 +1092,9 @@ This is useful for marking habits or tasks as done on a day in the past."
   :demand t)
 
 
-(setq org-babel-R-command "/usr/local/bin/R --no-save")
+(setq org-babel-R-command "R --no-save")
 
-(setq-default inferior-R-program-name "/usr/local/bin/R")
+(setq-default inferior-ess-r-program "R")
 
 ;; Use Python3 when running code from org-mode
 (setq org-babel-python-command "python3")
