@@ -1043,8 +1043,21 @@ This is useful for marking habits or tasks as done on a day in the past."
 ** LaTeX previews
 
 #+begin_src emacs-lisp
+;; Use SVG rather than rasterized PNGs, for clarity
+(setq org-preview-latex-default-process 'dvisvgm) ;
 
-(plist-put org-format-latex-options :scale 1.5)
+;; Scale them up a bit for clarity
+(plist-put org-format-latex-options :scale 2)
+
+;; Use mlmodern, the slightly thicker and more screen friendly version of the
+;; original computer modern
+(with-eval-after-load 'org
+  (setq org-format-latex-header
+        (concat org-format-latex-header
+                "\n\\usepackage{mlmodern}\n")))
+
+
+;; Location for image cache
 (setq org-preview-latex-image-directory "media/latex-cache")
 
 #+end_src
