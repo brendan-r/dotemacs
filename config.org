@@ -2645,7 +2645,7 @@ Keep the existing C-s save binding and C-f incremental search. M-s l adds a sear
 
 ** Corfu: completion while editing
 
-Suggestions appear after two characters and a short pause. TAB indents first, then completes; C-M-i explicitly requests completion. Arrow keys select a candidate, RET accepts it, M-SPC separates Orderless words, and C-g cancels. With no selection, RET keeps its normal behavior. Shells use manual completion so typing a command does not start an automatic completion request. Org and Markdown buffers omit the word-from-buffer fallback; filename and mode-specific suggestions remain available.
+Suggestions appear after two characters and a short pause. TAB indents first, then completes; C-M-i explicitly requests completion. Arrow keys select a candidate, RET accepts it, M-SPC separates Orderless words, and C-g cancels. With no selection, RET keeps its normal behavior. Shells use manual completion so typing a command does not start an automatic completion request. Prose buffers (Text mode and its descendants, including Org and Markdown) and Git commit messages offer only filename completion. Word and mode-specific suggestions, including Org keywords, are intentionally omitted; programming buffers retain their usual completion sources.
 
 #+begin_src emacs-lisp
 (use-package corfu
@@ -2689,6 +2689,24 @@ Suggestions appear after two characters and a short pause. TAB indents first, th
   ;; Major-mode completions (Eglot, ESS, Lisp, etc.) retain priority.
   (add-hook 'completion-at-point-functions #'cape-file 90)
   (add-hook 'completion-at-point-functions #'br/cape-dabbrev-outside-prose 95))
+
+(defun br/completion-files-only ()
+  "Offer only filename completion in the current prose buffer."
+  ;; Keep Corfu available for paths such as ./src/ and ~/Documents/.
+  ;; Replace the local sources, intentionally omitting word completion and
+  ;; mode-specific suggestions (for example, Org keywords).  Do not include
+  ;; a `t' entry: that would also run the global word-completion fallback.
+  (setq-local completion-at-point-functions '(cape-file)))
+
+;; Text mode's hook also runs for descendants such as Org and Markdown.
+;; Run late, after the usual mode hooks have installed completion sources.
+(add-hook 'text-mode-hook #'br/completion-files-only 90)
+
+(with-eval-after-load 'git-commit
+  ;; Magit adds dabbrev completion during commit setup, after major-mode
+  ;; hooks have run.  Apply the restriction again at the end of setup;
+  ;; this also covers repositories that choose a different commit mode.
+  (add-hook 'git-commit-setup-hook #'br/completion-files-only 90))
 #+end_src
 
 ** Embark: actions and result buffers
