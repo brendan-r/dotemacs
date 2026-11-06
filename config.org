@@ -672,6 +672,43 @@ Ghostel handles terminal resizing, wrapping, and rendering.  It replaces the Vte
   :demand t)
 #+end_src
 
+** Toggle property drawers
+
+=M-x br/org-toggle-property-drawers= folds all property drawers if any are open, or unfolds them all if they are already folded. It covers the whole buffer even when narrowed, preserves point and narrowing, and leaves heading folds and other drawers alone. No key binding is assigned.
+
+#+begin_src emacs-lisp
+(defun br/org-toggle-property-drawers ()
+  "Fold or unfold all property drawers in the current Org buffer.
+If any property drawer is open, fold them all; otherwise unfold them
+all.  Operate on the whole buffer, even when narrowed, and preserve
+point and narrowing.  Leave headings and other drawers unchanged;
+properties inside a folded heading remain hidden by that heading."
+  (interactive)
+  (unless (derived-mode-p 'org-mode)
+    (user-error "This command requires Org mode"))
+  (org-with-wide-buffer
+   ;; Parse Org syntax so drawer-like text in source/example blocks is ignored.
+   (let* ((drawers (org-element-map (org-element-parse-buffer 'element)
+                      'property-drawer #'identity))
+          ;; Check the drawer's own fold, not invisibility inherited from a
+          ;; folded heading.  Use actual state so manual TAB changes count.
+          (foldp (cl-some
+                  (lambda (drawer)
+                    (goto-char (org-element-property :begin drawer))
+                    (not (org-fold-folded-p (line-end-position) 'drawer)))
+                  drawers)))
+     (if (null drawers)
+         (message "No property drawers in this buffer")
+       (dolist (drawer drawers)
+         (goto-char (org-element-property :begin drawer))
+         ;; Org's own API preserves its folding bookkeeping and ellipses.
+         (org-fold-hide-drawer-toggle (if foldp t 'off) nil drawer))
+       (message "%s %d property drawer%s"
+                (if foldp "Folded" "Unfolded")
+                (length drawers)
+                (if (= (length drawers) 1) "" "s"))))))
+#+end_src
+
 ** Clipboard conversion and formatting commands
 
 #+begin_src emacs-lisp
