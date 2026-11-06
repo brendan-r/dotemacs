@@ -542,7 +542,7 @@ These settings support language REPLs such as Python, R/ESS, and SQL. Interactiv
 
 Use =M-x ghostel= to open or return to a terminal, and =M-x ghostel-new= to start another.  =C-c C-t= enters copy mode; =C-c C-j= returns to terminal input.  =C-c C-l= switches to line mode for editing input with Emacs commands.
 
-Ghostel handles terminal resizing, wrapping, and rendering.  It replaces the Vterm and ANSI-term setup here.  The shell remains zsh, and terminal buffers close when their shell exits.  CUA overrides are disabled only in terminal buffers so control keys reach the shell.
+Ghostel handles terminal resizing, wrapping, and rendering. CUA overrides are disabled only in terminal buffers so control keys reach the shell.  =C-b= opens the Emacs buffer picker in Ghostel’s default input mode; =C-c C-q C-b= sends the key to the terminal.  In character mode, =C-b= goes directly to the terminal.
 
 #+begin_src emacs-lisp
 (defun br/ghostel-mode-setup ()
@@ -556,7 +556,11 @@ Ghostel handles terminal resizing, wrapping, and rendering.  It replaces the Vte
   :hook (ghostel-mode . br/ghostel-mode-setup)
   :custom
   (ghostel-shell "/bin/zsh")
-  (ghostel-kill-buffer-on-exit t))
+  (ghostel-kill-buffer-on-exit t)
+  :config
+  (setopt ghostel-keymap-exceptions
+          (cons "C-b" (delete "C-b" ghostel-keymap-exceptions)))
+  (define-key ghostel-mode-map (kbd "C-b") #'consult-buffer))
 #+end_src
 
 * Scrolling
