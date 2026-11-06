@@ -788,6 +788,12 @@ properties inside a folded heading remain hidden by that heading."
 ;; Use an arrow instead of ...
 (setq org-ellipsis "⤵")
 
+;; Always separate new list items with a blank line, even when starting a list.
+;; Keep headings on Org’s default behavior of following the surrounding style.
+(setq org-blank-before-new-entry
+      '((heading . auto)
+        (plain-list-item . t)))
+
 ;; Stops org-mode messing with indentation
 (setq org-src-preserve-indentation t)
 
