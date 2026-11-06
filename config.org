@@ -709,6 +709,18 @@ properties inside a folded heading remain hidden by that heading."
                 (if (= (length drawers) 1) "" "s"))))))
 #+end_src
 
+** Math delimiters
+
+~\[~ syntax can do more (especially aligned equations), but is harder to type and looks uglier. ~$$~ is easier to type and to look at, and generally works better when pasting into markdown documents.
+
+=M-x br/org-convert-math-delimiters= converts complete org math fragments in the active region to the chosen delimiter style. Without a region it asks before converting the whole buffer. Unsafe fragments are skipped. So if there is a fancy aligned equation in the ~\[~ brackets, it should survive.
+
+#+begin_src emacs-lisp
+(use-package br-org-math
+  :ensure nil
+  :demand t)
+#+end_src
+
 ** Clipboard conversion and formatting commands
 
 #+begin_src emacs-lisp
