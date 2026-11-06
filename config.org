@@ -1129,6 +1129,13 @@ This is useful for marking habits or tasks as done on a day in the past."
 
 #+begin_src emacs-lisp
 
+(defun br/org-babel-toggle-execution-permissions ()
+  "Toggle confirmation before evaluating Org Babel source blocks."
+  (interactive)
+  (setq org-confirm-babel-evaluate (not org-confirm-babel-evaluate))
+  (message "Org Babel execution confirmation %s"
+           (if org-confirm-babel-evaluate "enabled" "disabled")))
+
 (org-babel-do-load-languages
  'org-babel-load-languages '((python . t) (R . t) (dot . t)))
 
