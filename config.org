@@ -1018,6 +1018,10 @@ This is useful for marking habits or tasks as done on a day in the past."
 
   (advice-add 'anki-editor-entry-format :override #'br/anki-editor-entry-format))
 
+;; Allow duplicate cards. Sometimes you just copy and paste them between files,
+;; rather than use real filtered decks or whatever
+(setq anki-editor-allow-duplicates t)
+
 #+end_src
 
 ** Additional Org extensions
