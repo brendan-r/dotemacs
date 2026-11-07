@@ -725,6 +725,40 @@ properties inside a folded heading remain hidden by that heading."
   :demand t)
 #+end_src
 
+** Toggle source blocks
+
+=M-x br/org-toggle-source-blocks= folds all source blocks if any are open, or unfolds them all if they are already folded. It covers the whole buffer even when narrowed, preserves point and narrowing, and leaves heading folds and other blocks alone. No key binding is assigned.
+
+#+begin_src emacs-lisp
+(defun br/org-toggle-source-blocks ()
+  "Fold or unfold all source blocks in the current Org buffer.
+If any source block is open, fold them all; otherwise unfold them
+all.  Operate on the whole buffer, even when narrowed, and preserve
+point and narrowing.  Leave headings and other blocks unchanged;
+blocks inside a folded heading remain hidden by that heading."
+  (interactive)
+  (unless (derived-mode-p 'org-mode)
+    (user-error "This command requires Org mode"))
+  (org-with-wide-buffer
+   (let* ((blocks (org-element-map (org-element-parse-buffer 'element)
+                      'src-block #'identity))
+          ;; Check the block's own fold, including after affiliated keywords.
+          (foldp (cl-some
+                  (lambda (block)
+                    (goto-char (org-element-post-affiliated block))
+                    (not (org-fold-folded-p (line-end-position) 'block)))
+                  blocks)))
+     (if (null blocks)
+         (message "No source blocks in this buffer")
+       (dolist (block blocks)
+         (goto-char (org-element-post-affiliated block))
+         (org-fold-hide-block-toggle (if foldp t 'off) nil block))
+       (message "%s %d source block%s"
+                (if foldp "Folded" "Unfolded")
+                (length blocks)
+                (if (= (length blocks) 1) "" "s"))))))
+#+end_src
+
 ** Clipboard conversion and formatting commands
 
 #+begin_src emacs-lisp
