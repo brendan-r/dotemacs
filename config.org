@@ -826,11 +826,26 @@ blocks inside a folded heading remain hidden by that heading."
 ;; Use an arrow instead of ...
 (setq org-ellipsis "⤵")
 
-;; Always separate new list items with a blank line, even when starting a list.
-;; Keep headings on Org’s default behavior of following the surrounding style.
+;; Follow the surrounding spacing for headings and established lists.
 (setq org-blank-before-new-entry
       '((heading . auto)
-        (plain-list-item . t)))
+        (plain-list-item . auto)))
+
+;; Org defaults to no blank line for a lone item; prefer one until the list
+;; has siblings, then let Org follow their existing spacing.
+(defun br/org-list-default-blank-line (original pos struct prevs)
+  "Call ORIGINAL for list spacing, defaulting lone items to a blank line."
+  (let ((spacing (funcall original pos struct prevs)))
+    (if (and (eq (cdr (assq 'plain-list-item org-blank-before-new-entry)) 'auto)
+             (zerop spacing)
+             (not (org-list-get-next-item (point) struct prevs))
+             (not (org-list-get-prev-item (point) struct prevs)))
+        1
+      spacing)))
+
+(with-eval-after-load 'org-list
+  (advice-add 'org-list-separating-blank-lines-number
+              :around #'br/org-list-default-blank-line))
 
 ;; Stops org-mode messing with indentation
 (setq org-src-preserve-indentation t)
