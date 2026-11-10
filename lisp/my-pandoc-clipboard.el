@@ -26,6 +26,11 @@ Clean up temporary resources even if the process cannot be started."
         (coding-system-for-write 'utf-8-unix))
     (unwind-protect
         (with-temp-buffer
+          ;; Pandoc's Org reader defaults to treating levels deeper than three
+          ;; as list items.  Markdown supports headings through level six.
+          ;; A later OPTIONS line in INPUT can override this default.
+          (when (string= from "org")
+            (insert "#+OPTIONS: H:6\n"))
           (insert input)
           (let ((status (call-process-region
                          (point-min) (point-max) program t
