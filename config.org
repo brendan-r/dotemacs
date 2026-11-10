@@ -759,6 +759,16 @@ blocks inside a folded heading remain hidden by that heading."
                 (if (= (length blocks) 1) "" "s"))))))
 #+end_src
 
+** Paste clipboard images
+
+In Org buffers, =C-v= saves a clipboard image as a PNG and inserts an inline image link. The suggested path is =media/clipboard.png= beside the Org file, with a numeric suffix when needed. On macOS this uses the built-in clipboard tools. On Debian X11, install =xclip= (for example, =sudo apt install xclip=); images must be offered as PNG by the clipboard owner. Ordinary text pastes continue to use CUA paste.
+
+#+begin_src emacs-lisp
+(use-package br-org-clipboard-image
+  :ensure nil
+  :demand t)
+#+end_src
+
 ** Clipboard conversion and formatting commands
 
 #+begin_src emacs-lisp
