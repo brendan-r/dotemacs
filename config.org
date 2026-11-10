@@ -831,13 +831,14 @@ blocks inside a folded heading remain hidden by that heading."
       '((heading . auto)
         (plain-list-item . auto)))
 
-;; Org defaults to no blank line for a lone item; prefer one until the list
-;; has siblings, then let Org follow their existing spacing.
+;; For a lone item, prefer a blank line unless it has a checkbox.  Once a
+;; list has siblings, let Org follow their existing spacing.
 (defun br/org-list-default-blank-line (original pos struct prevs)
-  "Call ORIGINAL for list spacing, defaulting lone items to a blank line."
+  "Call ORIGINAL for list spacing, defaulting lone plain items to a blank line."
   (let ((spacing (funcall original pos struct prevs)))
     (if (and (eq (cdr (assq 'plain-list-item org-blank-before-new-entry)) 'auto)
              (zerop spacing)
+             (not (org-list-get-checkbox (point) struct))
              (not (org-list-get-next-item (point) struct prevs))
              (not (org-list-get-prev-item (point) struct prevs)))
         1
