@@ -769,6 +769,18 @@ In Org buffers, =C-v= saves a clipboard image as a PNG and inserts an inline ima
   :demand t)
 #+end_src
 
+** Format spacing on save
+
+Skip automatic formatting at 10,000 lines. Set the limit to nil to disable it. Use =M-x br-org-save-spacing-format= to format manually without the limit.
+
+#+begin_src emacs-lisp
+(use-package br-org-save-spacing
+  :ensure nil
+  :init
+  (setq br-org-save-spacing-max-lines 10000)
+  :demand t)
+#+end_src
+
 ** Clipboard conversion and formatting commands
 
 #+begin_src emacs-lisp
