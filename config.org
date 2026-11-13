@@ -1137,6 +1137,52 @@ This is useful for marking habits or tasks as done on a day in the past."
 
   (advice-add 'anki-editor-entry-format :override #'br/anki-editor-entry-format))
 
+;; Convert a simple Org entry into an anki-editor Basic note.
+(defun br/org-heading-to-anki-basic (beg end)
+  "Convert the current Org heading into an Anki Basic note.
+The heading becomes the front and its body becomes the back.  With
+an active region, use the heading containing BEG and require END to
+remain within its subtree.  Existing properties are preserved and child
+headings are nested under Back.  Refuse an existing Anki note type."
+  (interactive (if (use-region-p)
+                   (list (region-beginning) (region-end))
+                 (list nil nil)))
+  (unless (derived-mode-p 'org-mode)
+    (user-error "This command requires Org mode"))
+  (save-excursion
+    (when beg (goto-char beg))
+    (unless (org-before-first-heading-p)
+      (org-back-to-heading t))
+    (unless (org-at-heading-p)
+      (user-error "No Org heading at point or region start"))
+    (let* ((heading (org-get-heading t t t t))
+           (level (org-outline-level))
+           (subtree-end (save-excursion (org-end-of-subtree t t) (point))))
+      (when (and end (> end subtree-end))
+        (user-error "Region extends beyond the selected heading"))
+      (when (org-entry-get nil "ANKI_NOTE_TYPE")
+        (user-error "Heading already has an Anki note type"))
+      (atomic-change-group
+        ;; Parse Org headlines instead of matching arbitrary star-prefixed text.
+        (let ((child-positions
+               (save-restriction
+                 (narrow-to-region (point) subtree-end)
+                 (cdr (org-element-map (org-element-parse-buffer) 'headline
+                        (lambda (element) (org-element-property :begin element)))))))
+          (save-excursion
+            (dolist (position (reverse child-positions))
+              (goto-char position)
+              (insert "*"))))
+        (org-entry-put nil "ANKI_NOTE_TYPE" "Basic")
+        (org-end-of-meta-data t)
+        (skip-chars-backward " \t\n")
+        (forward-line 1)
+        (delete-region (point) (progn (while (looking-at "[ \t]*\n")
+                                        (goto-char (match-end 0)))
+                                      (point)))
+        (insert (make-string (1+ level) ?*) " Front\n\n" heading
+                "\n\n" (make-string (1+ level) ?*) " Back\n\n")))))
+
 ;; Allow duplicate cards. Sometimes you just copy and paste them between files,
 ;; rather than use real filtered decks or whatever
 (setq anki-editor-allow-duplicates t)
