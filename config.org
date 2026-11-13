@@ -638,7 +638,7 @@ Ghostel handles terminal resizing, wrapping, and rendering. CUA overrides are di
 #+begin_src emacs-lisp
 (use-package markdown-mode
   :ensure t
-  :mode ("\\.text\\'" "\\.markdown\\'" "\\.md\\'" "\\.page\\'")
+  :mode ("\\.\\(text\\|markdown\\|md\\|page\\)\\'" . gfm-mode)
   :custom
   (markdown-use-pandoc-style-yaml-metadata t)
   (markdown-enable-math t))
