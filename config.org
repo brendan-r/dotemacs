@@ -1255,7 +1255,7 @@ headings are nested under Back.  Refuse an existing Anki note type."
            (if org-confirm-babel-evaluate "enabled" "disabled")))
 
 (org-babel-do-load-languages
- 'org-babel-load-languages '((python . t) (R . t) (dot . t)))
+ 'org-babel-load-languages '((python . t) (R . t) (dot . t) (sql . t)))
 
 ;; Check external prerequisites before installing Jupyter's Org hooks.
 ;; On a new machine, the warning explains the one-time setup command.
