@@ -3029,9 +3029,13 @@ Suggestions appear after two characters and a short pause. TAB indents first, th
   ;; a `t' entry: that would also run the global word-completion fallback.
   (setq-local completion-at-point-functions '(cape-file)))
 
-;; Text mode's hook also runs for descendants such as Org and Markdown.
-;; Run late, after the usual mode hooks have installed completion sources.
-(add-hook 'text-mode-hook #'br/completion-files-only 90)
+(defun br/completion-files-only-in-prose ()
+  "Restrict completion after all prose major-mode hooks have run."
+  (when (derived-mode-p 'text-mode)
+    (br/completion-files-only)))
+
+;; Descendant mode hooks run after `text-mode-hook'; restrict their sources too.
+(add-hook 'after-change-major-mode-hook #'br/completion-files-only-in-prose 90)
 
 (with-eval-after-load 'git-commit
   ;; Magit adds dabbrev completion during commit setup, after major-mode
