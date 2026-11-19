@@ -7,7 +7,6 @@
 !/init.el
 !/early-init.el
 !/config.org
-!/custom.el
 !/init.elc
 !/lisp
 !/lisp/*
