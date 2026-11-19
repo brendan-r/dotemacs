@@ -1,6 +1,7 @@
 #+TITLE: Emacs Configuration
 #+PROPERTY: header-args:emacs-lisp :tangle yes
 
+
 * Things you'd like to add
 
 - [ ] In org-mode, make C-l bring you up to something a bit less extreme than cursor at topline. 5 lines down?
@@ -12,6 +13,8 @@
 
 
 * Package setup and environment
+
+
 ** Elpaca and use-package
 
 Packages are declared beside their configuration with =use-package=. External packages use =:ensure t=; built-in and local libraries use =:ensure nil=. Org and use-package come with Emacs (29 or newer). Elpaca owns external packages; the old =elpa/= directory can remain on disk but is not activated.
@@ -34,6 +37,7 @@ Use =M-x elpaca-manager= to inspect packages and =M-x elpaca-fetch-all= to fetch
   :demand t)
 #+end_src
 
+
 ** Local Lisp directories
 
 #+begin_src emacs-lisp
@@ -49,6 +53,7 @@ Use =M-x elpaca-manager= to inspect packages and =M-x elpaca-fetch-all= to fetch
          load-path)))
 #+end_src
 
+
 ** macOS shell environment
 
 #+begin_src emacs-lisp
@@ -59,6 +64,7 @@ Use =M-x elpaca-manager= to inspect packages and =M-x elpaca-fetch-all= to fetch
   (when (memq window-system '(mac ns))
     (exec-path-from-shell-initialize)))
 #+end_src
+
 
 * Command discovery: which-key
 
@@ -71,6 +77,7 @@ Use =M-x elpaca-manager= to inspect packages and =M-x elpaca-fetch-all= to fetch
   (which-key-mode 1))
 #+end_src
 
+
 * LeetCode
 
 #+begin_src emacs-lisp
@@ -82,7 +89,10 @@ Use =M-x elpaca-manager= to inspect packages and =M-x elpaca-fetch-all= to fetch
   (leetcode-prefer-sql "mysql"))
 #+end_src
 
+
 * Editing and interaction
+
+
 ** Paragraph unwrapping
 
 #+begin_src emacs-lisp
@@ -102,6 +112,7 @@ Use =M-x elpaca-manager= to inspect packages and =M-x elpaca-fetch-all= to fetch
 
 #+end_src
 
+
 ** Syntax checking: Flycheck
 
 #+begin_src emacs-lisp
@@ -112,6 +123,7 @@ Use =M-x elpaca-manager= to inspect packages and =M-x elpaca-fetch-all= to fetch
   (flycheck-check-syntax-automatically '(save idle-change mode-enabled))
   (flycheck-idle-change-delay 3))
 #+end_src
+
 
 ** Spell checking: Jinx
 
@@ -134,6 +146,7 @@ Jinx uses Enchant and a native Emacs module. Install =enchant= and =pkgconf= wit
 
 
 #+end_src
+
 
 ** Keyboard bindings, selection, and multiple cursors
 
@@ -207,6 +220,7 @@ Jinx uses Enchant and a native Emacs module. Install =enchant= and =pkgconf= wit
 
 #+end_src
 
+
 ** Window and buffer navigation
 
 #+begin_src emacs-lisp
@@ -235,6 +249,7 @@ Jinx uses Enchant and a native Emacs module. Install =enchant= and =pkgconf= wit
 
 #+end_src
 
+
 ** macOS modifiers
 
 #+begin_src emacs-lisp
@@ -244,6 +259,7 @@ Jinx uses Enchant and a native Emacs module. Install =enchant= and =pkgconf= wit
 
 
 #+end_src
+
 
 ** Undo and redo
 
@@ -258,6 +274,7 @@ Jinx uses Enchant and a native Emacs module. Install =enchant= and =pkgconf= wit
   (global-set-key (kbd "C-S-z") 'redo) ;; Make ctrl-Z redo
 )
 #+end_src
+
 
 ** Word deletion
 
@@ -287,6 +304,7 @@ With argument, do this that many times."
 
 #+end_src
 
+
 ** Mouse bindings
 
 #+begin_src emacs-lisp
@@ -304,6 +322,7 @@ With argument, do this that many times."
 
 #+end_src
 
+
 ** Command launcher: Smex
 
 #+begin_src emacs-lisp
@@ -311,6 +330,7 @@ With argument, do this that many times."
   :ensure t
   :demand t)
 #+end_src
+
 
 ** General editing behavior and file reloading
 
@@ -336,6 +356,7 @@ With argument, do this that many times."
 
 #+end_src
 
+
 ** Additional editing packages
 
 #+begin_src emacs-lisp
@@ -348,6 +369,7 @@ With argument, do this that many times."
   :defer t)
 
 #+end_src
+
 
 ** Comment filling
 
@@ -363,6 +385,7 @@ With argument, do this that many times."
   (setq comment-auto-fill-only-comments 1)
 )
 #+end_src
+
 
 ** Snippets: Yasnippet
 
@@ -383,6 +406,7 @@ With argument, do this that many times."
   (global-set-key (kbd "C-'") 'yas-insert-snippet)
 )
 #+end_src
+
 
 * Language REPLs: shared Comint behavior
 
@@ -417,7 +441,10 @@ These settings support language REPLs such as Python, R/ESS, and SQL. Interactiv
 )
 #+end_src
 
+
 * Interface and text display
+
+
 ** Toolbars, cursor, and bells
 
 #+begin_src emacs-lisp
@@ -442,6 +469,7 @@ These settings support language REPLs such as Python, R/ESS, and SQL. Interactiv
 
 #+end_src
 
+
 ** Visual wrapping and fonts
 
 #+begin_src emacs-lisp
@@ -457,6 +485,7 @@ These settings support language REPLs such as Python, R/ESS, and SQL. Interactiv
 
 #+end_src
 
+
 ** Confirmation prompts
 
 #+begin_src emacs-lisp
@@ -466,6 +495,7 @@ These settings support language REPLs such as Python, R/ESS, and SQL. Interactiv
 
 
 #+end_src
+
 
 ** Fill columns
 
@@ -502,6 +532,7 @@ These settings support language REPLs such as Python, R/ESS, and SQL. Interactiv
 
 #+end_src
 
+
 ** Line-number notes
 
 #+begin_src emacs-lisp
@@ -510,6 +541,7 @@ These settings support language REPLs such as Python, R/ESS, and SQL. Interactiv
 
 
 #+end_src
+
 
 ** UTF-8 encoding
 
@@ -521,6 +553,7 @@ These settings support language REPLs such as Python, R/ESS, and SQL. Interactiv
 
 
 #+end_src
+
 
 * Additional terminal packages
 
@@ -537,6 +570,7 @@ These settings support language REPLs such as Python, R/ESS, and SQL. Interactiv
   :ensure t
   :defer t)
 #+end_src
+
 
 * Terminals: Ghostel
 
@@ -563,6 +597,7 @@ Ghostel handles terminal resizing, wrapping, and rendering. CUA overrides are di
   (define-key ghostel-mode-map (kbd "C-b") #'consult-buffer))
 #+end_src
 
+
 * Scrolling
 
 #+begin_src emacs-lisp
@@ -588,6 +623,7 @@ Ghostel handles terminal resizing, wrapping, and rendering. CUA overrides are di
 
 #+end_src
 
+
 * Fill-column indicator
 
 #+begin_src emacs-lisp
@@ -596,6 +632,7 @@ Ghostel handles terminal resizing, wrapping, and rendering. CUA overrides are di
   :demand t
   :custom (fci-rule-column 80))
 #+end_src
+
 
 * Window splitting
 
@@ -633,6 +670,7 @@ Ghostel handles terminal resizing, wrapping, and rendering. CUA overrides are di
 
 #+end_src
 
+
 * Markdown
 
 #+begin_src emacs-lisp
@@ -651,6 +689,7 @@ Ghostel handles terminal resizing, wrapping, and rendering. CUA overrides are di
          (poly-markdown+r-mode . olivetti-mode)))
 #+end_src
 
+
 * Additional file modes
 
 #+begin_src emacs-lisp
@@ -667,7 +706,10 @@ Ghostel handles terminal resizing, wrapping, and rendering. CUA overrides are di
   :defer t)
 #+end_src
 
+
 * Org mode
+
+
 ** Bundled Org
 
 #+begin_src emacs-lisp
@@ -675,6 +717,7 @@ Ghostel handles terminal resizing, wrapping, and rendering. CUA overrides are di
   :ensure nil
   :demand t)
 #+end_src
+
 
 ** Toggle property drawers
 
@@ -713,6 +756,7 @@ properties inside a folded heading remain hidden by that heading."
                 (if (= (length drawers) 1) "" "s"))))))
 #+end_src
 
+
 ** Math delimiters
 
 ~\[~ syntax can do more (especially aligned equations), but is harder to type and looks uglier. ~$$~ is easier to type and to look at, and generally works better when pasting into markdown documents.
@@ -724,6 +768,7 @@ properties inside a folded heading remain hidden by that heading."
   :ensure nil
   :demand t)
 #+end_src
+
 
 ** Toggle source blocks
 
@@ -759,6 +804,7 @@ blocks inside a folded heading remain hidden by that heading."
                 (if (= (length blocks) 1) "" "s"))))))
 #+end_src
 
+
 ** Paste clipboard images
 
 In Org buffers, =C-v= saves a clipboard image as a PNG and inserts an inline image link. The suggested path is =media/clipboard.png= beside the Org file, with a numeric suffix when needed. On macOS this uses the built-in clipboard tools. On Debian X11, install =xclip= (for example, =sudo apt install xclip=); images must be offered as PNG by the clipboard owner. Ordinary text pastes continue to use CUA paste.
@@ -768,6 +814,7 @@ In Org buffers, =C-v= saves a clipboard image as a PNG and inserts an inline ima
   :ensure nil
   :demand t)
 #+end_src
+
 
 ** Format spacing on save
 
@@ -780,6 +827,7 @@ Skip automatic formatting at 10,000 lines. Set the limit to nil to disable it. U
   (setq br-org-save-spacing-max-lines 10000)
   :demand t)
 #+end_src
+
 
 ** Clipboard conversion and formatting commands
 
@@ -807,6 +855,7 @@ Skip automatic formatting at 10,000 lines. Set the limit to nil to disable it. U
 
 #+end_src
 
+
 ** Encryption and auto-save
 
 #+begin_src emacs-lisp
@@ -833,6 +882,7 @@ Skip automatic formatting at 10,000 lines. Set the limit to nil to disable it. U
 
 
 #+end_src
+
 
 ** Basic behavior, appearance, and keybindings
 
@@ -894,6 +944,7 @@ Skip automatic formatting at 10,000 lines. Set the limit to nil to disable it. U
 
 #+end_src
 
+
 ** Notes and agenda file selection
 
 #+begin_src emacs-lisp
@@ -935,6 +986,7 @@ Skip automatic formatting at 10,000 lines. Set the limit to nil to disable it. U
 
 #+end_src
 
+
 ** Logging, display, and Ediff settings
 
 #+begin_src emacs-lisp
@@ -974,6 +1026,7 @@ Skip automatic formatting at 10,000 lines. Set the limit to nil to disable it. U
 ;;       )
 
 #+end_src
+
 
 ** Agenda debugging and backdated task completion
 
@@ -1036,6 +1089,7 @@ This is useful for marking habits or tasks as done on a day in the past."
 
 #+end_src
 
+
 ** Capture templates
 
 #+begin_src emacs-lisp
@@ -1051,6 +1105,7 @@ This is useful for marking habits or tasks as done on a day in the past."
 
 
 #+end_src
+
 
 ** Task timestamps and logging
 
@@ -1081,6 +1136,7 @@ This is useful for marking habits or tasks as done on a day in the past."
 
 #+end_src
 
+
 ** Custom agenda views and filtering
 
 #+begin_src emacs-lisp
@@ -1107,6 +1163,7 @@ This is useful for marking habits or tasks as done on a day in the past."
 
 #+end_src
 
+
 ** Google Calendar and CalDAV
 
 #+begin_src emacs-lisp
@@ -1124,6 +1181,7 @@ This is useful for marking habits or tasks as done on a day in the past."
 
 
 #+end_src
+
 
 ** Anki
 
@@ -1201,6 +1259,7 @@ headings are nested under Back.  Refuse an existing Anki note type."
 
 #+end_src
 
+
 ** Additional Org extensions
 
 #+begin_src emacs-lisp
@@ -1220,6 +1279,7 @@ headings are nested under Back.  Refuse an existing Anki note type."
   :ensure t
   :defer t)
 #+end_src
+
 
 ** LaTeX previews
 
@@ -1242,6 +1302,7 @@ headings are nested under Back.  Refuse an existing Anki note type."
 (setq org-preview-latex-image-directory "media/latex-cache")
 
 #+end_src
+
 
 ** Babel, Jupyter, and source editing
 
@@ -1297,6 +1358,7 @@ headings are nested under Back.  Refuse an existing Anki note type."
 (setq org-src-window-setup 'reorganize-frame)
 
 #+end_src
+
 
 ** Heading-spacing helpers
 
@@ -1372,6 +1434,7 @@ headings are nested under Back.  Refuse an existing Anki note type."
 
 #+end_src
 
+
 ** Transclusion
 
 #+begin_src emacs-lisp
@@ -1389,6 +1452,7 @@ headings are nested under Back.  Refuse an existing Anki note type."
   ))
 
 #+end_src
+
 
 * Ediff window restoration
 
@@ -1415,6 +1479,7 @@ headings are nested under Back.  Refuse an existing Anki note type."
 
 #+end_src
 
+
 * Chess: PGN editing
 
 #+begin_src emacs-lisp
@@ -1433,6 +1498,7 @@ headings are nested under Back.  Refuse an existing Anki note type."
   :ensure t
   :mode ("\\.[pP][gG][nN]\\'" . pygn-mode))
 #+end_src
+
 
 * Startup screen, scratch buffer, and initial windows
 
@@ -1489,6 +1555,7 @@ headings are nested under Back.  Refuse an existing Anki note type."
 
 
 #+end_src
+
 
 * Default indentation
 
@@ -1566,8 +1633,8 @@ headings are nested under Back.  Refuse an existing Anki note type."
   :bind (:map sql-mode-map ("C-c C-f" . sqlformat-buffer)))
 
 
-
 #+end_src
+
 
 ** HTML, CSS, and browser JavaScript
 
@@ -1590,6 +1657,7 @@ headings are nested under Back.  Refuse an existing Anki note type."
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . html-mode))
 (add-to-list 'auto-mode-alist '("\\.css?\\'" . css-mode))
 #+end_src
+
 
 ** Shell-script evaluation
 
@@ -1619,9 +1687,11 @@ headings are nested under Back.  Refuse an existing Anki note type."
 )
 #+end_src
 
+
 ** Python: Eglot, BasedPyright, and built-in Python/IPython REPLs
 
 Python editing remains built in; Corfu displays Eglot completions, Flymake shows BasedPyright diagnostics, and xref/Eldoc provide navigation and documentation. The built-in python.el handles REPL execution. Ghostel remains the general terminal. See [[file:docs/python-workflow.org][Python workflow]] for keys, interpreter overrides, plots, and verification.
+
 
 *** Install BasedPyright on a new machine
 
@@ -1644,6 +1714,7 @@ pipx ensurepath
 
 After changing PATH, start a new shell and restart Emacs so it inherits the change. This configuration imports the shell environment for macOS GUI Emacs. Check inside Emacs with =M-: (executable-find "basedpyright-langserver") RET=; it should return an executable path, not nil. See [[https://docs.basedpyright.com/latest/installation/command-line-and-language-server/][BasedPyright's installation documentation]] for other installation methods.
 
+
 *** When BasedPyright is unavailable
 
 - Ordinary Python files skip Eglot startup and report =Python: install basedpyright-langserver for Eglot; REPL remains available= in the echo area and Messages. The configuration does not install the server automatically.
@@ -1651,6 +1722,7 @@ After changing PATH, start a new shell and restart Emacs so it inherits the chan
 - Without a working server, language-server completion, type diagnostics, navigation and rename are unavailable. Python editing and Python/IPython REPL execution still work; Org/Jupyter retain their independent requirements.
 
 After installation, reopen the source file or run =M-x eglot= in an ordinary Python buffer; in a Quarto Python chunk use =M-x lsp-deferred=. If Emacs still cannot find the executable, fix PATH and restart it first.
+
 
 *** Emacs package configuration
 
@@ -1717,6 +1789,7 @@ After installation, reopen the source file or run =M-x eglot= in an ordinary Pyt
   :demand t)
 #+end_src
 
+
 ** Node.js REPL
 
 #+begin_src emacs-lisp
@@ -1729,6 +1802,7 @@ After installation, reopen the source file or run =M-x eglot= in an ordinary Pyt
               (define-key js-mode-map (kbd "<C-return>") 'nodejs-repl-send-region)))
 )
 #+end_src
+
 
 ** R and ESS
 
@@ -1830,6 +1904,7 @@ After installation, reopen the source file or run =M-x eglot= in an ordinary Pyt
 )
 #+end_src
 
+
 ** Folding helpers
 
 #+begin_src emacs-lisp
@@ -1837,6 +1912,7 @@ After installation, reopen the source file or run =M-x eglot= in an ordinary Pyt
   :ensure t
   :defer t)
 #+end_src
+
 
 ** Knitr and R Markdown helpers
 
@@ -1910,6 +1986,7 @@ polymode and yas snippet"
 
 #+end_src
 
+
 ** Comint window-size helper
 
 #+begin_src emacs-lisp
@@ -1926,6 +2003,7 @@ polymode and yas snippet"
 
 #+end_src
 
+
 ** Stan
 
 #+begin_src emacs-lisp
@@ -1938,6 +2016,7 @@ polymode and yas snippet"
 
 #+end_src
 
+
 ** Stan snippets
 
 #+begin_src emacs-lisp
@@ -1945,6 +2024,7 @@ polymode and yas snippet"
   :ensure t
   :defer t)
 #+end_src
+
 
 ** Polymode
 
@@ -1965,6 +2045,7 @@ polymode and yas snippet"
          ("\\.Rnw" . poly-noweb+R-mode)
          ("\\.Rmd" . poly-markdown+R-mode)))
 #+end_src
+
 
 * Git: Magit and commit messages
 
@@ -1998,6 +2079,7 @@ polymode and yas snippet"
 
 #+end_src
 
+
 * Additional project and navigation packages
 
 #+begin_src emacs-lisp
@@ -2030,6 +2112,7 @@ polymode and yas snippet"
   :defer t)
 #+end_src
 
+
 * Emacs server
 
 #+begin_src emacs-lisp
@@ -2041,6 +2124,7 @@ polymode and yas snippet"
 
 #+end_src
 
+
 * Whitespace cleanup on save
 
 #+begin_src emacs-lisp
@@ -2049,6 +2133,7 @@ polymode and yas snippet"
 
 
 #+end_src
+
 
 * Mail: mu4e
 
@@ -2180,6 +2265,7 @@ polymode and yas snippet"
 
 #+end_src
 
+
 * Machine-specific database configuration
 
 #+begin_src emacs-lisp
@@ -2191,12 +2277,14 @@ polymode and yas snippet"
 
 #+end_src
 
+
 * Warning preferences
 
 #+begin_src emacs-lisp
 ;; Preserve the existing preference to omit native-compiler warning logs.
 (setq warning-suppress-log-types '((native-compiler)))
 #+end_src
+
 
 * Customize settings
 
@@ -2213,6 +2301,7 @@ polymode and yas snippet"
 
 
 #+end_src
+
 
 * Lockfiles, backups, and auto-save locations
 
@@ -2234,6 +2323,7 @@ polymode and yas snippet"
 
 #+end_src
 
+
 * Tiling window manager integration
 
 #+begin_src emacs-lisp
@@ -2243,7 +2333,10 @@ polymode and yas snippet"
   :config (frames-only-mode 1))
 #+end_src
 
+
 * Papers and bibliography
+
+
 ** PDF tools and reading-list setup
 
 #+begin_src emacs-lisp
@@ -2263,6 +2356,7 @@ polymode and yas snippet"
 
 
 #+end_src
+
 
 ** Org-ref
 
@@ -2288,6 +2382,7 @@ polymode and yas snippet"
 )
 #+end_src
 
+
 ** Ivy-bibtex notes
 
 #+begin_src emacs-lisp
@@ -2305,6 +2400,7 @@ polymode and yas snippet"
 
 #+end_src
 
+
 ** Bibliography and export packages
 
 #+begin_src emacs-lisp
@@ -2316,6 +2412,7 @@ polymode and yas snippet"
   :ensure t
   :defer t)
 #+end_src
+
 
 ** Biblio lookup, downloading, and reading-list helpers
 
@@ -2424,7 +2521,10 @@ RECORD is a formatted record as expected by `biblio-insert-result'."
 
 #+end_src
 
+
 * Feeds and media
+
+
 ** Feed and music packages
 
 #+begin_src emacs-lisp
@@ -2436,6 +2536,7 @@ RECORD is a formatted record as expected by `biblio-insert-result'."
   :ensure t
   :defer t)
 #+end_src
+
 
 ** Elfeed setup and feed lists
 
@@ -2553,6 +2654,7 @@ RECORD is a formatted record as expected by `biblio-insert-result'."
 
 #+end_src
 
+
 ** YouTube downloads
 
 #+begin_src emacs-lisp
@@ -2646,6 +2748,7 @@ RECORD is a formatted record as expected by `biblio-insert-result'."
 
 #+end_src
 
+
 ** VLC notes
 
 #+begin_src emacs-lisp
@@ -2656,6 +2759,7 @@ RECORD is a formatted record as expected by `biblio-insert-result'."
 
 
 #+end_src
+
 
 * Theme and mode-line appearance
 
@@ -2686,6 +2790,7 @@ RECORD is a formatted record as expected by `biblio-insert-result'."
 )
 #+end_src
 
+
 * Additional mode-line packages
 
 #+begin_src emacs-lisp
@@ -2693,6 +2798,7 @@ RECORD is a formatted record as expected by `biblio-insert-result'."
   :ensure t
   :defer t)
 #+end_src
+
 
 * Completion and search
 
@@ -2710,6 +2816,7 @@ The pieces share Emacs's standard completion API:
 Cape supplies file/word fallbacks; Embark-Consult connects search results to export/collect buffers. Python completion comes from Eglot through Corfu.
 
 Conventions adapted from [[https://github.com/bbatsov/prelude/blob/master/modules/prelude-vertico.el][Prelude's minibuffer setup]], [[https://github.com/bbatsov/prelude/blob/master/modules/prelude-corfu.el][Prelude's Corfu setup]], and [[https://github.com/purcell/emacs.d/blob/master/lisp/init-minibuffer.el][Purcell's minibuffer setup]].
+
 
 ** Matching and minibuffer behavior
 
@@ -2755,6 +2862,7 @@ Conventions adapted from [[https://github.com/bbatsov/prelude/blob/master/module
   :init (recentf-mode 1))
 #+end_src
 
+
 ** Vertico and Marginalia
 
 #+begin_src emacs-lisp
@@ -2781,6 +2889,7 @@ Conventions adapted from [[https://github.com/bbatsov/prelude/blob/master/module
               ("M-A" . marginalia-cycle))
   :config (marginalia-mode 1))
 #+end_src
+
 
 ** Consult: search and navigation
 
@@ -2830,6 +2939,7 @@ Keep the existing C-s save binding and C-f incremental search. M-s l adds a sear
    consult-source-recent-file consult-source-project-recent-file
    :preview-key '(:debounce 0.4 any)))
 #+end_src
+
 
 ** Corfu: completion while editing
 
@@ -2897,6 +3007,7 @@ Suggestions appear after two characters and a short pause. TAB indents first, th
   (add-hook 'git-commit-setup-hook #'br/completion-files-only 90))
 #+end_src
 
+
 ** Embark: actions and result buffers
 
 C-. opens actions for the current candidate or thing at point; C-; runs its default action when Jinx is inactive (with Jinx active, C-; corrects spelling). C-h B browses bindings. In a prompt, C-c C-o exports results (e.g. Consult lines to Occur, ripgrep results to Grep), and C-c C-l collects them. In an exported Grep buffer, C-c C-p enables wgrep editing; C-c C-c applies edits and C-c C-k cancels them. Existing which-key prefix help stays enabled.
@@ -2924,6 +3035,7 @@ C-. opens actions for the current candidate or thing at point; C-; runs its defa
               ("C-c C-p" . wgrep-change-to-wgrep-mode)))
 #+end_src
 
+
 ** Additional completion and checking packages
 
 #+begin_src emacs-lisp
@@ -2940,6 +3052,7 @@ C-. opens actions for the current candidate or thing at point; C-; runs its defa
   :defer t)
 #+end_src
 
+
 ** Search keybindings
 
 #+begin_src emacs-lisp
@@ -2950,6 +3063,7 @@ C-. opens actions for the current candidate or thing at point; C-; runs its defa
 
 
 #+end_src
+
 
 * Frame decorations
 
