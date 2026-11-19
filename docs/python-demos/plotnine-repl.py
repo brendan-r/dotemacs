@@ -24,3 +24,36 @@ p = (
     + theme(figure_size=(6, 3))
 )
 p.show()
+
+
+p = (
+    ggplot(data, aes("sample", "value"))
+    + geom_line(color="red")
+    + geom_point(color="blue", size=3)
+    + labs(title="Plotnine — A slightly different plot", x="Sample", y="Value")
+    + theme_minimal()
+    + theme(figure_size=(6, 3))
+)
+p.show()
+
+# Matplotlib bar chart: select this section and send it with C-c C-r.
+# It replaces the Plotnine chart in the same native window.
+fig = plt.figure("Python workflow", clear=True)
+ax = fig.subplots()
+ax.bar(["A", "B", "C", "D"], values, color="#0d9488")
+ax.set(title="Matplotlib — bar chart", xlabel="Sample", ylabel="Value")
+fig.tight_layout()
+fig.canvas.draw_idle()
+plt.show(block=False)
+
+
+# Matplotlib scatter chart: select this section and send it with C-c C-r.
+# It also replaces the contents of the same native window.
+fig = plt.figure("Python workflow", clear=True)
+ax = fig.subplots()
+ax.scatter(range(1, len(values) + 1), values, color="#ea580c", s=80)
+ax.set(title="Matplotlib — scatter chart", xlabel="Sample", ylabel="Value")
+ax.grid(True, alpha=0.3)
+fig.tight_layout()
+fig.canvas.draw_idle()
+plt.show(block=False)

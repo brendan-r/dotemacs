@@ -3,7 +3,7 @@ title: "Python workflow: Quarto"
 format:
   html:
     embed-resources: true
-jupyter: python3
+jupyter: python-workflow-demo
 execute:
   daemon: false
 ---

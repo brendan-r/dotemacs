@@ -1,22 +1,24 @@
 #+TITLE: Python workflow fixes — isolated acceptance record
 #+DATE: 2026-10-29
 
+
 * Candidate and scope
 
 Session: /private/var/folders/xz/rrlp4k613ss6dwrmm28xj9600000gn/T/emacs-config-1s0nf5kf Source: prior teal preview candidate; no permanent configuration changes or commit. All batch tests run in separate Emacs processes with private HOME/config copies. The original user session was preserved. Purple and teal previews were later closed at the user’s request after recovery copies were saved.
 
+
 * Current passing tests
 
-| Suite | Run under session/runs | Result |
-|-------+------------------------+--------|
-| Unmodified candidate baseline | 20261029-120625-afc799ce | Loaded |
-| Quarto: .py opened first | 20261029-122137-fa4d4e20 | 1/1 |
-| Quarto: .qmd opened first | 20261029-122138-d3c38964 | 1/1 |
-| Interpreter/process selection and native REPL regression | 20261029-122553-aad13b41 | 5/5 |
-| Definitions, multiline signatures, decorators, async def, classes | 20261029-122713-c1c24d35 | 3/3 |
-| Stepping from Quarto prose | 20261029-122933-5824dff0 | 1/1 |
-| Complete-unit stepping, selections/cancel, Quarto transitions, repeated plots | 20261029-123602-289c2188 | 4/4 |
-| Quarto chunks, large buffers, Eglot, completion, Org, Jupyter, HTML | 20261029-122935-c178d842 | 8/8 |
+| Suite                                                                         | Run under session/runs   | Result |
+|-------------------------------------------------------------------------------+--------------------------+--------|
+| Unmodified candidate baseline                                                 | 20261029-120625-afc799ce | Loaded |
+| Quarto: .py opened first                                                      | 20261029-122137-fa4d4e20 | 1/1    |
+| Quarto: .qmd opened first                                                     | 20261029-122138-d3c38964 | 1/1    |
+| Interpreter/process selection and native REPL regression                      | 20261029-122553-aad13b41 | 5/5    |
+| Definitions, multiline signatures, decorators, async def, classes             | 20261029-122713-c1c24d35 | 3/3    |
+| Stepping from Quarto prose                                                    | 20261029-122933-5824dff0 | 1/1    |
+| Complete-unit stepping, selections/cancel, Quarto transitions, repeated plots | 20261029-123602-289c2188 | 4/4    |
+| Quarto chunks, large buffers, Eglot, completion, Org, Jupyter, HTML           | 20261029-122935-c178d842 | 8/8    |
 
 The last workflow run includes the final macOS focus fix.
 
@@ -27,6 +29,7 @@ Quarto tests capture didOpen/didChange messages. All Python chunks reach the ser
 Stepping covers expressions, multiline lists/signatures, decorated functions, classes, for/else, if/elif/else, try/except/finally, with, active selections, comments/blanks, EOF and Quarto transitions. Cancellation/local send errors preserve point; submission advances once. Batch stepping waits between simulated human commands: flooding a macOS PTY in a tight Lisp loop overflowed input with GNU readline/IPython. The implementation adds no submission delay or queue.
 
 The latest integration suite saves clean prepared Org results and a Jupyter PNG, checks persistent counters, rejects interpreter/path clutter, and renders the Quarto plot into embedded HTML. The candidate contains these regenerated results.
+
 
 * Plotting and cache investigation
 
@@ -40,6 +43,7 @@ Both interpreters: three successive updates keep one figure, another unnamed fig
 
 MPLCONFIGDIR is private to this session and prewarmed once. Cold font-manager + pyplot import: 12.343s, including the font-cache warning. Warm import: 0.360s, no rebuild warning. Details: session/tests/font-cache.json. Normal configurations retain Matplotlib's ordinary persistent cache.
 
+
 * GUI acceptance
 
 GUI run: 20261029-123052-e7c70422; PID 39831; private socket /private/tmp/ec-n63_vrfh/test. Title: PYTHON WORKFLOW TEST 3 — isolated Emacs. Modus Operandi light theme; amber modeline (#8b4513).
@@ -50,9 +54,11 @@ This caught a macOS-specific issue absent in batch: ns-win adds select-frame to 
 
 Computer Use permissions were unavailable. These are internal GUI command-loop tests, not injected desktop keypresses; desktop/window-manager focus and manual plot toolbar pan/zoom/Back/Forward remain unverified. For final manual acceptance: click the source frame, send code into new and existing visible/hidden REPLs, and confirm keyboard focus stays there. Run the plot chunk three times, then pan/zoom and use Back/Forward while still evaluating expressions in the REPL. No old Emacs session was queried or modified during these checks.
 
+
 * Remaining platform limits
 
 Tested: macOS, Emacs 30.2, Python 3.14.7, IPython 9.17.1, Matplotlib 3.11.2. Linux and python-ts-mode with an installed grammar remain unverified. Quarto HTML rendering passes; quarto-preview's live server is not exercised. No custom event loop, Python executor, AST service or transport protocol added. Real warnings/errors are retained, including the existing Magithub warning and Python 3.14's possible codecs.open warning in Emacs 30's large-input helper.
+
 
 * Quarto latency investigation, 2026-10-29 12:56
 
@@ -67,6 +73,7 @@ Changes: one upstream setting, lsp-client-packages = (lsp-pyright), in staged co
 
 Regression: quarto-lsp-masking-and-edits passed in 20261029-125615-f3ceb8e5: actual masked protocol text, cross-chunk completion, diagnostic coordinates after edits, and exclusion of Eglot from Quarto all remain correct. Logs: quarto-live.cpu, quarto-live-timings.el, quarto-event-latency.el, quarto-live-lag.sample under the session logs directory. Timing test sources: tests/quarto-startup-timing.el and tests/quarto-prewarmed-timing.el.
 
+
 * Plotnine same-window examples, 2026-10-29
 
 Approved local subclass: docs/python-demos/plotnine_window.py. It only overrides _create_figure, using a named Matplotlib figure with clear=True and plotnine's p9GridSpec. Both are private plotnine APIs, explicitly documented in the source and guide; tested with plotnine 0.15.8. Source/Quarto imports and plot titles identify use of the subclass. Org/Jupyter uses ordinary upstream ggplot and states that distinction. No Emacs executor/config change was needed.
@@ -80,6 +87,7 @@ Final isolated run: 20261029-131226-e46e61cd, five tests passed, 84.46 seconds.
 Development-only failures: an initial demo filename shadowed the plotnine package (renamed to plotnine-repl.py); an attempted ggplot + DataFrame test was invalid (now assigns p.data); one edit left unbalanced parentheses in the test file (corrected and check-parens passed). These are resolved in the final run. Existing Python 3.14 codecs.open warnings and IPython simple-prompt's osx-hook message remain visible. The GNU-readline/native GUI timer tests still pass.
 
 Publication replaces the amber preview's demo contents with the user's explicit permission to discard demo edits. It does not execute code in existing REPLs, restart processes, or change the permanent dotfiles.
+
 
 * Main-repository merge verification, 2026-10-29
 
@@ -98,6 +106,7 @@ All prose in the migrated Org and Quarto documents, config.org and the existing 
 Total: 23 passing tests against the merge candidate. A first attempt to combine the regression harnesses loaded a shared ERT definition twice and stopped before execution; helper loading was made idempotent in the temporary harness and the final 12-test run passed. No runtime configuration change was needed for that harness error. The existing Magithub warning and Python 3.14 codecs.open deprecation warnings remain; the earlier Compat activation warning is absent from the updated candidate's test runs.
 
 Tests supplied BasedPyright, GNU-readline Python/IPython and Jupyter from private test environments. Those environments are not copied into the main repo. At merge time, basedpyright-langserver was not found on the normal shell PATH, so normal use still requires an explicit installation/PATH setup. The running Emacs sessions are not reloaded or restarted by applying these source files.
+
 
 * Normal BasedPyright installation, 2026-10-29
 

@@ -1,1 +1,3 @@
-# Project marker for the isolated Python workflow demos.
+# Project marker for the Python workflow demos.
+[tool.basedpyright]
+typeCheckingMode = "standard"
