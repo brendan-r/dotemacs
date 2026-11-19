@@ -1354,6 +1354,24 @@ headings are nested under Back.  Refuse an existing Anki note type."
 ;; Make TAB act as if it were issued in a buffer of the language’s major mode.
 (setq org-src-tab-acts-natively t)
 
+;; SQL blocks need no engine for editing; retain SQL mode's default product.
+(defun br/org-sql-edit-prep (original info)
+  "Run ORIGINAL SQL edit preparation when INFO specifies an engine."
+  (when (cdr (assq :engine (nth 2 info)))
+    (funcall original info)))
+(with-eval-after-load 'ob-sql
+  (advice-add 'org-babel-edit-prep:sql :around #'br/org-sql-edit-prep))
+
+(defun br/org-sql-tab ()
+  "Run SQL mode's TAB command inside an Org SQL source block."
+  (let ((element (org-element-at-point)))
+    (when (and org-src-tab-acts-natively
+               (org-in-src-block-p t element)
+               (string-equal-ignore-case (or (org-element-property :language element) "") "sql"))
+      (org-babel-do-key-sequence-in-edit-buffer (kbd "TAB"))
+      t)))
+(add-hook 'org-tab-before-tab-emulation-hook #'br/org-sql-tab)
+
 ;; When editing a code snippet, use the current window rather than popping open a new one (which shows the same information).
 (setq org-src-window-setup 'reorganize-frame)
 
@@ -1569,36 +1587,51 @@ headings are nested under Back.  Refuse an existing Anki note type."
 
 #+end_src
 
+
 * Programming languages and literate programming
+
+
 ** SQL
 
 #+begin_src emacs-lisp
 
-;; Indentation  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-;; (require 'sql-indent)
-
-;; ;; As per https://github.com/alex-hhh/emacs-sql-indent/issues/43
-;; ;;
-;; ;; Note: You'd like to get a level of indentation after 'on' within a join (for
-;; ;; long lists of conditions). Worth investigating in the future!
-;; (defvar p43-sql-indentation-offsets-alist
-;;   `((select-clause 0)
-;;     (insert-clause 0)
-;;     (delete-clause 0)
-;;     (update-clause 0)
-;;     (select-join-condition 0)
-;;     (in-select-clause + sqlind-lineup-close-paren-to-open-indentation)
-;;     (select-table-continuation + sqlind-lineup-close-paren-to-open-indentation)
-;;     ,@sqlind-default-indentation-offsets-alist))
-
-;; (add-hook 'sqlind-minor-mode-hook
-;;           (lambda ()
-;;             (setq sqlind-indentation-offsets-alist
-;;                   p43-sql-indentation-offsets-alist)))
-
-;; ;; Automatically use the sqlind minor mode when editing SQL files
-;; (setq sql-mode-hook (quote (sqlind-minor-mode)))
+;; Use four-space indentation and keep SQL clauses left-aligned.
+(use-package sql-indent
+  :ensure t
+  :hook (sql-mode . sqlind-minor-mode)
+  :init
+  (setq-default sqlind-basic-offset 4)
+  :config
+  (defun br/sql-indent-case-continuation (syntax indentation)
+    "Indent an alias after CASE using its outer SELECT SYNTAX.
+Otherwise use INDENTATION with the standard CASE continuation rule."
+    (if (and (save-excursion
+               (back-to-indentation)
+               (and (looking-at-p "[Aa][Ss]\\_>")
+                    (progn (skip-chars-backward " \t\r\n")
+                           (let ((end (point)))
+                             (and (re-search-backward "\\_<[Ee][Nn][Dd]\\_>" (line-beginning-position) t)
+                                  (= (match-end 0) end))))))
+             (assq 'select-column-continuation (cdr syntax)))
+        (sqlind-calculate-indentation (cdr syntax))
+      (sqlind-right-justify-clause syntax indentation)))
+  ;; Retain the previous SQL indentation rules, including parenthesis alignment.
+  (defvar p43-sql-indentation-offsets-alist
+    `((case-clause-item-cont br/sql-indent-case-continuation)
+      (with-clause-cte 0)
+      (select-clause 0)
+      (insert-clause 0)
+      (delete-clause 0)
+      (update-clause 0)
+      (select-join-condition 0)
+      (in-select-clause + sqlind-lineup-close-paren-to-open-indentation)
+      (select-table-continuation + sqlind-lineup-close-paren-to-open-indentation)
+      ,@sqlind-default-indentation-offsets-alist))
+  (defun br/sql-indent-setup ()
+    "Use the preferred SQL indentation rules in this buffer."
+    (setq-local sqlind-indentation-offsets-alist
+                p43-sql-indentation-offsets-alist))
+  (add-hook 'sqlind-minor-mode-hook #'br/sql-indent-setup))
 
 ;; (require 'sql)
 
