@@ -22,6 +22,7 @@ Set under nil in .dir-locals.el to apply to Python and Quarto alike.")
 (declare-function pm-map-over-spans "polymode-core")
 (declare-function lsp-deferred "lsp-mode")
 (declare-function lsp-rename "lsp-mode")
+(declare-function lsp--suggest-project-root "lsp-mode")
 
 ;; Display output without taking keyboard focus, including frames-only-mode.
 ;; Explicit switching still uses python-shell-switch-to-shell.
@@ -327,6 +328,14 @@ Skip comments and Quarto prose; stay put on cancellation or a local send error."
   (interactive)
   (call-interactively (if (bound-and-true-p lsp-mode) #'lsp-rename #'eglot-rename)))
 
+(defun br/python-lsp-safe-root-p (root)
+  "Return non-nil if ROOT is not home or filesystem root."
+  (if (and (not (file-remote-p root))
+           (member (file-name-as-directory (file-truename root))
+                   (list (file-name-as-directory (file-truename "~/")) "/")))
+      (progn (message "Python: language server not started for home or filesystem root") nil)
+    t))
+
 (defun br/python-setup ()
   "Initialize source tooling after directory-local variables are available."
   (when (and buffer-file-name (not (buffer-base-buffer))
@@ -335,8 +344,11 @@ Skip comments and Quarto prose; stay put on cancellation or a local send error."
     (unless (file-remote-p default-directory)
       (setq-local python-shell-interpreter (br/python-interpreter))
       (when (bound-and-true-p flycheck-mode) (flycheck-mode -1))
-      (if (executable-find "basedpyright-langserver") (eglot-ensure)
-        (message "Python: install basedpyright-langserver for Eglot; REPL remains available")))))
+      (cond
+       ((not (executable-find "basedpyright-langserver"))
+        (message "Python: install basedpyright-langserver for Eglot; REPL remains available"))
+       ((br/python-lsp-safe-root-p (project-root (eglot--current-project)))
+        (eglot-ensure))))))
 (add-hook 'hack-local-variables-hook #'br/python-setup)
 
 (dolist (map (list python-mode-map python-ts-mode-map))
@@ -365,7 +377,8 @@ Skip comments and Quarto prose; stay put on cancellation or a local send error."
       ;; Polymode masks full documents correctly; incremental edits in the
       ;; host mode can otherwise leak prose into the Python document.
       (setq-local lsp-document-sync-method 1)
-      (lsp-deferred))))
+      (when (br/python-lsp-safe-root-p (lsp--suggest-project-root))
+        (lsp-deferred)))))
 (with-eval-after-load 'polymode
   (add-hook 'polymode-init-inner-hook #'br/python-polymode-setup))
 

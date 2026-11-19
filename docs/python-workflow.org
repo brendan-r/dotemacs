@@ -68,6 +68,8 @@ Variables persist until you exit or kill that REPL. Starting another process cre
 
 project.el identifies the project, normally the Git repository root. If there is no VC project, an ancestor with pyproject.toml, pyrightconfig.json or .venv is a Python project. Without a project, the source file's directory is used. A new REPL starts in that directory. Sending another file does not silently chdir an existing REPL. Inspect os.getcwd() at the prompt if you have changed it yourself.
 
+Eglot and the Quarto language client do not start automatically when their local project root is the home directory or filesystem root, since language-server features can scan the entire tree. Move a standalone file into a dedicated directory to use automatic language-server features. The REPL remains available. Manually starting a client can still scan a broad root.
+
 Interpreter order:
 1. br/python-executable, or the explicit Eglot :python (:pythonPath ...) setting.
 2. PROJECT/.venv/bin/python (a broken .venv produces an error).
